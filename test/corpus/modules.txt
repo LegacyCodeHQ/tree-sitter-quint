@@ -175,3 +175,28 @@ module Foo {
       name: (identifier)
       type: (parenthesized_type
         type: (primitive_type)))))
+
+========================================
+Operator type constants
+========================================
+
+module Operators {
+  const predicate: (int, bool) => str
+  const generator: () => bool
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (operator_type
+        parameter: (primitive_type)
+        parameter: (primitive_type)
+        result: (primitive_type)))
+    (constant_declaration
+      name: (identifier)
+      type: (operator_type
+        result: (primitive_type)))))

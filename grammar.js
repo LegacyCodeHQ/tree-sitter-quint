@@ -33,6 +33,7 @@ export default grammar({
 
   conflicts: $ => [
     [$.lambda_expression, $.name_reference],
+    [$.operator_type, $.tuple_type],
   ],
 
   rules: {
@@ -248,6 +249,7 @@ export default grammar({
       $.named_type,
       $.set_type,
       $.list_type,
+      $.operator_type,
       $.tuple_type,
       $.parenthesized_type,
       $.record_type,
@@ -281,6 +283,17 @@ export default grammar({
       field("element", $._type),
       "]",
     ),
+
+    operator_type: $ => prec.right(seq(
+      "(",
+      optional(seq(
+        field("parameter", $._type),
+        repeat(seq(",", field("parameter", $._type))),
+      )),
+      ")",
+      "=>",
+      field("result", $._type),
+    )),
 
     tuple_type: $ => seq(
       "(",
