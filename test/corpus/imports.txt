@@ -259,3 +259,41 @@ module C {
           name: (identifier))
         element: (name_reference
           name: (identifier))))))
+
+========================================
+Anonymous module instance
+========================================
+
+module Bar {
+  const c: int
+  def A(y) = c + y
+}
+
+module Foo {
+  import Bar(c = 0).*
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (name_reference
+          name: (identifier)))))
+  (module_definition
+    name: (identifier)
+    (anonymous_instance_declaration
+      module: (identifier)
+      (instance_override
+        name: (identifier)
+        value: (integer_literal)))))

@@ -57,6 +57,7 @@ export default grammar({
       $.operator_definition,
       $.assumption_declaration,
       $.instance_declaration,
+      $.anonymous_instance_declaration,
       $.named_import_declaration,
       $.wildcard_import_declaration,
       $.wildcard_export_declaration,
@@ -286,6 +287,19 @@ export default grammar({
       field("name", $.identifier),
       "=",
       field("value", $._expression),
+    ),
+
+    anonymous_instance_declaration: $ => seq(
+      "import",
+      field("module", $.identifier),
+      "(",
+      optional(seq(
+        $.instance_override,
+        repeat(seq(",", $.instance_override)),
+      )),
+      ")",
+      ".",
+      "*",
     ),
 
     named_import_declaration: $ => seq(

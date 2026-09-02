@@ -290,6 +290,32 @@
     }
   },
   {
+    "type": "anonymous_instance_declaration",
+    "named": true,
+    "fields": {
+      "module": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "instance_override",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "any_expression",
     "named": true,
     "fields": {
@@ -2861,6 +2887,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anonymous_instance_declaration",
+          "named": true
+        },
         {
           "type": "assumption_declaration",
           "named": true
