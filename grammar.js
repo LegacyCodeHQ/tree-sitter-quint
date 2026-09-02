@@ -135,7 +135,14 @@ export default grammar({
       $.boolean_literal,
       $.string_literal,
       $.name_reference,
+      $.parenthesized_expression,
       $.binary_expression,
+    ),
+
+    parenthesized_expression: $ => seq(
+      "(",
+      field("expression", $._expression),
+      ")",
     ),
 
     binary_expression: $ => choice(

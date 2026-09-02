@@ -37,3 +37,25 @@ module Arithmetic {
         right: (binary_expression
           left: (integer_literal)
           right: (integer_literal))))))
+
+==============================================
+Parentheses override multiplication precedence
+==============================================
+
+module Arithmetic {
+  val result = (1 + 2) * 3
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (parenthesized_expression
+          expression: (binary_expression
+            left: (integer_literal)
+            right: (integer_literal)))
+        right: (integer_literal)))))
