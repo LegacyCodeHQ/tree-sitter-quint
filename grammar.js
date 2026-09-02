@@ -437,6 +437,7 @@ export default grammar({
       $.call_expression,
       $.field_access_expression,
       $.index_expression,
+      $.namespace_access_expression,
       $.name_reference,
       $.parenthesized_expression,
       $.unary_expression,
@@ -564,6 +565,12 @@ export default grammar({
         repeat(seq(",", field("argument", $._expression))),
       )),
       ")",
+    )),
+
+    namespace_access_expression: $ => prec.left(PREC.POSTFIX, seq(
+      field("namespace", $.identifier),
+      "::",
+      field("member", $.identifier),
     )),
 
     parenthesized_expression: $ => seq(
