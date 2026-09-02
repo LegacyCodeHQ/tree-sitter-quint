@@ -8,6 +8,7 @@
 // @ts-check
 
 const PREC = {
+  ASSIGNMENT: 0,
   IMPLICATION: 1,
   LEADS_TO: 2,
   EQUIVALENCE: 3,
@@ -304,6 +305,7 @@ export default grammar({
       $.unit_literal,
       $.record_literal,
       $.block_expression,
+      $.assignment_expression,
       $.if_expression,
       $.lambda_expression,
       $.call_expression,
@@ -352,6 +354,17 @@ export default grammar({
       "{",
       field("expression", $._expression),
       "}",
+    ),
+
+    assignment_expression: $ => prec.right(PREC.ASSIGNMENT, seq(
+      field("target", $.primed_identifier),
+      "=",
+      field("value", $._expression),
+    )),
+
+    primed_identifier: $ => seq(
+      field("name", $.identifier),
+      "'",
     ),
 
     if_expression: $ => prec.right(seq(

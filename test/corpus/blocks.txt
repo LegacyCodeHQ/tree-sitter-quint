@@ -17,3 +17,34 @@ module Blocks {
       name: (identifier)
       body: (block_expression
         expression: (boolean_literal)))))
+
+========================================
+Primed state assignment
+========================================
+
+module State {
+  var balance: int
+
+  action increment = {
+    balance' = balance + 1
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal)))))))
