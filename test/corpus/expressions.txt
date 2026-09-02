@@ -247,3 +247,24 @@ module Comparisons {
           left: (integer_literal)
           right: (integer_literal))
         right: (integer_literal)))))
+
+===============================================
+Conjunction binds more loosely than comparison
+===============================================
+
+module Logic {
+  val result = true and 1 < 2
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (boolean_literal)
+        right: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))))))
