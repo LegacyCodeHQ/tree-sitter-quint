@@ -8,12 +8,13 @@
 // @ts-check
 
 const PREC = {
-  CONJUNCTION: 1,
-  EQUALITY: 2,
-  COMPARISON: 3,
-  ADDITIVE: 4,
-  MULTIPLICATIVE: 5,
-  UNARY: 6,
+  DISJUNCTION: 1,
+  CONJUNCTION: 2,
+  EQUALITY: 3,
+  COMPARISON: 4,
+  ADDITIVE: 5,
+  MULTIPLICATIVE: 6,
+  UNARY: 7,
 };
 
 export default grammar({
@@ -156,6 +157,11 @@ export default grammar({
     )),
 
     binary_expression: $ => choice(
+      prec.left(PREC.DISJUNCTION, seq(
+        field("left", $._expression),
+        field("operator", "or"),
+        field("right", $._expression),
+      )),
       prec.left(PREC.CONJUNCTION, seq(
         field("left", $._expression),
         field("operator", "and"),
