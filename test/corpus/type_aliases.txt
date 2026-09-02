@@ -72,3 +72,29 @@ module Types {
         name: (type_variable))
       value: (list_type
         element: (type_variable)))))
+
+========================================
+Generic type application
+========================================
+
+module Types {
+  type Box[a] = List[a]
+  const boxes: Box[int]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      parameter: (type_parameter
+        name: (type_variable))
+      value: (list_type
+        element: (type_variable)))
+    (constant_declaration
+      name: (identifier)
+      type: (type_application
+        constructor: (identifier)
+        argument: (primitive_type)))))

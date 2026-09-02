@@ -244,6 +244,7 @@ export default grammar({
     _type: $ => choice(
       $.primitive_type,
       $.type_variable,
+      $.type_application,
       $.named_type,
       $.set_type,
       $.list_type,
@@ -258,6 +259,14 @@ export default grammar({
     type_variable: _ => /[a-z]/,
 
     named_type: $ => field("name", $.identifier),
+
+    type_application: $ => seq(
+      field("constructor", $.identifier),
+      "[",
+      field("argument", $._type),
+      repeat(seq(",", field("argument", $._type))),
+      "]",
+    ),
 
     set_type: $ => seq(
       "Set",
