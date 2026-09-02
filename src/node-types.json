@@ -1333,6 +1333,10 @@
             "named": true
           },
           {
+            "type": "qualified_identifier",
+            "named": true
+          },
+          {
             "type": "reserved_operator",
             "named": true
           }

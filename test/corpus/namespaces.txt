@@ -196,3 +196,45 @@ module QualifiedTypes {
           namespace: (identifier)
           name: (identifier))
         argument: (primitive_type)))))
+
+========================================
+Qualified UFCS operator names
+========================================
+
+module Ops {
+  pure def increment(x: int): int = x + 1
+}
+
+module QualifiedUfcs {
+  import Ops as O
+  pure val result = 1.O::increment()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal))))
+  (module_definition
+    name: (identifier)
+    (module_import_declaration
+      module: (identifier)
+      alias: (identifier))
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (field_access_expression
+          object: (integer_literal)
+          field: (qualified_identifier
+            namespace: (identifier)
+            name: (identifier)))))))

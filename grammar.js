@@ -844,7 +844,11 @@ export default grammar({
     field_access_expression: $ => prec.left(PREC.POSTFIX, seq(
       field("object", $._expression),
       ".",
-      field("field", choice($.identifier, $.reserved_operator)),
+      field("field", choice(
+        $.identifier,
+        $.qualified_identifier,
+        $.reserved_operator,
+      )),
     )),
 
     index_expression: $ => prec.left(PREC.POSTFIX, seq(
