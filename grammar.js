@@ -9,9 +9,10 @@
 
 const PREC = {
   EQUALITY: 1,
-  ADDITIVE: 2,
-  MULTIPLICATIVE: 3,
-  UNARY: 4,
+  COMPARISON: 2,
+  ADDITIVE: 3,
+  MULTIPLICATIVE: 4,
+  UNARY: 5,
 };
 
 export default grammar({
@@ -157,6 +158,11 @@ export default grammar({
       prec.left(PREC.EQUALITY, seq(
         field("left", $._expression),
         field("operator", choice("==", "!=")),
+        field("right", $._expression),
+      )),
+      prec.left(PREC.COMPARISON, seq(
+        field("left", $._expression),
+        field("operator", "<"),
         field("right", $._expression),
       )),
       prec.left(PREC.ADDITIVE, seq(
