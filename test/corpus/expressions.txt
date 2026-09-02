@@ -590,3 +590,25 @@ module Collections {
         collection: (name_reference
           name: (identifier))
         index: (integer_literal)))))
+
+======================
+Conditional expression
+======================
+
+module Control {
+  val maximum = if (1 > 2) 1 else 2
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (if_expression
+        condition: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        consequence: (integer_literal)
+        alternative: (integer_literal)))))

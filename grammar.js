@@ -148,6 +148,7 @@ export default grammar({
       $.tuple_literal,
       $.unit_literal,
       $.record_literal,
+      $.if_expression,
       $.call_expression,
       $.field_access_expression,
       $.index_expression,
@@ -189,6 +190,16 @@ export default grammar({
       ":",
       field("value", $._expression),
     ),
+
+    if_expression: $ => prec.right(seq(
+      "if",
+      "(",
+      field("condition", $._expression),
+      ")",
+      field("consequence", $._expression),
+      "else",
+      field("alternative", $._expression),
+    )),
 
     field_access_expression: $ => prec.left(PREC.POSTFIX, seq(
       field("object", $._expression),
