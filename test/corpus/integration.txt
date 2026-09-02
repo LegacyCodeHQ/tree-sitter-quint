@@ -615,3 +615,70 @@ module OperatorForms {
           name: (identifier))
         right: (name_reference
           name: (identifier))))))
+
+========================================
+Complete data features
+========================================
+
+module DataFeatures {
+  type Elem = S(str) | I(int)
+
+  pure def render(value: Elem): str =
+    pure val base = { kind: "base" }
+    pure val extended = { label: "value", ...base }
+    match value { S(s) => s | I(_) => extended.label }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (named_type
+          name: (identifier)))
+      return_type: (primitive_type)
+      body: (nested_definition_expression
+        definition: (value_definition
+          name: (identifier)
+          value: (record_literal
+            (record_literal_field
+              name: (identifier)
+              value: (string_literal))))
+        body: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (record_literal
+              (record_literal_field
+                name: (identifier)
+                value: (string_literal))
+              (record_spread
+                value: (name_reference
+                  name: (identifier)))))
+          body: (match_expression
+            value: (name_reference
+              name: (identifier))
+            arm: (match_arm
+              variant: (identifier)
+              parameter: (identifier)
+              body: (name_reference
+                name: (identifier)))
+            arm: (match_arm
+              variant: (identifier)
+              parameter: (identifier)
+              body: (field_access_expression
+                object: (name_reference
+                  name: (identifier))
+                field: (identifier)))))))))
