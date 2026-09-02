@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build and test output
+build/
+coverage/
+
+# Logs
+*.log
+
+# Local environment files
+.env
+.env.*
+
+# macOS
+.DS_Store
