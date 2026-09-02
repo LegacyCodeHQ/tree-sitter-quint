@@ -128,6 +128,42 @@ module Choices {
           right: (integer_literal))))))
 
 ========================================
+Qualified nondeterministic binding
+========================================
+
+module Choices {
+  action pick = {
+    nondet Scope::x = Set(1).oneOf()
+    Scope::x == 1
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        binding: (nondet_binding
+          name: (qualified_identifier
+            namespace: (identifier)
+            name: (identifier))
+          value: (call_expression
+            function: (field_access_expression
+              object: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (integer_literal))
+              field: (identifier))))
+        expression: (binary_expression
+          left: (namespace_access_expression
+            namespace: (identifier)
+            member: (identifier))
+          right: (integer_literal))))))
+
+========================================
 Nondeterministic choice with trailing comma
 ========================================
 

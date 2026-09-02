@@ -735,7 +735,7 @@ export default grammar({
 
     nondet_binding: $ => prec(1, seq(
       "nondet",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       "=",
       field("value", $._expression),
     )),
