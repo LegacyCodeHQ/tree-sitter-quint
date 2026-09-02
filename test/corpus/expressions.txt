@@ -81,6 +81,27 @@ module Arithmetic {
           right: (integer_literal))
         right: (integer_literal)))))
 
+==========================================
+Inequality binds more loosely than addition
+==========================================
+
+module Comparisons {
+  val isDifferent = 1 + 2 != 4
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        right: (integer_literal)))))
+
 =================================================
 Unary negation binds tighter than multiplication
 =================================================

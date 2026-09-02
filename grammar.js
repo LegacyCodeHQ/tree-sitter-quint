@@ -156,7 +156,7 @@ export default grammar({
     binary_expression: $ => choice(
       prec.left(PREC.EQUALITY, seq(
         field("left", $._expression),
-        field("operator", "=="),
+        field("operator", choice("==", "!=")),
         field("right", $._expression),
       )),
       prec.left(PREC.ADDITIVE, seq(
