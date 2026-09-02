@@ -21,3 +21,21 @@ module Functions {
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))))
+
+======================================
+Parameterless pure operator definition
+======================================
+
+module Functions {
+  pure def answer: int = 42
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (integer_literal))))

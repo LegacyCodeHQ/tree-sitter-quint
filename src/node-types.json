@@ -1318,7 +1318,7 @@
       },
       "parameter": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "annotated_parameter",
