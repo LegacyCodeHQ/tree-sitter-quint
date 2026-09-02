@@ -150,6 +150,7 @@ export default grammar({
       $.record_literal,
       $.call_expression,
       $.field_access_expression,
+      $.index_expression,
       $.name_reference,
       $.parenthesized_expression,
       $.unary_expression,
@@ -193,6 +194,13 @@ export default grammar({
       field("object", $._expression),
       ".",
       field("field", $.identifier),
+    )),
+
+    index_expression: $ => prec.left(PREC.POSTFIX, seq(
+      field("collection", $._expression),
+      "[",
+      field("index", $._expression),
+      "]",
     )),
 
     call_expression: $ => seq(
