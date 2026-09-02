@@ -470,6 +470,7 @@ export default grammar({
       $.assignment_expression,
       $.if_expression,
       $.match_expression,
+      $.nested_definition_expression,
       $.lambda_expression,
       $.call_expression,
       $.field_access_expression,
@@ -527,12 +528,12 @@ export default grammar({
       "}",
     ),
 
-    nondet_binding: $ => seq(
+    nondet_binding: $ => prec(1, seq(
       "nondet",
       field("name", $.identifier),
       "=",
       field("value", $._expression),
-    ),
+    )),
 
     any_expression: $ => seq(
       "any",
@@ -609,6 +610,14 @@ export default grammar({
       "=>",
       field("body", $._expression),
     ),
+
+    nested_definition_expression: $ => prec.right(seq(
+      field("definition", choice(
+        $.value_definition,
+        $.operator_definition,
+      )),
+      field("body", $._expression),
+    )),
 
     lambda_expression: $ => prec.right(seq(
       choice(

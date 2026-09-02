@@ -1,0 +1,194 @@
+========================================
+Nested value and operator definitions
+========================================
+
+module Nested {
+  def double(x) =
+    def plus(a, b) = a + b
+    plus(x, x)
+
+  def pow4(x) =
+    val x2 = x * x
+    x2 * x2
+
+  def triple(x) =
+    def add(n) = n + x; add(x, add(x, x))
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (nested_definition_expression
+        definition: (operator_definition
+          name: (identifier)
+          parameter: (parameter
+            name: (identifier))
+          parameter: (parameter
+            name: (identifier))
+          body: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (name_reference
+              name: (identifier))))
+        body: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (name_reference
+            name: (identifier))
+          argument: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (nested_definition_expression
+        definition: (value_definition
+          name: (identifier)
+          value: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (name_reference
+              name: (identifier))))
+        body: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (nested_definition_expression
+        definition: (operator_definition
+          name: (identifier)
+          parameter: (parameter
+            name: (identifier))
+          body: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (name_reference
+              name: (identifier))))
+        body: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (name_reference
+            name: (identifier))
+          argument: (call_expression
+            function: (name_reference
+              name: (identifier))
+            argument: (name_reference
+              name: (identifier))
+            argument: (name_reference
+              name: (identifier))))))))
+
+========================================
+Nested temporal definitions
+========================================
+
+module NestedTemporal {
+  var x: int
+
+  temporal property =
+    temporal A = eventually(x > 3)
+    temporal B = always(eventually(x == 0))
+    A implies B
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (nested_definition_expression
+        definition: (operator_definition
+          name: (identifier)
+          body: (call_expression
+            function: (name_reference
+              name: (identifier))
+            argument: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (integer_literal))))
+        body: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (call_expression
+              function: (name_reference
+                name: (identifier))
+              argument: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (binary_expression
+                  left: (name_reference
+                    name: (identifier))
+                  right: (integer_literal)))))
+          body: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (name_reference
+              name: (identifier))))))))
+
+========================================
+Nested action and nondeterministic definitions
+========================================
+
+module NestedAction {
+  var n: int
+
+  action step =
+    nondet i = oneOf(0.to(10))
+    action update = n' = i
+    all {
+      i > n,
+      update,
+    }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (nested_definition_expression
+        definition: (operator_definition
+          name: (identifier)
+          body: (call_expression
+            function: (name_reference
+              name: (identifier))
+            argument: (call_expression
+              function: (field_access_expression
+                object: (integer_literal)
+                field: (identifier))
+              argument: (integer_literal))))
+        body: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (assignment_expression
+              target: (primed_identifier
+                name: (identifier))
+              value: (name_reference
+                name: (identifier))))
+          body: (all_expression
+            conjunct: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (name_reference
+                name: (identifier)))
+            conjunct: (name_reference
+              name: (identifier))))))))
