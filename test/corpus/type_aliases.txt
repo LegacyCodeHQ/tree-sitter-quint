@@ -124,3 +124,35 @@ module Types {
           payload: (type_variable))
         (sum_type_variant
           name: (identifier))))))
+
+========================================
+Inline sum type declaration
+========================================
+
+module Sums {
+  type Elem = S(str) | I(int)
+  val value: Elem = S("Foo")
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))))
+    (value_definition
+      name: (identifier)
+      type: (named_type
+        name: (identifier))
+      value: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (string_literal)))))

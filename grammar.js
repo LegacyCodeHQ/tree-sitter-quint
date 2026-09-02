@@ -324,10 +324,17 @@ export default grammar({
 
     type_parameter: $ => field("name", $.type_variable),
 
-    sum_type: $ => repeat1(seq(
-      "|",
-      $.sum_type_variant,
-    )),
+    sum_type: $ => choice(
+      seq(
+        "|",
+        $.sum_type_variant,
+        repeat(seq("|", $.sum_type_variant)),
+      ),
+      seq(
+        $.sum_type_variant,
+        repeat1(seq("|", $.sum_type_variant)),
+      ),
+    ),
 
     sum_type_variant: $ => seq(
       field("name", $.identifier),
