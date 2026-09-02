@@ -1345,6 +1345,10 @@
           {
             "type": "pure",
             "named": false
+          },
+          {
+            "type": "temporal",
+            "named": false
           }
         ]
       },
@@ -2355,6 +2359,10 @@
   {
     "type": "string_literal",
     "named": true
+  },
+  {
+    "type": "temporal",
+    "named": false
   },
   {
     "type": "true",

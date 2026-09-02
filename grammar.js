@@ -145,6 +145,10 @@ export default grammar({
             ),
           )),
         ),
+        seq(
+          field("qualifier", "temporal"),
+          field("name", $.identifier),
+        ),
       ),
       "=",
       field("body", $._expression),
