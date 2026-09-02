@@ -159,3 +159,20 @@ module Actions {
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))))
+
+========================================
+Parameterless nondeterministic definition
+========================================
+
+module Choices {
+  nondet choose = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))))

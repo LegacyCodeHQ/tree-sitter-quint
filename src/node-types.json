@@ -1339,6 +1339,10 @@
             "named": false
           },
           {
+            "type": "nondet",
+            "named": false
+          },
+          {
             "type": "pure",
             "named": false
           }
@@ -2330,6 +2334,10 @@
   },
   {
     "type": "module",
+    "named": false
+  },
+  {
+    "type": "nondet",
     "named": false
   },
   {
