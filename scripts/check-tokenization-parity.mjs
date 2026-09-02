@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 
 import Parser from "tree-sitter";
 
@@ -48,6 +49,11 @@ function quintFiles(inputPaths) {
 function resolveQuintCli() {
   if (process.env.QUINT_CLI) {
     return realpathSync(process.env.QUINT_CLI);
+  }
+
+  const localQuint = fileURLToPath(new URL("../node_modules/.bin/quint", import.meta.url));
+  if (existsSync(localQuint)) {
+    return realpathSync(localQuint);
   }
 
   try {
