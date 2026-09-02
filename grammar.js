@@ -691,13 +691,36 @@ export default grammar({
       field("body", $._expression),
     ),
 
-    nested_definition_expression: $ => prec.right(seq(
-      field("definition", choice(
-        $.value_definition,
-        $.operator_definition,
+    nested_definition_expression: $ => choice(
+      prec.right(seq(
+        field("definition", alias($._local_value_definition, $.value_definition)),
+        field("body", $._expression),
       )),
-      field("body", $._expression),
-    )),
+      prec.right(seq(
+        field("definition", $.operator_definition),
+        field("body", $._expression),
+      )),
+    ),
+
+    _local_value_definition: $ => seq(
+      optional(field("qualifier", "pure")),
+      "val",
+      field("name", choice(
+        $.identifier,
+        $.qualified_identifier,
+        $.tuple_pattern,
+        $.record_pattern,
+      )),
+      optional(seq(
+        ":",
+        field("type", $._type),
+      )),
+      "=",
+      field("value", $._expression),
+      choice(";", $._newline),
+    ),
+
+    _newline: _ => token(prec(1, /\r?\n/)),
 
     lambda_expression: $ => prec.right(seq(
       choice(

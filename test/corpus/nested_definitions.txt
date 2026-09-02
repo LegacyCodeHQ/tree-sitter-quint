@@ -237,3 +237,57 @@ module CallBoundary {
               name: (identifier))
             element: (name_reference
               name: (identifier))))))))
+
+========================================
+Local definition expression boundaries
+========================================
+
+module LetBoundary {
+  pure def conjunction(flag: bool): bool = {
+    val local = flag
+    and { local }
+  }
+
+  pure def negation(value: int): bool = {
+    val local = value
+    -local <= 0
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (name_reference
+              name: (identifier)))
+          body: (and_block_expression
+            conjunct: (name_reference
+              name: (identifier))))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (name_reference
+              name: (identifier)))
+          body: (binary_expression
+            left: (unary_expression
+              operand: (name_reference
+                name: (identifier)))
+            right: (integer_literal)))))))
