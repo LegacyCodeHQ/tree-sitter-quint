@@ -748,7 +748,12 @@ export default grammar({
     )),
 
     call_expression: $ => prec.left(PREC.POSTFIX, seq(
-      field("function", choice($._expression, $.reserved_operator)),
+      field("function", choice(
+        $.name_reference,
+        $.namespace_access_expression,
+        $.field_access_expression,
+        $.reserved_operator,
+      )),
       "(",
       optional(seq(
         field("argument", $._expression),

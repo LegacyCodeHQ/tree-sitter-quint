@@ -3817,7 +3817,15 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "_expression"
+                  "name": "name_reference"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "namespace_access_expression"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "field_access_expression"
                 },
                 {
                   "type": "SYMBOL",

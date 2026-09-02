@@ -192,3 +192,48 @@ module NestedAction {
                 name: (identifier)))
             conjunct: (name_reference
               name: (identifier))))))))
+
+========================================
+Local binding followed by tuple result
+========================================
+
+module CallBoundary {
+  pure def step(len: int, flag: bool): (int, bool) = {
+    val newLen = len + if (flag) 1 else 0
+    (newLen, flag)
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (tuple_type
+        element: (primitive_type)
+        element: (primitive_type))
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (if_expression
+                condition: (name_reference
+                  name: (identifier))
+                consequence: (integer_literal)
+                alternative: (integer_literal))))
+          body: (tuple_literal
+            element: (name_reference
+              name: (identifier))
+            element: (name_reference
+              name: (identifier))))))))
