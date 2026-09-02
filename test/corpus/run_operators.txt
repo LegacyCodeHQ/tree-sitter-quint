@@ -17,3 +17,41 @@ module AssertRun {
         function: (name_reference
           name: (identifier))
         argument: (boolean_literal)))))
+
+========================================
+Repeated run action
+========================================
+
+module RepeatedRun {
+  var n: int
+  action increment = n' = n + 1
+  run repeated = 3.reps(_ => increment)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (identifier))
+        value: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (field_access_expression
+          object: (integer_literal)
+          field: (identifier))
+        argument: (lambda_expression
+          parameter: (identifier)
+          body: (name_reference
+            name: (identifier)))))))
