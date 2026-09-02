@@ -33,6 +33,7 @@ export default grammar({
       $.set_type,
       $.list_type,
       $.tuple_type,
+      $.parenthesized_type,
       $.record_type,
       $.function_type,
     ),
@@ -59,6 +60,12 @@ export default grammar({
       ",",
       field("element", $._type),
       repeat(seq(",", field("element", $._type))),
+      ")",
+    ),
+
+    parenthesized_type: $ => seq(
+      "(",
+      field("type", $._type),
       ")",
     ),
 

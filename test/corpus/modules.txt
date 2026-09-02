@@ -157,3 +157,21 @@ module Foo {
         (record_type_field
           name: (identifier)
           type: (primitive_type))))))
+
+==================================
+Parenthesized constant declaration
+==================================
+
+module Foo {
+  const VALUE: (int)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (parenthesized_type
+        type: (primitive_type)))))

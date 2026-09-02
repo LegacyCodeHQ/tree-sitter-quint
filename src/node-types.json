@@ -26,6 +26,10 @@
             "named": true
           },
           {
+            "type": "parenthesized_type",
+            "named": true
+          },
+          {
             "type": "primitive_type",
             "named": true
           },
@@ -62,6 +66,10 @@
             "named": true
           },
           {
+            "type": "parenthesized_type",
+            "named": true
+          },
+          {
             "type": "primitive_type",
             "named": true
           },
@@ -89,6 +97,10 @@
           },
           {
             "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "parenthesized_type",
             "named": true
           },
           {
@@ -125,6 +137,10 @@
           },
           {
             "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "parenthesized_type",
             "named": true
           },
           {
@@ -174,6 +190,46 @@
     }
   },
   {
+    "type": "parenthesized_type",
+    "named": true,
+    "fields": {
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "function_type",
+            "named": true
+          },
+          {
+            "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "parenthesized_type",
+            "named": true
+          },
+          {
+            "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "record_type",
+            "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
+          },
+          {
+            "type": "tuple_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "primitive_type",
     "named": true,
     "fields": {}
@@ -220,6 +276,10 @@
             "named": true
           },
           {
+            "type": "parenthesized_type",
+            "named": true
+          },
+          {
             "type": "primitive_type",
             "named": true
           },
@@ -253,6 +313,10 @@
           },
           {
             "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "parenthesized_type",
             "named": true
           },
           {
@@ -305,6 +369,10 @@
           },
           {
             "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "parenthesized_type",
             "named": true
           },
           {
