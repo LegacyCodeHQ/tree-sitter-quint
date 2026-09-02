@@ -5713,7 +5713,7 @@
     },
     "string_literal": {
       "type": "PATTERN",
-      "value": "\"[^\"\\r\\n]*\""
+      "value": "\"[^\"]*\""
     },
     "documentation_comment": {
       "type": "TOKEN",

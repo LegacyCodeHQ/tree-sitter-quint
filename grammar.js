@@ -1023,7 +1023,7 @@ export default grammar({
 
     boolean_literal: _ => choice("true", "false"),
 
-    string_literal: _ => /"[^"\r\n]*"/,
+    string_literal: _ => /"[^"]*"/,
 
     documentation_comment: _ => token(prec(1, seq("///", /[^\r\n]*/))),
 

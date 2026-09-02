@@ -3287,9 +3287,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       END_STATE();
     case 6:
       if (lookahead == '"') ADVANCE(223);
-      if (lookahead != 0 &&
-          lookahead != '\n' &&
-          lookahead != '\r') ADVANCE(6);
+      if (lookahead != 0) ADVANCE(6);
       END_STATE();
     case 7:
       ADVANCE_MAP(

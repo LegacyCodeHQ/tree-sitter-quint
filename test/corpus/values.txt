@@ -128,6 +128,24 @@ module BackslashStrings {
       name: (identifier)
       value: (string_literal))))
 
+========================================
+Multiline raw strings
+========================================
+
+module Strings {
+  pure val message = "first
+second"
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (string_literal))))
+
 =========================
 Value definition reference
 =========================
