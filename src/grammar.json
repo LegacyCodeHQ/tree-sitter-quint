@@ -62,6 +62,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "assumption_declaration"
+        },
+        {
+          "type": "SYMBOL",
           "name": "type_alias_declaration"
         },
         {
@@ -937,6 +941,35 @@
           "content": {
             "type": "SYMBOL",
             "name": "_type"
+          }
+        }
+      ]
+    },
+    "assumption_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "assume"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "FIELD",
+          "name": "condition",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
           }
         }
       ]

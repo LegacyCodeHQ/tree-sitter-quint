@@ -1,0 +1,23 @@
+========================================
+Assumption declaration
+========================================
+
+module Configuration {
+  const limit: int
+  assume positiveLimit = limit > 0
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (assumption_declaration
+      name: (identifier)
+      condition: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))))

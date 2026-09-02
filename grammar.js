@@ -45,6 +45,7 @@ export default grammar({
       $.variable_declaration,
       $.value_definition,
       $.operator_definition,
+      $.assumption_declaration,
       $.type_alias_declaration,
       $.uninterpreted_type_declaration,
     ),
@@ -204,6 +205,13 @@ export default grammar({
       field("name", $.identifier),
       ":",
       field("type", $._type),
+    ),
+
+    assumption_declaration: $ => seq(
+      "assume",
+      field("name", $.identifier),
+      "=",
+      field("condition", $._expression),
     ),
 
     type_alias_declaration: $ => seq(
