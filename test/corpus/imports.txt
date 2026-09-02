@@ -150,3 +150,66 @@ module Imports {
         argument: (name_reference
           name: (identifier))
         argument: (integer_literal)))))
+
+========================================
+Wildcard import
+========================================
+
+module Math {
+  def sqr(x) = x * x
+  def pow(x, y) = x^y
+}
+
+module ImportAll {
+  import Math.*
+  def poly(x) = pow(x, 3) + sqr(x) + x
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (name_reference
+          name: (identifier))))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      parameter: (parameter
+        name: (identifier))
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (name_reference
+          name: (identifier)))))
+  (module_definition
+    name: (identifier)
+    (wildcard_import_declaration
+      module: (identifier))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (binary_expression
+        left: (binary_expression
+          left: (call_expression
+            function: (name_reference
+              name: (identifier))
+            argument: (name_reference
+              name: (identifier))
+            argument: (integer_literal))
+          right: (call_expression
+            function: (name_reference
+              name: (identifier))
+            argument: (name_reference
+              name: (identifier))))
+        right: (name_reference
+          name: (identifier))))))

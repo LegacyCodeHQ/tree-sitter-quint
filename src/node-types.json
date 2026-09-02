@@ -2234,6 +2234,10 @@
         {
           "type": "variable_declaration",
           "named": true
+        },
+        {
+          "type": "wildcard_import_declaration",
+          "named": true
         }
       ]
     }
@@ -3975,6 +3979,26 @@
           },
           {
             "type": "type_variable",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "wildcard_import_declaration",
+    "named": true,
+    "fields": {
+      "module": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "qualified_identifier",
             "named": true
           }
         ]

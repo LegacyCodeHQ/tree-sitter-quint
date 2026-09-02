@@ -55,6 +55,7 @@ export default grammar({
       $.assumption_declaration,
       $.instance_declaration,
       $.named_import_declaration,
+      $.wildcard_import_declaration,
       $.type_alias_declaration,
       $.uninterpreted_type_declaration,
     ),
@@ -288,6 +289,13 @@ export default grammar({
       field("module", choice($.identifier, $.qualified_identifier)),
       ".",
       field("name", $.identifier),
+    ),
+
+    wildcard_import_declaration: $ => seq(
+      "import",
+      field("module", choice($.identifier, $.qualified_identifier)),
+      ".",
+      "*",
     ),
 
     type_alias_declaration: $ => seq(
