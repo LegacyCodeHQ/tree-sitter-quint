@@ -363,3 +363,57 @@ module ImportFrom {
         name: (identifier)
         value: (integer_literal))
       source: (string_literal))))
+
+========================================
+Qualified identifiers in module instances
+========================================
+
+module A::B {
+  const Config::n: int
+}
+
+module NamedInstance {
+  import A::B(Config::n = 1) as Scope::X
+}
+
+module AnonymousInstance {
+  import A::B(Config::n = 1).*
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (qualified_identifier
+      namespace: (identifier)
+      name: (identifier))
+    (constant_declaration
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      type: (primitive_type)))
+  (module_definition
+    name: (identifier)
+    (instance_declaration
+      module: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      (instance_override
+        name: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))
+        value: (integer_literal))
+      alias: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))))
+  (module_definition
+    name: (identifier)
+    (anonymous_instance_declaration
+      module: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      (instance_override
+        name: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))
+        value: (integer_literal)))))

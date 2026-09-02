@@ -328,7 +328,7 @@ export default grammar({
 
     instance_declaration: $ => seq(
       "import",
-      field("module", $.identifier),
+      field("module", choice($.identifier, $.qualified_identifier)),
       "(",
       optional(seq(
         $.instance_override,
@@ -338,7 +338,7 @@ export default grammar({
       ")",
       optional(seq(
         "as",
-        field("alias", $.identifier),
+        field("alias", choice($.identifier, $.qualified_identifier)),
       )),
       optional(seq(
         "from",
@@ -347,14 +347,14 @@ export default grammar({
     ),
 
     instance_override: $ => seq(
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       "=",
       field("value", $._expression),
     ),
 
     anonymous_instance_declaration: $ => seq(
       "import",
-      field("module", $.identifier),
+      field("module", choice($.identifier, $.qualified_identifier)),
       "(",
       optional(seq(
         $.instance_override,
