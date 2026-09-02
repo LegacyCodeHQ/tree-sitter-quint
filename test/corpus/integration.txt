@@ -451,3 +451,111 @@ module Consumer {
       value: (namespace_access_expression
         namespace: (identifier)
         member: (identifier)))))
+
+========================================
+Complete namespaces and imports
+========================================
+
+module A::Impl {
+  pure val secretNum = 0xAB_CD
+}
+
+module A {
+  import A::Impl.*
+  pure val publicNum = secretNum + 1_000
+  val Inner::million = 1_000_000
+}
+
+module B {
+  import A.*
+  export A.*
+}
+
+module NamedConsumer {
+  import A.publicNum
+  pure val doubled = publicNum * 2
+}
+
+module Consumer {
+  import B.*
+  pure val pairs = [(1, 2)]
+  pure val sums = pairs.map(((x, y)) => x + y)
+  pure val result = publicNum + 0x10
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (qualified_identifier
+      namespace: (identifier)
+      name: (identifier))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal)))
+  (module_definition
+    name: (identifier)
+    (wildcard_import_declaration
+      module: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier)))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))
+    (value_definition
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      value: (integer_literal)))
+  (module_definition
+    name: (identifier)
+    (wildcard_import_declaration
+      module: (identifier))
+    (wildcard_export_declaration
+      module: (identifier)))
+  (module_definition
+    name: (identifier)
+    (named_import_declaration
+      module: (identifier)
+      name: (identifier))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal))))
+  (module_definition
+    name: (identifier)
+    (wildcard_import_declaration
+      module: (identifier))
+    (value_definition
+      name: (identifier)
+      value: (list_literal
+        element: (tuple_literal
+          element: (integer_literal)
+          element: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (field_access_expression
+          object: (name_reference
+            name: (identifier))
+          field: (identifier))
+        argument: (lambda_expression
+          parameter: (tuple_pattern
+            element: (identifier)
+            element: (identifier))
+          body: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (name_reference
+              name: (identifier))))))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))))
