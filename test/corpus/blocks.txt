@@ -72,6 +72,28 @@ module BooleanBlocks {
         conjunct: (boolean_literal)))))
 
 ========================================
+Braced Boolean disjunction
+========================================
+
+module BooleanBlocks {
+  pure val disjunction = or {
+    false,
+    true,
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (or_block_expression
+        disjunct: (boolean_literal)
+        disjunct: (boolean_literal)))))
+
+========================================
 Local nondeterministic binding
 ========================================
 

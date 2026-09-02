@@ -458,6 +458,7 @@ export default grammar({
       $.any_expression,
       $.all_expression,
       $.and_block_expression,
+      $.or_block_expression,
       $.assignment_expression,
       $.if_expression,
       $.lambda_expression,
@@ -541,6 +542,15 @@ export default grammar({
       "{",
       field("conjunct", $._expression),
       repeat(seq(",", field("conjunct", $._expression))),
+      optional(","),
+      "}",
+    ),
+
+    or_block_expression: $ => seq(
+      "or",
+      "{",
+      field("disjunct", $._expression),
+      repeat(seq(",", field("disjunct", $._expression))),
       optional(","),
       "}",
     ),
