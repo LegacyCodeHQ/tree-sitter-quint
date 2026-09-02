@@ -156,3 +156,20 @@ module Sums {
         function: (name_reference
           name: (identifier))
         argument: (string_literal)))))
+
+========================================
+Empty record type
+========================================
+
+module EmptyRecordType {
+  type Empty = {}
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (record_type))))

@@ -492,9 +492,11 @@ export default grammar({
 
     record_type: $ => seq(
       "{",
-      $.record_type_field,
-      repeat(seq(",", $.record_type_field)),
-      optional(","),
+      optional(seq(
+        $.record_type_field,
+        repeat(seq(",", $.record_type_field)),
+        optional(","),
+      )),
       "}",
     ),
 
