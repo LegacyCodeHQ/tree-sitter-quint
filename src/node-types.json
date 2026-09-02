@@ -2212,6 +2212,10 @@
           "named": true
         },
         {
+          "type": "named_import_declaration",
+          "named": true
+        },
+        {
           "type": "operator_definition",
           "named": true
         },
@@ -2238,6 +2242,36 @@
     "type": "name_reference",
     "named": true,
     "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "named_import_declaration",
+    "named": true,
+    "fields": {
+      "module": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "qualified_identifier",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,

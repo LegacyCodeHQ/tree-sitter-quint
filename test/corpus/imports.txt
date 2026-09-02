@@ -105,3 +105,48 @@ module Consumer {
       value: (namespace_access_expression
         namespace: (identifier)
         member: (identifier)))))
+
+========================================
+Named import
+========================================
+
+module Math {
+  def pow(x, y) = x^y
+}
+
+module Imports {
+  import Math.pow
+  def cube(x) = pow(x, 3)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      parameter: (parameter
+        name: (identifier))
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (name_reference
+          name: (identifier)))))
+  (module_definition
+    name: (identifier)
+    (named_import_declaration
+      module: (identifier)
+      name: (identifier))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (name_reference
+          name: (identifier))
+        argument: (integer_literal)))))
