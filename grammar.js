@@ -124,6 +124,12 @@ export default grammar({
         seq(
           field("qualifier", "nondet"),
           field("name", $.identifier),
+          optional(seq(
+            "(",
+            field("parameter", $.parameter),
+            repeat(seq(",", field("parameter", $.parameter))),
+            ")",
+          )),
         ),
       ),
       "=",
