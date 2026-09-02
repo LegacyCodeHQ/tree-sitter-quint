@@ -78,3 +78,21 @@ module Foo {
       name: (identifier)
       type: (set_type
         element: (primitive_type)))))
+
+=========================
+List constant declaration
+=========================
+
+module Foo {
+  const VALUES: List[int]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (list_type
+        element: (primitive_type)))))

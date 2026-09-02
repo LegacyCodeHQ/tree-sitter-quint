@@ -18,6 +18,34 @@
         "required": true,
         "types": [
           {
+            "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "list_type",
+    "named": true,
+    "fields": {
+      "element": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "list_type",
+            "named": true
+          },
+          {
             "type": "primitive_type",
             "named": true
           },
@@ -69,6 +97,10 @@
         "required": true,
         "types": [
           {
+            "type": "list_type",
+            "named": true
+          },
+          {
             "type": "primitive_type",
             "named": true
           },
@@ -98,6 +130,10 @@
   },
   {
     "type": ":",
+    "named": false
+  },
+  {
+    "type": "List",
     "named": false
   },
   {

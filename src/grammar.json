@@ -80,6 +80,10 @@
         {
           "type": "SYMBOL",
           "name": "set_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "list_type"
         }
       ]
     },
@@ -106,6 +110,31 @@
         {
           "type": "STRING",
           "value": "Set"
+        },
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "FIELD",
+          "name": "element",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_type"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "]"
+        }
+      ]
+    },
+    "list_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "List"
         },
         {
           "type": "STRING",

@@ -28,12 +28,19 @@ export default grammar({
       field("type", $._type),
     ),
 
-    _type: $ => choice($.primitive_type, $.set_type),
+    _type: $ => choice($.primitive_type, $.set_type, $.list_type),
 
     primitive_type: _ => choice("int", "bool", "str"),
 
     set_type: $ => seq(
       "Set",
+      "[",
+      field("element", $._type),
+      "]",
+    ),
+
+    list_type: $ => seq(
+      "List",
       "[",
       field("element", $._type),
       "]",
