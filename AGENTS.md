@@ -83,6 +83,14 @@ generated lexer directly; set `QUINT_CLI` when `quint` is not on `PATH`.
 Inspect failures for regressions rather than updating existing expected trees
 automatically.
 
+The same checker accepts directories and recursively checks every `.qnt` file.
+Use it after lexer or token-rule changes to compare against a local checkout of
+the official Quint repository:
+
+```sh
+node scripts/check-tokenization-parity.mjs --quiet /path/to/quint
+```
+
 Generated files under `src/` are part of the repository contract. Commit every
 generated change produced by the pinned Tree-sitter version, including
 `grammar.json`, `node-types.json`, and `parser.c` when modified.
