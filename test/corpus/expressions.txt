@@ -665,6 +665,49 @@ module Functions {
             name: (identifier))
           right: (integer_literal))))))
 
+====================================
+Record elements and trailing commas
+====================================
+
+module RecordElements {
+  type Pair = { left: int, right: int, }
+  pure val base = { left: 1, right: 2 }
+  pure val extended = { ...base, right: 3, }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (record_type
+        (record_type_field
+          name: (identifier)
+          type: (primitive_type))
+        (record_type_field
+          name: (identifier)
+          type: (primitive_type))))
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_spread
+          value: (name_reference
+            name: (identifier)))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))))
+
 ========================================
 Pair expressions have low precedence
 ========================================

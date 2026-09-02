@@ -2248,6 +2248,18 @@
           }
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "STRING",
           "value": "}"
         }
@@ -2541,7 +2553,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "record_literal_field"
+          "name": "_record_element"
         },
         {
           "type": "REPEAT",
@@ -2554,7 +2566,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "record_literal_field"
+                "name": "_record_element"
               }
             ]
           }
@@ -2563,17 +2575,8 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": ","
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "record_spread"
-                }
-              ]
+              "type": "STRING",
+              "value": ","
             },
             {
               "type": "BLANK"
@@ -2583,6 +2586,19 @@
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "_record_element": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "record_literal_field"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "record_spread"
         }
       ]
     },

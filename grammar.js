@@ -465,6 +465,7 @@ export default grammar({
       "{",
       $.record_type_field,
       repeat(seq(",", $.record_type_field)),
+      optional(","),
       "}",
     ),
 
@@ -530,10 +531,15 @@ export default grammar({
 
     record_literal: $ => seq(
       "{",
-      $.record_literal_field,
-      repeat(seq(",", $.record_literal_field)),
-      optional(seq(",", $.record_spread)),
+      $._record_element,
+      repeat(seq(",", $._record_element)),
+      optional(","),
       "}",
+    ),
+
+    _record_element: $ => choice(
+      $.record_literal_field,
+      $.record_spread,
     ),
 
     record_literal_field: $ => seq(
