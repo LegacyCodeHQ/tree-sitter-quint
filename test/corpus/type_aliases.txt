@@ -222,3 +222,23 @@ module OpenRecordRows {
       value: (record_type
         row: (record_row
           name: (identifier))))))
+
+========================================
+Multi-character type parameters
+========================================
+
+module TypeParameters {
+  type Box[element_name] = List[element_name]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      parameter: (type_parameter
+        name: (type_variable))
+      value: (list_type
+        element: (type_variable)))))

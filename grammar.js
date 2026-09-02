@@ -439,7 +439,7 @@ export default grammar({
 
     primitive_type: _ => choice("int", "bool", "str"),
 
-    type_variable: _ => /[a-z]/,
+    type_variable: _ => /(?:[a-z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)/,
 
     named_type: $ => field("name", $.identifier),
 

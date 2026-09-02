@@ -2215,7 +2215,7 @@
     },
     "type_variable": {
       "type": "PATTERN",
-      "value": "[a-z]"
+      "value": "(?:[a-z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)"
     },
     "named_type": {
       "type": "FIELD",
