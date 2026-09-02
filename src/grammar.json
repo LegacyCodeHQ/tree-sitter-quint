@@ -121,6 +121,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "named_type"
+        },
+        {
+          "type": "SYMBOL",
           "name": "set_type"
         },
         {
@@ -161,6 +165,14 @@
           "value": "str"
         }
       ]
+    },
+    "named_type": {
+      "type": "FIELD",
+      "name": "name",
+      "content": {
+        "type": "SYMBOL",
+        "name": "identifier"
+      }
     },
     "set_type": {
       "type": "SEQ",

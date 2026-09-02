@@ -14,3 +14,25 @@ module Foo {
     (type_alias_declaration
       name: (identifier)
       value: (primitive_type))))
+
+====================
+Named type reference
+====================
+
+module Foo {
+  type UserId = int
+  const ID: UserId
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (primitive_type))
+    (constant_declaration
+      name: (identifier)
+      type: (named_type
+        name: (identifier)))))

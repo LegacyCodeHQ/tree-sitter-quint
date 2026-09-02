@@ -42,6 +42,7 @@ export default grammar({
 
     _type: $ => choice(
       $.primitive_type,
+      $.named_type,
       $.set_type,
       $.list_type,
       $.tuple_type,
@@ -51,6 +52,8 @@ export default grammar({
     ),
 
     primitive_type: _ => choice("int", "bool", "str"),
+
+    named_type: $ => field("name", $.identifier),
 
     set_type: $ => seq(
       "Set",
