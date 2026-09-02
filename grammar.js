@@ -162,7 +162,7 @@ export default grammar({
       )),
       prec.left(PREC.COMPARISON, seq(
         field("left", $._expression),
-        field("operator", choice("<", "<=")),
+        field("operator", choice("<", "<=", ">")),
         field("right", $._expression),
       )),
       prec.left(PREC.ADDITIVE, seq(
