@@ -133,7 +133,7 @@ export default grammar({
           "def",
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
-            seq("(", ")"),
+            seq("(", ")", optional($._return_type_annotation)),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -149,6 +149,7 @@ export default grammar({
               repeat(seq(",", field("parameter", $.parameter))),
               optional(","),
               ")",
+              optional($._return_type_annotation),
             ),
             seq(
               ":",
@@ -160,7 +161,7 @@ export default grammar({
           "def",
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
-            seq("(", ")"),
+            seq("(", ")", optional($._return_type_annotation)),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -176,10 +177,7 @@ export default grammar({
               repeat(seq(",", field("parameter", $.parameter))),
               optional(","),
               ")",
-              optional(seq(
-                ":",
-                field("return_type", $._type),
-              )),
+              optional($._return_type_annotation),
             ),
             seq(
               ":",
@@ -214,6 +212,7 @@ export default grammar({
               repeat(seq(",", field("parameter", $.parameter))),
               optional(","),
               ")",
+              optional($._return_type_annotation),
             ),
             seq(
               ":",
@@ -225,7 +224,7 @@ export default grammar({
           field("qualifier", "nondet"),
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
-            seq("(", ")"),
+            seq("(", ")", optional($._return_type_annotation)),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -241,6 +240,7 @@ export default grammar({
               repeat(seq(",", field("parameter", $.parameter))),
               optional(","),
               ")",
+              optional($._return_type_annotation),
             ),
             seq(
               ":",
@@ -252,7 +252,7 @@ export default grammar({
           field("qualifier", "temporal"),
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
-            seq("(", ")"),
+            seq("(", ")", optional($._return_type_annotation)),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -268,6 +268,7 @@ export default grammar({
               repeat(seq(",", field("parameter", $.parameter))),
               optional(","),
               ")",
+              optional($._return_type_annotation),
             ),
             seq(
               ":",
@@ -279,7 +280,7 @@ export default grammar({
           field("qualifier", "run"),
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
-            seq("(", ")"),
+            seq("(", ")", optional($._return_type_annotation)),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -295,6 +296,7 @@ export default grammar({
               repeat(seq(",", field("parameter", $.parameter))),
               optional(","),
               ")",
+              optional($._return_type_annotation),
             ),
             seq(
               ":",
@@ -310,6 +312,11 @@ export default grammar({
       field("name", $.identifier),
       ":",
       field("type", $._type),
+    ),
+
+    _return_type_annotation: $ => seq(
+      ":",
+      field("return_type", $._type),
     ),
 
     assumption_declaration: $ => seq(

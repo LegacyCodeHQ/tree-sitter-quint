@@ -152,6 +152,53 @@ module TrailingParameterCommas {
         name: (identifier)))))
 
 ========================================
+Return types after inferred parameters
+========================================
+
+module UnannotatedReturnTypes {
+  pure def identity(x): int = x
+  action check(flag): bool = flag
+  nondet choose(): int = 1
+  temporal property(flag): bool = flag
+  run trace(): bool = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      return_type: (primitive_type)
+      body: (name_reference
+        name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      return_type: (primitive_type)
+      body: (name_reference
+        name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      return_type: (primitive_type)
+      body: (name_reference
+        name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (boolean_literal))))
+
+========================================
 Stateful operator definition
 ========================================
 
