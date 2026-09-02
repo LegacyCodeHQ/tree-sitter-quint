@@ -11,6 +11,15 @@ export default grammar({
   name: "quint",
 
   rules: {
-    source_file: _ => blank(),
+    source_file: $ => repeat($.module_definition),
+
+    module_definition: $ => seq(
+      "module",
+      field("name", $.identifier),
+      "{",
+      "}",
+    ),
+
+    identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
   },
 });

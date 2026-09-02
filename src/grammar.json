@@ -3,7 +3,40 @@
   "name": "quint",
   "rules": {
     "source_file": {
-      "type": "BLANK"
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "module_definition"
+      }
+    },
+    "module_definition": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "module"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "identifier": {
+      "type": "PATTERN",
+      "value": "[A-Za-z_][A-Za-z0-9_]*"
     }
   },
   "extras": [
