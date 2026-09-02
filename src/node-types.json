@@ -1,5 +1,31 @@
 [
   {
+    "type": "constant_declaration",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "primitive_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "module_definition",
     "named": true,
     "fields": {
@@ -13,6 +39,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "constant_declaration",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -32,12 +68,24 @@
     }
   },
   {
+    "type": ":",
+    "named": false
+  },
+  {
+    "type": "const",
+    "named": false
+  },
+  {
     "type": "identifier",
     "named": true
   },
   {
     "type": "module",
     "named": false
+  },
+  {
+    "type": "primitive_type",
+    "named": true
   },
   {
     "type": "{",

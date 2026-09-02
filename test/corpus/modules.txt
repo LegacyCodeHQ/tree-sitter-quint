@@ -9,3 +9,20 @@ module Foo {}
 (source_file
   (module_definition
     name: (identifier)))
+
+=============================
+Integer constant declaration
+=============================
+
+module Foo {
+  const N: int
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (primitive_type))))
