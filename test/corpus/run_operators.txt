@@ -1,0 +1,19 @@
+========================================
+Run assertion
+========================================
+
+module AssertRun {
+  run checked = assert(true)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (boolean_literal)))))
