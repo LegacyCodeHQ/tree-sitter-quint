@@ -344,3 +344,39 @@ module LocalHeaders {
               type: (primitive_type))
             return_type: (primitive_type))
           body: (integer_literal))))))
+
+========================================
+Local declaration-only value headers
+========================================
+
+module LocalValueHeaders {
+  pure val stateful = {
+    val declared
+    1
+  }
+
+  pure val stateless = {
+    pure val declared
+    2
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier))
+          body: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier))
+          body: (integer_literal))))))

@@ -135,7 +135,7 @@ export default grammar({
       optional(";"),
     ),
 
-    _operator_definition_head: $ => prec.right(choice(
+    _operator_definition_head: $ => prec.right(1, choice(
         seq(
           field("qualifier", "pure"),
           "val",
@@ -828,6 +828,10 @@ export default grammar({
 
     nested_definition_expression: $ => choice(
       prec.right(seq(
+        field("definition", alias($._local_value_header, $.value_definition)),
+        field("body", $._expression),
+      )),
+      prec.right(seq(
         field("definition", alias($._local_value_definition_unterminated, $.value_definition)),
         field("body", $._expression),
       )),
@@ -843,6 +847,17 @@ export default grammar({
         field("definition", alias($._operator_header_declaration, $.operator_definition)),
         field("body", $._expression),
       )),
+    ),
+
+    _local_value_header: $ => seq(
+      optional(field("qualifier", "pure")),
+      "val",
+      field("name", choice($.identifier, $.qualified_identifier)),
+      optional(seq(
+        ":",
+        field("type", $._type),
+      )),
+      optional(";"),
     ),
 
     _local_value_definition: $ => seq(
