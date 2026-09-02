@@ -1335,6 +1335,10 @@
         "required": true,
         "types": [
           {
+            "type": "action",
+            "named": false
+          },
+          {
             "type": "pure",
             "named": false
           }
@@ -2266,6 +2270,10 @@
   },
   {
     "type": "^",
+    "named": false
+  },
+  {
+    "type": "action",
     "named": false
   },
   {

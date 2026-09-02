@@ -71,29 +71,37 @@ export default grammar({
     ),
 
     operator_definition: $ => seq(
-      field("qualifier", "pure"),
-      "def",
-      field("name", $.identifier),
-      optional(choice(
+      choice(
         seq(
-          "(",
-          field("parameter", $.annotated_parameter),
-          repeat(seq(",", field("parameter", $.annotated_parameter))),
-          ")",
-          ":",
-          field("return_type", $._type),
+          field("qualifier", "pure"),
+          "def",
+          field("name", $.identifier),
+          optional(choice(
+            seq(
+              "(",
+              field("parameter", $.annotated_parameter),
+              repeat(seq(",", field("parameter", $.annotated_parameter))),
+              ")",
+              ":",
+              field("return_type", $._type),
+            ),
+            seq(
+              "(",
+              field("parameter", $.parameter),
+              repeat(seq(",", field("parameter", $.parameter))),
+              ")",
+            ),
+            seq(
+              ":",
+              field("return_type", $._type),
+            ),
+          )),
         ),
         seq(
-          "(",
-          field("parameter", $.parameter),
-          repeat(seq(",", field("parameter", $.parameter))),
-          ")",
+          field("qualifier", "action"),
+          field("name", $.identifier),
         ),
-        seq(
-          ":",
-          field("return_type", $._type),
-        ),
-      )),
+      ),
       "=",
       field("body", $._expression),
     ),

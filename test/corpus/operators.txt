@@ -78,3 +78,20 @@ module Functions {
     (operator_definition
       name: (identifier)
       body: (integer_literal))))
+
+========================================
+Parameterless inferred action definition
+========================================
+
+module Actions {
+  action isReady = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))))
