@@ -17,8 +17,13 @@ export default grammar({
       "module",
       field("name", $.identifier),
       "{",
-      repeat($.constant_declaration),
+      repeat($._declaration),
       "}",
+    ),
+
+    _declaration: $ => choice(
+      $.constant_declaration,
+      $.type_alias_declaration,
     ),
 
     constant_declaration: $ => seq(
@@ -26,6 +31,13 @@ export default grammar({
       field("name", $.identifier),
       ":",
       field("type", $._type),
+    ),
+
+    type_alias_declaration: $ => seq(
+      "type",
+      field("name", $.identifier),
+      "=",
+      field("value", $._type),
     ),
 
     _type: $ => choice(

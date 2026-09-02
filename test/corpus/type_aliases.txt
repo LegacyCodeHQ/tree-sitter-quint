@@ -1,0 +1,16 @@
+=================
+Simple type alias
+=================
+
+module Foo {
+  type UserId = int
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (primitive_type))))
