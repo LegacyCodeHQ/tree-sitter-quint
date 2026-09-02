@@ -96,3 +96,22 @@ module Foo {
       name: (identifier)
       type: (list_type
         element: (primitive_type)))))
+
+==================================
+Function type constant declaration
+==================================
+
+module Foo {
+  const BALANCES: str -> int
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (function_type
+        parameter: (primitive_type)
+        result: (primitive_type)))))

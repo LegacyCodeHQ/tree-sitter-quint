@@ -28,7 +28,12 @@ export default grammar({
       field("type", $._type),
     ),
 
-    _type: $ => choice($.primitive_type, $.set_type, $.list_type),
+    _type: $ => choice(
+      $.primitive_type,
+      $.set_type,
+      $.list_type,
+      $.function_type,
+    ),
 
     primitive_type: _ => choice("int", "bool", "str"),
 
@@ -45,6 +50,12 @@ export default grammar({
       field("element", $._type),
       "]",
     ),
+
+    function_type: $ => prec.right(seq(
+      field("parameter", $._type),
+      "->",
+      field("result", $._type),
+    )),
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
   },
