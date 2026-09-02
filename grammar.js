@@ -41,7 +41,6 @@ export default grammar({
     [$.lambda_expression, $.tuple_pattern],
     [$.lambda_expression, $.tuple_pattern, $.name_reference],
     [$.operator_type, $.tuple_type],
-    [$.operator_definition, $.nondet_binding, $.binary_expression],
     [$.nondet_binding, $.binary_expression],
   ],
 
@@ -61,6 +60,7 @@ export default grammar({
       $.variable_declaration,
       $.value_definition,
       $.operator_definition,
+      alias($._operator_header_declaration, $.operator_definition),
       $.assumption_declaration,
       $.instance_declaration,
       $.anonymous_instance_declaration,
@@ -90,23 +90,44 @@ export default grammar({
     value_definition: $ => seq(
       optional(field("qualifier", "pure")),
       "val",
-      field("name", choice(
-        $.identifier,
-        $.qualified_identifier,
-        $.tuple_pattern,
-        $.record_pattern,
-      )),
-      optional(seq(
-        ":",
-        field("type", $._type),
-      )),
-      "=",
-      field("value", $._expression),
+      choice(
+        seq(
+          field("name", choice($.identifier, $.qualified_identifier)),
+          optional(seq(
+            ":",
+            field("type", $._type),
+          )),
+          optional(seq(
+            "=",
+            field("value", $._expression),
+          )),
+        ),
+        seq(
+          field("name", choice($.tuple_pattern, $.record_pattern)),
+          optional(seq(
+            ":",
+            field("type", $._type),
+          )),
+          "=",
+          field("value", $._expression),
+        ),
+      ),
       optional(";"),
     ),
 
     operator_definition: $ => seq(
-      choice(
+      $._operator_definition_head,
+      "=",
+      field("body", $._expression),
+      optional(";"),
+    ),
+
+    _operator_header_declaration: $ => seq(
+      $._operator_definition_head,
+      optional(";"),
+    ),
+
+    _operator_definition_head: $ => choice(
         seq(
           field("qualifier", "pure"),
           "def",
@@ -265,10 +286,6 @@ export default grammar({
             ),
           )),
         ),
-      ),
-      "=",
-      field("body", $._expression),
-      optional(";"),
     ),
 
     parameter: $ => field("name", $.identifier),

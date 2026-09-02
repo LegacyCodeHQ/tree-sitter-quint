@@ -23,6 +23,37 @@ module Functions {
         right: (integer_literal)))))
 
 ========================================
+Declaration-only operator headers
+========================================
+
+module DeclarationHeaders {
+  pure val universe: Set[int]
+  pure def equal(left: t, right: t): bool
+  action step
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      type: (set_type
+        element: (primitive_type)))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (type_variable))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (type_variable))
+      return_type: (primitive_type))
+    (operator_definition
+      name: (identifier))))
+
+========================================
 Parameterless annotated action definition
 ========================================
 
