@@ -316,3 +316,31 @@ module SameLineLocalDefinition {
             left: (name_reference
               name: (identifier))
             right: (integer_literal)))))))
+
+========================================
+Local declaration-only operator header
+========================================
+
+module LocalHeaders {
+  pure val result = {
+    pure def declared(x: int): int
+    1
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            parameter: (annotated_parameter
+              name: (identifier)
+              type: (primitive_type))
+            return_type: (primitive_type))
+          body: (integer_literal))))))

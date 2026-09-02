@@ -135,7 +135,7 @@ export default grammar({
       optional(";"),
     ),
 
-    _operator_definition_head: $ => choice(
+    _operator_definition_head: $ => prec.right(choice(
         seq(
           field("qualifier", "pure"),
           "val",
@@ -359,7 +359,7 @@ export default grammar({
             ),
           )),
         ),
-    ),
+    )),
 
     parameter: $ => field("name", choice($.identifier, $.qualified_identifier)),
 
@@ -557,7 +557,7 @@ export default grammar({
       alias($._lowercase_qualified_identifier, $.qualified_identifier),
     )),
 
-    type_application: $ => seq(
+    type_application: $ => prec(1, seq(
       field("constructor", choice(
         $.identifier,
         $.qualified_identifier,
@@ -567,7 +567,7 @@ export default grammar({
       field("argument", $._type),
       repeat(seq(",", field("argument", $._type))),
       "]",
-    ),
+    )),
 
     set_type: $ => seq(
       "Set",
@@ -837,6 +837,10 @@ export default grammar({
       )),
       prec.right(seq(
         field("definition", $.operator_definition),
+        field("body", $._expression),
+      )),
+      prec.right(seq(
+        field("definition", alias($._operator_header_declaration, $.operator_definition)),
         field("body", $._expression),
       )),
     ),
