@@ -75,7 +75,7 @@ export default grammar({
     value_definition: $ => seq(
       optional(field("qualifier", "pure")),
       "val",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       optional(seq(
         ":",
         field("type", $._type),
@@ -646,6 +646,11 @@ export default grammar({
     comment: _ => token(seq("//", /[^\r\n]*/)),
 
     name_reference: $ => field("name", $.identifier),
+
+    qualified_identifier: $ => seq(
+      field("namespace", $.identifier),
+      repeat1(seq("::", field("name", $.identifier))),
+    ),
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
   },
