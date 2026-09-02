@@ -125,9 +125,14 @@ export default grammar({
       field("result", $._type),
     )),
 
-    _expression: $ => $.integer_literal,
+    _expression: $ => choice(
+      $.integer_literal,
+      $.boolean_literal,
+    ),
 
     integer_literal: _ => /[0-9]+/,
+
+    boolean_literal: _ => choice("true", "false"),
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
   },

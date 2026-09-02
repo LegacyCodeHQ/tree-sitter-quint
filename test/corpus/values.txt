@@ -14,3 +14,24 @@ module Numbers {
     (value_definition
       name: (identifier)
       value: (integer_literal))))
+
+=========================
+Boolean value definitions
+=========================
+
+module Flags {
+  val isEnabled = true
+  val isDisabled = false
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (boolean_literal))
+    (value_definition
+      name: (identifier)
+      value: (boolean_literal))))

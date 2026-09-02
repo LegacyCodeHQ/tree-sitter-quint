@@ -473,12 +473,34 @@
       }
     },
     "_expression": {
-      "type": "SYMBOL",
-      "name": "integer_literal"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "integer_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "boolean_literal"
+        }
+      ]
     },
     "integer_literal": {
       "type": "PATTERN",
       "value": "[0-9]+"
+    },
+    "boolean_literal": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "true"
+        },
+        {
+          "type": "STRING",
+          "value": "false"
+        }
+      ]
     },
     "identifier": {
       "type": "PATTERN",

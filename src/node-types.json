@@ -1,5 +1,10 @@
 [
   {
+    "type": "boolean_literal",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "constant_declaration",
     "named": true,
     "fields": {
@@ -548,6 +553,10 @@
         "required": true,
         "types": [
           {
+            "type": "boolean_literal",
+            "named": true
+          },
+          {
             "type": "integer_literal",
             "named": true
           }
@@ -658,6 +667,10 @@
     "named": false
   },
   {
+    "type": "false",
+    "named": false
+  },
+  {
     "type": "identifier",
     "named": true
   },
@@ -675,6 +688,10 @@
   },
   {
     "type": "str",
+    "named": false
+  },
+  {
+    "type": "true",
     "named": false
   },
   {
