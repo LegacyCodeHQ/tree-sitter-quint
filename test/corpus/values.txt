@@ -96,3 +96,31 @@ module Collections {
         argument: (string_literal)
         argument: (string_literal)
         argument: (string_literal)))))
+
+========================================
+Typed value definitions
+========================================
+
+module Values {
+  pure val Nodes: Set[int] = 1.to(10)
+  val Limit: int = 10
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      type: (set_type
+        element: (primitive_type))
+      value: (call_expression
+        function: (field_access_expression
+          object: (integer_literal)
+          field: (identifier))
+        argument: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      type: (primitive_type)
+      value: (integer_literal))))

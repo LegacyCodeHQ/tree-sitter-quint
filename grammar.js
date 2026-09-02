@@ -75,6 +75,10 @@ export default grammar({
       optional(field("qualifier", "pure")),
       "val",
       field("name", $.identifier),
+      optional(seq(
+        ":",
+        field("type", $._type),
+      )),
       "=",
       field("value", $._expression),
     ),
