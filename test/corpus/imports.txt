@@ -297,3 +297,32 @@ module Foo {
       (instance_override
         name: (identifier)
         value: (integer_literal)))))
+
+========================================
+Source-qualified imports
+========================================
+
+module ImportFrom {
+  import ImportSource.answer from "./quint-tree-sitter-import-source"
+  import ImportSource.* from "./quint-tree-sitter-import-source"
+  import ImportSource(N = 42).* from "./quint-tree-sitter-import-source"
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (named_import_declaration
+      module: (identifier)
+      name: (identifier)
+      source: (string_literal))
+    (wildcard_import_declaration
+      module: (identifier)
+      source: (string_literal))
+    (anonymous_instance_declaration
+      module: (identifier)
+      (instance_override
+        name: (identifier)
+        value: (integer_literal))
+      source: (string_literal))))

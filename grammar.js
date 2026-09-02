@@ -300,6 +300,10 @@ export default grammar({
       ")",
       ".",
       "*",
+      optional(seq(
+        "from",
+        field("source", $.string_literal),
+      )),
     ),
 
     named_import_declaration: $ => seq(
@@ -307,6 +311,10 @@ export default grammar({
       field("module", choice($.identifier, $.qualified_identifier)),
       ".",
       field("name", $.identifier),
+      optional(seq(
+        "from",
+        field("source", $.string_literal),
+      )),
     ),
 
     wildcard_import_declaration: $ => seq(
@@ -314,6 +322,10 @@ export default grammar({
       field("module", choice($.identifier, $.qualified_identifier)),
       ".",
       "*",
+      optional(seq(
+        "from",
+        field("source", $.string_literal),
+      )),
     ),
 
     wildcard_export_declaration: $ => seq(
