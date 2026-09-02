@@ -178,3 +178,196 @@ module bank {
               argument: (name_reference
                 name: (identifier)))
             right: (integer_literal)))))))
+
+========================================
+Complete counters module
+========================================
+
+module counters {
+  var n: int
+
+  action Init = {
+    n' = 1
+  }
+
+  action Even = all {
+    n % 2 == 0,
+    n' = n / 2,
+  }
+
+  action ByThree = all {
+    n % 3 == 0,
+    n' = 2 * n
+  }
+
+  action Positive = all {
+    n > 0,
+    n' = n + 1,
+  }
+
+  action Next = any {
+    Even, ByThree, Positive
+  }
+
+  run run1 = (n' = 1).then(n' = 2).then(n' = 3).then(n' = 6).then(n' = 3)
+
+  run run2 = (Init).then(Positive).then(Positive).then(ByThree).then(Even)
+
+  run run3 = (Init).then(Next).then(Next).then(Next).then(Next)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (all_expression
+        conjunct: (binary_expression
+          left: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal))
+          right: (integer_literal))
+        conjunct: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal)))))
+    (operator_definition
+      name: (identifier)
+      body: (all_expression
+        conjunct: (binary_expression
+          left: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal))
+          right: (integer_literal))
+        conjunct: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (binary_expression
+            left: (integer_literal)
+            right: (name_reference
+              name: (identifier))))))
+    (operator_definition
+      name: (identifier)
+      body: (all_expression
+        conjunct: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))
+        conjunct: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal)))))
+    (operator_definition
+      name: (identifier)
+      body: (any_expression
+        choice: (name_reference
+          name: (identifier))
+        choice: (name_reference
+          name: (identifier))
+        choice: (name_reference
+          name: (identifier))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (field_access_expression
+          object: (call_expression
+            function: (field_access_expression
+              object: (call_expression
+                function: (field_access_expression
+                  object: (call_expression
+                    function: (field_access_expression
+                      object: (parenthesized_expression
+                        expression: (assignment_expression
+                          target: (primed_identifier
+                            name: (identifier))
+                          value: (integer_literal)))
+                      field: (identifier))
+                    argument: (assignment_expression
+                      target: (primed_identifier
+                        name: (identifier))
+                      value: (integer_literal)))
+                  field: (identifier))
+                argument: (assignment_expression
+                  target: (primed_identifier
+                    name: (identifier))
+                  value: (integer_literal)))
+              field: (identifier))
+            argument: (assignment_expression
+              target: (primed_identifier
+                name: (identifier))
+              value: (integer_literal)))
+          field: (identifier))
+        argument: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (field_access_expression
+          object: (call_expression
+            function: (field_access_expression
+              object: (call_expression
+                function: (field_access_expression
+                  object: (call_expression
+                    function: (field_access_expression
+                      object: (parenthesized_expression
+                        expression: (name_reference
+                          name: (identifier)))
+                      field: (identifier))
+                    argument: (name_reference
+                      name: (identifier)))
+                  field: (identifier))
+                argument: (name_reference
+                  name: (identifier)))
+              field: (identifier))
+            argument: (name_reference
+              name: (identifier)))
+          field: (identifier))
+        argument: (name_reference
+          name: (identifier))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (field_access_expression
+          object: (call_expression
+            function: (field_access_expression
+              object: (call_expression
+                function: (field_access_expression
+                  object: (call_expression
+                    function: (field_access_expression
+                      object: (parenthesized_expression
+                        expression: (name_reference
+                          name: (identifier)))
+                      field: (identifier))
+                    argument: (name_reference
+                      name: (identifier)))
+                  field: (identifier))
+                argument: (name_reference
+                  name: (identifier)))
+              field: (identifier))
+            argument: (name_reference
+              name: (identifier)))
+          field: (identifier))
+        argument: (name_reference
+          name: (identifier))))))
