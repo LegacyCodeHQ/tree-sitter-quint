@@ -665,6 +665,29 @@ module Functions {
             name: (identifier))
           right: (integer_literal))))))
 
+========================================
+Qualified lambda parameter
+========================================
+
+module Lambdas {
+  pure val apply = (Scope::x) => Scope::x
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (lambda_expression
+        parameter: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))
+        body: (namespace_access_expression
+          namespace: (identifier)
+          member: (identifier))))))
+
 ====================================
 Reserved operator calls
 ====================================

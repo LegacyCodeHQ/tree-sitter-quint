@@ -41,6 +41,7 @@ export default grammar({
     [$.lambda_expression, $.name_reference],
     [$.lambda_expression, $.tuple_pattern],
     [$.lambda_expression, $.tuple_pattern, $.name_reference],
+    [$.namespace_access_expression, $.qualified_identifier],
     [$.operator_type, $.tuple_type],
     [$.nondet_binding, $.binary_expression],
   ],
@@ -869,11 +870,20 @@ export default grammar({
 
     lambda_expression: $ => prec.right(seq(
       choice(
-        field("parameter", $.identifier),
+        field("parameter", choice(
+          $.identifier,
+          $.qualified_identifier,
+        )),
         seq(
           "(",
-          field("parameter", $.identifier),
-          repeat(seq(",", field("parameter", $.identifier))),
+          field("parameter", choice(
+            $.identifier,
+            $.qualified_identifier,
+          )),
+          repeat(seq(",", field("parameter", choice(
+            $.identifier,
+            $.qualified_identifier,
+          )))),
           ")",
         ),
         seq(
@@ -943,12 +953,12 @@ export default grammar({
       "leadsTo",
     ),
 
-    namespace_access_expression: $ => prec.left(PREC.POSTFIX, seq(
+    namespace_access_expression: $ => seq(
       field("namespace", $.identifier),
       "::",
       field("member", $.identifier),
       repeat(seq("::", field("member", $.identifier))),
-    )),
+    ),
 
     parenthesized_expression: $ => seq(
       "(",

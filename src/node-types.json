@@ -2413,6 +2413,10 @@
             "named": true
           },
           {
+            "type": "qualified_identifier",
+            "named": true
+          },
+          {
             "type": "tuple_pattern",
             "named": true
           }
