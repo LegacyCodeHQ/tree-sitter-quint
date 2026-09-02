@@ -7,7 +7,8 @@
     "check:generated": "tree-sitter generate && git diff --exit-code -- src",
     "generate": "tree-sitter generate",
     "install": "node-gyp-build",
-    "test": "tree-sitter test"
+    "test": "tree-sitter test && bun run test:tokens",
+    "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures/tokenization.qnt"
   },
   "packageManager": "bun@1.4.0",
   "dependencies": {
@@ -15,6 +16,7 @@
     "node-gyp-build": "^4.8.4"
   },
   "devDependencies": {
+    "tree-sitter": "^0.25.1",
     "tree-sitter-cli": "0.27.0"
   }
 }
