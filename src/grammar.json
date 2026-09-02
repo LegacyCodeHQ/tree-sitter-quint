@@ -5374,7 +5374,7 @@
     },
     "string_literal": {
       "type": "PATTERN",
-      "value": "\"[^\"\\\\\\r\\n]*\""
+      "value": "\"[^\"\\r\\n]*\""
     },
     "comment": {
       "type": "TOKEN",

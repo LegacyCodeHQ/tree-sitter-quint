@@ -111,6 +111,23 @@ module Messages {
       name: (identifier)
       value: (string_literal))))
 
+========================================
+Backslashes in raw strings
+========================================
+
+module BackslashStrings {
+  pure val path = "a\\b"
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (string_literal))))
+
 =========================
 Value definition reference
 =========================

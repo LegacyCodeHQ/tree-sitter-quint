@@ -967,7 +967,7 @@ export default grammar({
 
     boolean_literal: _ => choice("true", "false"),
 
-    string_literal: _ => /"[^"\\\r\n]*"/,
+    string_literal: _ => /"[^"\r\n]*"/,
 
     comment: _ => token(choice(
       seq("//", /[^\r\n]*/),
