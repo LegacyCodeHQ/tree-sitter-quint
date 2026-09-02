@@ -15,6 +15,7 @@ const PREC = {
   ADDITIVE: 5,
   MULTIPLICATIVE: 6,
   UNARY: 7,
+  POWER: 8,
 };
 
 export default grammar({
@@ -196,6 +197,11 @@ export default grammar({
       prec.left(PREC.MULTIPLICATIVE, seq(
         field("left", $._expression),
         field("operator", choice("*", "/", "%")),
+        field("right", $._expression),
+      )),
+      prec.right(PREC.POWER, seq(
+        field("left", $._expression),
+        field("operator", "^"),
         field("right", $._expression),
       )),
     ),

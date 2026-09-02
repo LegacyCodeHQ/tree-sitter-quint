@@ -332,3 +332,24 @@ module Arithmetic {
           left: (integer_literal)
           right: (integer_literal))
         right: (integer_literal)))))
+
+=============================================
+Power binds more tightly than multiplication
+=============================================
+
+module Arithmetic {
+  val result = 2 ^ 3 * 4
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        right: (integer_literal)))))
