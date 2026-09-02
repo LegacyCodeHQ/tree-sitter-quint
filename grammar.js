@@ -74,7 +74,7 @@ export default grammar({
       field("qualifier", "pure"),
       "def",
       field("name", $.identifier),
-      choice(
+      optional(choice(
         seq(
           "(",
           field("parameter", $.annotated_parameter),
@@ -93,7 +93,7 @@ export default grammar({
           ":",
           field("return_type", $._type),
         ),
-      ),
+      )),
       "=",
       field("body", $._expression),
     ),
