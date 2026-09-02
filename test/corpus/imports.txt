@@ -189,6 +189,36 @@ module Imports {
         argument: (integer_literal)))))
 
 ========================================
+Qualified named import selector
+========================================
+
+module Lib {
+  pure val Member::value = 1
+}
+
+module Use {
+  import Lib.Member::value
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      value: (integer_literal)))
+  (module_definition
+    name: (identifier)
+    (named_import_declaration
+      module: (identifier)
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier)))))
+
+========================================
 Wildcard import
 ========================================
 

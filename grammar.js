@@ -428,7 +428,7 @@ export default grammar({
       "import",
       field("module", choice($.identifier, $.qualified_identifier)),
       ".",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       optional(seq(
         "from",
         field("source", $.string_literal),
