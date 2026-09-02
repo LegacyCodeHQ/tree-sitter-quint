@@ -160,6 +160,14 @@ export default grammar({
           optional(choice(
             seq(
               "(",
+              ")",
+              optional(seq(
+                ":",
+                field("return_type", $._type),
+              )),
+            ),
+            seq(
+              "(",
               field("parameter", $.annotated_parameter),
               repeat(seq(",", field("parameter", $.annotated_parameter))),
               ")",

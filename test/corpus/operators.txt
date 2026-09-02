@@ -41,6 +41,24 @@ module Actions {
       body: (boolean_literal))))
 
 ========================================
+Explicit empty operator parameter list
+========================================
+
+module EmptyOperatorParameters {
+  action tick(): bool = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (boolean_literal))))
+
+========================================
 Stateful operator definition
 ========================================
 
