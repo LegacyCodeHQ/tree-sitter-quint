@@ -16,6 +16,45 @@ module Numbers {
       value: (integer_literal))))
 
 ========================================
+Qualified tuple patterns
+========================================
+
+module Patterns {
+  val (Scope::left, Scope::right) = (1, 2)
+  pure val unpack = ((Scope::left, Scope::right)) => Scope::left
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (tuple_pattern
+        element: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))
+        element: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier)))
+      value: (tuple_literal
+        element: (integer_literal)
+        element: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (lambda_expression
+        parameter: (tuple_pattern
+          element: (qualified_identifier
+            namespace: (identifier)
+            name: (identifier))
+          element: (qualified_identifier
+            namespace: (identifier)
+            name: (identifier)))
+        body: (namespace_access_expression
+          namespace: (identifier)
+          member: (identifier))))))
+
+========================================
 Value destructuring patterns
 ========================================
 

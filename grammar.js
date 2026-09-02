@@ -898,10 +898,10 @@ export default grammar({
 
     tuple_pattern: $ => seq(
       "(",
-      field("element", $.identifier),
+      field("element", choice($.identifier, $.qualified_identifier)),
       ",",
-      field("element", $.identifier),
-      repeat(seq(",", field("element", $.identifier))),
+      field("element", choice($.identifier, $.qualified_identifier)),
+      repeat(seq(",", field("element", choice($.identifier, $.qualified_identifier)))),
       ")",
     ),
 
