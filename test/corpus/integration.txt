@@ -411,3 +411,43 @@ module Options {
         constructor: (identifier)
         argument: (list_type
           element: (primitive_type))))))
+
+========================================
+Complete module instance
+========================================
+
+module Voting {
+  const Value: Set[int]
+}
+
+module Consumer {
+  import Voting(Value = Set(0, 1)) as V
+  val MyValues = V::Value
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (set_type
+        element: (primitive_type))))
+  (module_definition
+    name: (identifier)
+    (instance_declaration
+      module: (identifier)
+      (instance_override
+        name: (identifier)
+        value: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (integer_literal)
+          argument: (integer_literal)))
+      alias: (identifier))
+    (value_definition
+      name: (identifier)
+      value: (namespace_access_expression
+        namespace: (identifier)
+        member: (identifier)))))
