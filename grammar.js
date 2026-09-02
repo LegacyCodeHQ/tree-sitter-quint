@@ -330,16 +330,33 @@ export default grammar({
       "]",
     ),
 
-    operator_type: $ => prec.right(seq(
-      "(",
-      optional(seq(
-        field("parameter", $._type),
-        repeat(seq(",", field("parameter", $._type))),
-      )),
-      ")",
-      "=>",
-      field("result", $._type),
+    operator_type: $ => prec.right(choice(
+      seq(
+        "(",
+        optional(seq(
+          field("parameter", $._type),
+          repeat(seq(",", field("parameter", $._type))),
+        )),
+        ")",
+        "=>",
+        field("result", $._type),
+      ),
+      seq(
+        field("parameter", $._operator_parameter_type),
+        "=>",
+        field("result", $._type),
+      ),
     )),
+
+    _operator_parameter_type: $ => choice(
+      $.primitive_type,
+      $.type_variable,
+      $.type_application,
+      $.named_type,
+      $.set_type,
+      $.list_type,
+      $.record_type,
+    ),
 
     tuple_type: $ => seq(
       "(",
