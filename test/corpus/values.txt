@@ -74,3 +74,25 @@ module Example {
       name: (identifier)
       value: (name_reference
         name: (identifier)))))
+
+========================================
+Pure value definition
+========================================
+
+module Collections {
+  pure val ADDRESSES = Set("alice", "bob", "charlie")
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (string_literal)
+        argument: (string_literal)
+        argument: (string_literal)))))

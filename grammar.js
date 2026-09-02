@@ -70,6 +70,7 @@ export default grammar({
     ),
 
     value_definition: $ => seq(
+      optional(field("qualifier", "pure")),
       "val",
       field("name", $.identifier),
       "=",

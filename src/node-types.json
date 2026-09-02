@@ -2152,6 +2152,16 @@
           }
         ]
       },
+      "qualifier": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "pure",
+            "named": false
+          }
+        ]
+      },
       "value": {
         "multiple": false,
         "required": true,
