@@ -1729,6 +1729,16 @@
             "named": true
           }
         ]
+      },
+      "source": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "string_literal",
+            "named": true
+          }
+        ]
       }
     },
     "children": {
@@ -3928,6 +3938,10 @@
   },
   {
     "type": "false",
+    "named": false
+  },
+  {
+    "type": "from",
     "named": false
   },
   {

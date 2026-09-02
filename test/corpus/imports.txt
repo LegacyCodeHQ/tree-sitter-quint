@@ -35,3 +35,33 @@ module Imports {
           argument: (integer_literal)
           argument: (integer_literal)))
       alias: (identifier))))
+
+========================================
+Module import from source
+========================================
+
+module Library {
+  const answer: int
+}
+
+module Consumer {
+  import Library(answer = 42) as L from "./quint-tree-sitter-library"
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (primitive_type)))
+  (module_definition
+    name: (identifier)
+    (instance_declaration
+      module: (identifier)
+      (instance_override
+        name: (identifier)
+        value: (integer_literal))
+      alias: (identifier)
+      source: (string_literal))))

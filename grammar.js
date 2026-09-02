@@ -270,6 +270,10 @@ export default grammar({
         "as",
         field("alias", $.identifier),
       )),
+      optional(seq(
+        "from",
+        field("source", $.string_literal),
+      )),
     ),
 
     instance_override: $ => seq(
