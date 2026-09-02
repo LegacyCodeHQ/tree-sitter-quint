@@ -60,3 +60,21 @@ module Foo {
     (constant_declaration
       name: (identifier)
       type: (primitive_type))))
+
+========================
+Set constant declaration
+========================
+
+module Foo {
+  const VALUES: Set[int]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (set_type
+        element: (primitive_type)))))

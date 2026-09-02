@@ -20,6 +20,10 @@
           {
             "type": "primitive_type",
             "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
           }
         ]
       }
@@ -57,6 +61,26 @@
     "fields": {}
   },
   {
+    "type": "set_type",
+    "named": true,
+    "fields": {
+      "element": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "root": true,
@@ -74,6 +98,18 @@
   },
   {
     "type": ":",
+    "named": false
+  },
+  {
+    "type": "Set",
+    "named": false
+  },
+  {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "]",
     "named": false
   },
   {

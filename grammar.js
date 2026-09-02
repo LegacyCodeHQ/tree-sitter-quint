@@ -25,10 +25,19 @@ export default grammar({
       "const",
       field("name", $.identifier),
       ":",
-      field("type", $.primitive_type),
+      field("type", $._type),
     ),
 
+    _type: $ => choice($.primitive_type, $.set_type),
+
     primitive_type: _ => choice("int", "bool", "str"),
+
+    set_type: $ => seq(
+      "Set",
+      "[",
+      field("element", $._type),
+      "]",
+    ),
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
   },
