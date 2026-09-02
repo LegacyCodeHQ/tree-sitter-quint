@@ -36,6 +36,45 @@ module UppercaseHex {
         name: (identifier)))))
 
 ========================================
+Leading-zero decimal literal is rejected
+========================================
+
+module LeadingZero {
+  pure val value = 00
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      (ERROR
+        (integer_literal))
+      value: (integer_literal))))
+
+========================================
+Zero-prefixed separator is rejected
+========================================
+
+module ZeroSeparator {
+  pure val value = 0_1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      (ERROR
+        (integer_literal))
+      value: (name_reference
+        name: (identifier)))))
+
+========================================
 Qualified tuple patterns
 ========================================
 

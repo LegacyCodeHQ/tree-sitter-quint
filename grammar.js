@@ -1143,7 +1143,7 @@ export default grammar({
       )),
     ),
 
-    integer_literal: _ => /(?:0x[0-9a-fA-F](?:_?[0-9a-fA-F])*|[0-9](?:_?[0-9])*)/,
+    integer_literal: _ => /(?:0x[0-9a-fA-F](?:_?[0-9a-fA-F])*|0|[1-9](?:_?[0-9])*)/,
 
     boolean_literal: _ => choice("true", "false"),
 

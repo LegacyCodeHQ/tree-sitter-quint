@@ -3441,7 +3441,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
         '-', 245,
         '.', 137,
         '/', 253,
-        '0', 256,
+        '0', 258,
         ':', 105,
         ';', 114,
         '<', 248,
@@ -3489,7 +3489,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
         '-', 245,
         '.', 136,
         '/', 253,
-        '0', 256,
+        '0', 258,
         ':', 15,
         ';', 114,
         '<', 248,
@@ -3533,7 +3533,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
         '-', 245,
         '.', 136,
         '/', 253,
-        '0', 256,
+        '0', 258,
         ':', 105,
         ';', 114,
         '<', 248,
@@ -3618,7 +3618,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
         '-', 245,
         '.', 12,
         '/', 9,
-        '0', 256,
+        '0', 258,
         ':', 105,
         ';', 114,
         '=', 113,
@@ -4009,7 +4009,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
     case 94:
       if (('0' <= lookahead && lookahead <= '9') ||
           ('A' <= lookahead && lookahead <= 'F') ||
-          ('a' <= lookahead && lookahead <= 'f')) ADVANCE(258);
+          ('a' <= lookahead && lookahead <= 'f')) ADVANCE(256);
       END_STATE();
     case 95:
       if (('0' <= lookahead && lookahead <= '9') ||
@@ -5057,9 +5057,10 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       END_STATE();
     case 256:
       ACCEPT_TOKEN(sym_integer_literal);
-      if (lookahead == '_') ADVANCE(93);
-      if (lookahead == 'x') ADVANCE(94);
-      if (('0' <= lookahead && lookahead <= '9')) ADVANCE(257);
+      if (lookahead == '_') ADVANCE(94);
+      if (('0' <= lookahead && lookahead <= '9') ||
+          ('A' <= lookahead && lookahead <= 'F') ||
+          ('a' <= lookahead && lookahead <= 'f')) ADVANCE(256);
       END_STATE();
     case 257:
       ACCEPT_TOKEN(sym_integer_literal);
@@ -5068,10 +5069,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       END_STATE();
     case 258:
       ACCEPT_TOKEN(sym_integer_literal);
-      if (lookahead == '_') ADVANCE(94);
-      if (('0' <= lookahead && lookahead <= '9') ||
-          ('A' <= lookahead && lookahead <= 'F') ||
-          ('a' <= lookahead && lookahead <= 'f')) ADVANCE(258);
+      if (lookahead == 'x') ADVANCE(94);
       END_STATE();
     case 259:
       ACCEPT_TOKEN(anon_sym_true);
