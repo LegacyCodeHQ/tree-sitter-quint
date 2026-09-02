@@ -15,6 +15,31 @@ module Numbers {
       name: (identifier)
       value: (integer_literal))))
 
+========================================
+Hexadecimal integer literals
+========================================
+
+module Hexadecimal {
+  pure val lower = 0xabcdef
+  pure val mixed = 0xAbCdEf
+  pure val separated = 0xAB_CD_EF
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))))
+
 =========================
 Boolean value definitions
 =========================
