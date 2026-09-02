@@ -36,3 +36,22 @@ module Top {
             name: (identifier)))
         right: (name_reference
           name: (identifier))))))
+
+========================================
+Qualified module name
+========================================
+
+module A::Impl {
+  pure val secretNum = 123
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (qualified_identifier
+      namespace: (identifier)
+      name: (identifier))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))))

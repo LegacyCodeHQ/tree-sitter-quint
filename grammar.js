@@ -41,7 +41,7 @@ export default grammar({
 
     module_definition: $ => seq(
       "module",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       "{",
       repeat($._declaration),
       "}",
