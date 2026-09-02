@@ -135,6 +135,53 @@ export default grammar({
     _operator_definition_head: $ => choice(
         seq(
           field("qualifier", "pure"),
+          "val",
+          field("name", choice($.identifier, $.qualified_identifier)),
+          choice(
+            seq(
+              "(",
+              field("parameter", $.annotated_parameter),
+              repeat(seq(",", field("parameter", $.annotated_parameter))),
+              optional(","),
+              ")",
+              ":",
+              field("return_type", $._type),
+            ),
+            seq(
+              "(",
+              field("parameter", $.parameter),
+              repeat(seq(",", field("parameter", $.parameter))),
+              optional(","),
+              ")",
+              optional($._return_type_annotation),
+            ),
+          ),
+        ),
+        seq(
+          "val",
+          field("name", choice($.identifier, $.qualified_identifier)),
+          choice(
+            seq(
+              "(",
+              field("parameter", $.annotated_parameter),
+              repeat(seq(",", field("parameter", $.annotated_parameter))),
+              optional(","),
+              ")",
+              ":",
+              field("return_type", $._type),
+            ),
+            seq(
+              "(",
+              field("parameter", $.parameter),
+              repeat(seq(",", field("parameter", $.parameter))),
+              optional(","),
+              ")",
+              optional($._return_type_annotation),
+            ),
+          ),
+        ),
+        seq(
+          field("qualifier", "pure"),
           "def",
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
