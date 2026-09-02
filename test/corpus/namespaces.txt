@@ -96,3 +96,55 @@ module QualifiedIdentifiers {
             namespace: (identifier)
             name: (identifier)))
         value: (integer_literal)))))
+
+========================================
+Multi-level namespace access
+========================================
+
+module Math {
+  pure def pow(x: int, y: int): int = x ^ y
+}
+module E {
+  export Math
+}
+module NamespaceChain {
+  import E
+  val result = E::Math::pow(2, 2)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (name_reference
+          name: (identifier)))))
+  (module_definition
+    name: (identifier)
+    (module_export_declaration
+      module: (identifier)))
+  (module_definition
+    name: (identifier)
+    (module_import_declaration
+      module: (identifier))
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (namespace_access_expression
+          namespace: (identifier)
+          member: (identifier)
+          member: (identifier))
+        argument: (integer_literal)
+        argument: (integer_literal)))))

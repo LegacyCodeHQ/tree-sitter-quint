@@ -821,6 +821,7 @@ export default grammar({
       field("namespace", $.identifier),
       "::",
       field("member", $.identifier),
+      repeat(seq("::", field("member", $.identifier))),
     )),
 
     parenthesized_expression: $ => seq(
