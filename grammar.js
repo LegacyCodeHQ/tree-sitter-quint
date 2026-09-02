@@ -24,6 +24,7 @@ export default grammar({
     _declaration: $ => choice(
       $.constant_declaration,
       $.variable_declaration,
+      $.value_definition,
       $.type_alias_declaration,
       $.uninterpreted_type_declaration,
     ),
@@ -40,6 +41,13 @@ export default grammar({
       field("name", $.identifier),
       ":",
       field("type", $._type),
+    ),
+
+    value_definition: $ => seq(
+      "val",
+      field("name", $.identifier),
+      "=",
+      field("value", $._expression),
     ),
 
     type_alias_declaration: $ => seq(
@@ -116,6 +124,10 @@ export default grammar({
       "->",
       field("result", $._type),
     )),
+
+    _expression: $ => $.integer_literal,
+
+    integer_literal: _ => /[0-9]+/,
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
   },

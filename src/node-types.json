@@ -211,6 +211,10 @@
           "named": true
         },
         {
+          "type": "value_definition",
+          "named": true
+        },
+        {
           "type": "variable_declaration",
           "named": true
         }
@@ -526,6 +530,32 @@
     }
   },
   {
+    "type": "value_definition",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "integer_literal",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "variable_declaration",
     "named": true,
     "fields": {
@@ -636,6 +666,10 @@
     "named": false
   },
   {
+    "type": "integer_literal",
+    "named": true
+  },
+  {
     "type": "module",
     "named": false
   },
@@ -645,6 +679,10 @@
   },
   {
     "type": "type",
+    "named": false
+  },
+  {
+    "type": "val",
     "named": false
   },
   {

@@ -1,0 +1,16 @@
+========================
+Integer value definition
+========================
+
+module Numbers {
+  val answer = 42
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))))
