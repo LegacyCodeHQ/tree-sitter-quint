@@ -306,6 +306,7 @@ export default grammar({
       $.record_literal,
       $.block_expression,
       $.any_expression,
+      $.all_expression,
       $.assignment_expression,
       $.if_expression,
       $.lambda_expression,
@@ -370,6 +371,15 @@ export default grammar({
       "{",
       field("choice", $._expression),
       repeat(seq(",", field("choice", $._expression))),
+      optional(","),
+      "}",
+    ),
+
+    all_expression: $ => seq(
+      "all",
+      "{",
+      field("conjunct", $._expression),
+      repeat(seq(",", field("conjunct", $._expression))),
       optional(","),
       "}",
     ),

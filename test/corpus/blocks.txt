@@ -120,3 +120,41 @@ module Choices {
           choice: (call_expression
             function: (name_reference
               name: (identifier))))))))
+
+========================================
+Conjunctive action with trailing comma
+========================================
+
+module Conjunctions {
+  var n: int
+
+  action Even = all {
+    n % 2 == 0,
+    n' = n / 2,
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (all_expression
+        conjunct: (binary_expression
+          left: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal))
+          right: (integer_literal))
+        conjunct: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal)))))))
