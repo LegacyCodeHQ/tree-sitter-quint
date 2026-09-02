@@ -430,6 +430,7 @@ export default grammar({
       $.set_type,
       $.list_type,
       $.operator_type,
+      $.unit_type,
       $.tuple_type,
       $.parenthesized_type,
       $.record_type,
@@ -491,6 +492,8 @@ export default grammar({
       $.list_type,
       $.record_type,
     ),
+
+    unit_type: _ => seq("(", ")"),
 
     tuple_type: $ => seq(
       "(",

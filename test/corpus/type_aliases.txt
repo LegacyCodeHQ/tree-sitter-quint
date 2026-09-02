@@ -173,3 +173,20 @@ module EmptyRecordType {
     (type_alias_declaration
       name: (identifier)
       value: (record_type))))
+
+========================================
+Unit type
+========================================
+
+module UnitType {
+  type Unit = ()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (unit_type))))
