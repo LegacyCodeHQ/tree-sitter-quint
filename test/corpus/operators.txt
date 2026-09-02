@@ -22,6 +22,24 @@ module Functions {
           name: (identifier))
         right: (integer_literal)))))
 
+========================================
+Parameterless annotated action definition
+========================================
+
+module Actions {
+  action isReady: bool = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (boolean_literal))))
+
 ======================================
 Parameterless pure operator definition
 ======================================
