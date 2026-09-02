@@ -457,3 +457,20 @@ module Collections {
         element: (integer_literal)
         element: (integer_literal)
         element: (integer_literal)))))
+
+==================
+Empty list literal
+==================
+
+module Collections {
+  val empty = []
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (list_literal))))

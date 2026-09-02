@@ -153,8 +153,10 @@ export default grammar({
 
     list_literal: $ => seq(
       "[",
-      field("element", $._expression),
-      repeat(seq(",", field("element", $._expression))),
+      optional(seq(
+        field("element", $._expression),
+        repeat(seq(",", field("element", $._expression))),
+      )),
       "]",
     ),
 
