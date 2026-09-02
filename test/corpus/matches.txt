@@ -1,0 +1,46 @@
+========================================
+Variant match expression
+========================================
+
+module Matches {
+  type Elem = S(str) | I(int)
+  val value: Elem = I(1)
+  val transformed = match value { S(s) => s | I(_) => "An int" }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))))
+    (value_definition
+      name: (identifier)
+      type: (named_type
+        name: (identifier))
+      value: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (match_expression
+        value: (name_reference
+          name: (identifier))
+        arm: (match_arm
+          variant: (identifier)
+          parameter: (identifier)
+          body: (name_reference
+            name: (identifier)))
+        arm: (match_arm
+          variant: (identifier)
+          parameter: (identifier)
+          body: (string_literal))))))

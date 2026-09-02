@@ -469,6 +469,7 @@ export default grammar({
       $.or_block_expression,
       $.assignment_expression,
       $.if_expression,
+      $.match_expression,
       $.lambda_expression,
       $.call_expression,
       $.field_access_expression,
@@ -589,6 +590,25 @@ export default grammar({
       "else",
       field("alternative", $._expression),
     )),
+
+    match_expression: $ => prec.right(seq(
+      "match",
+      field("value", $._expression),
+      "{",
+      optional("|"),
+      field("arm", $.match_arm),
+      repeat(seq("|", field("arm", $.match_arm))),
+      "}",
+    )),
+
+    match_arm: $ => seq(
+      field("variant", $.identifier),
+      "(",
+      field("parameter", $.identifier),
+      ")",
+      "=>",
+      field("body", $._expression),
+    ),
 
     lambda_expression: $ => prec.right(seq(
       choice(
