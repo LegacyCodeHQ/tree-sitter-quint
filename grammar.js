@@ -764,7 +764,7 @@ export default grammar({
     nested_definition_expression: $ => choice(
       prec.right(seq(
         field("definition", alias($._local_value_definition_unterminated, $.value_definition)),
-        field("body", choice($.all_expression, $.any_expression)),
+        field("body", $._expression),
       )),
       prec.right(seq(
         field("definition", alias($._local_value_definition, $.value_definition)),

@@ -290,4 +290,29 @@ module LetBoundary {
             left: (unary_expression
               operand: (name_reference
                 name: (identifier)))
+          right: (integer_literal)))))))
+
+========================================
+Same-line local value definition
+========================================
+
+module SameLineLocalDefinition {
+  pure val result = (pure val x = 1 x + 1)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (parenthesized_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (integer_literal))
+          body: (binary_expression
+            left: (name_reference
+              name: (identifier))
             right: (integer_literal)))))))

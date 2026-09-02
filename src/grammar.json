@@ -4199,17 +4199,8 @@
                 "type": "FIELD",
                 "name": "body",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "all_expression"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "any_expression"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_expression"
                 }
               }
             ]
