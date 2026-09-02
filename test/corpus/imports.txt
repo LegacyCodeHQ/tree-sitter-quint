@@ -213,3 +213,49 @@ module ImportAll {
               name: (identifier))))
         right: (name_reference
           name: (identifier))))))
+
+========================================
+Wildcard re-export
+========================================
+
+module A {
+  pure val greeting = "hello"
+}
+
+module B {
+  import A.*
+  export A.*
+}
+
+module C {
+  import B.*
+  def greet(name) = [greeting, name]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (string_literal)))
+  (module_definition
+    name: (identifier)
+    (wildcard_import_declaration
+      module: (identifier))
+    (wildcard_export_declaration
+      module: (identifier)))
+  (module_definition
+    name: (identifier)
+    (wildcard_import_declaration
+      module: (identifier))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (list_literal
+        element: (name_reference
+          name: (identifier))
+        element: (name_reference
+          name: (identifier))))))
