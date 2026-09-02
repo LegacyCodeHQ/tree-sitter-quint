@@ -232,10 +232,24 @@ export default grammar({
         "]",
       )),
       "=",
-      field("value", $._type),
+      field("value", choice($._type, $.sum_type)),
     ),
 
     type_parameter: $ => field("name", $.type_variable),
+
+    sum_type: $ => repeat1(seq(
+      "|",
+      $.sum_type_variant,
+    )),
+
+    sum_type_variant: $ => seq(
+      field("name", $.identifier),
+      optional(seq(
+        "(",
+        field("payload", $._type),
+        ")",
+      )),
+    ),
 
     uninterpreted_type_declaration: $ => seq(
       "type",

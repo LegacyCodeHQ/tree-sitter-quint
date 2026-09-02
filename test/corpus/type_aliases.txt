@@ -98,3 +98,29 @@ module Types {
       type: (type_application
         constructor: (identifier)
         argument: (primitive_type)))))
+
+========================================
+Polymorphic sum type declaration
+========================================
+
+module Types {
+  type Option[a] =
+    | Some(a)
+    | None
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      parameter: (type_parameter
+        name: (type_variable))
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (type_variable))
+        (sum_type_variant
+          name: (identifier))))))
