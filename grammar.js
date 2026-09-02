@@ -374,7 +374,7 @@ export default grammar({
 
     assumption_declaration: $ => seq(
       "assume",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       "=",
       field("condition", $._expression),
     ),

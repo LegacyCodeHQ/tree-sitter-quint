@@ -21,3 +21,22 @@ module Configuration {
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))))
+
+========================================
+Qualified assumption name
+========================================
+
+module Assumptions {
+  assume Checks::ready = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (assumption_declaration
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      condition: (boolean_literal))))
