@@ -303,6 +303,7 @@ export default grammar({
       $.tuple_literal,
       $.unit_literal,
       $.record_literal,
+      $.block_expression,
       $.if_expression,
       $.lambda_expression,
       $.call_expression,
@@ -345,6 +346,12 @@ export default grammar({
       field("name", $.identifier),
       ":",
       field("value", $._expression),
+    ),
+
+    block_expression: $ => seq(
+      "{",
+      field("expression", $._expression),
+      "}",
     ),
 
     if_expression: $ => prec.right(seq(

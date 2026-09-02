@@ -1,0 +1,19 @@
+========================================
+Single-expression block
+========================================
+
+module Blocks {
+  action example = {
+    true
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (boolean_literal)))))
