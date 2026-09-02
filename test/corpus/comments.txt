@@ -1,0 +1,25 @@
+========================================
+Line and documentation comments
+========================================
+
+module Comments {
+  /// State documentation
+  var state: int
+
+  // Initial value
+  val initial = 0
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (comment)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (comment)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))))

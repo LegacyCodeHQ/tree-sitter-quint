@@ -25,6 +25,11 @@ const PREC = {
 export default grammar({
   name: "quint",
 
+  extras: $ => [
+    /\s/,
+    $.comment,
+  ],
+
   conflicts: $ => [
     [$.lambda_expression, $.name_reference],
   ],
@@ -457,6 +462,8 @@ export default grammar({
     boolean_literal: _ => choice("true", "false"),
 
     string_literal: _ => /"[^"\\\r\n]*"/,
+
+    comment: _ => token(seq("//", /[^\r\n]*/)),
 
     name_reference: $ => field("name", $.identifier),
 
