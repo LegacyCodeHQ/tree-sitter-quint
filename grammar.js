@@ -7,6 +7,11 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+const PREC = {
+  ADDITIVE: 1,
+  MULTIPLICATIVE: 2,
+};
+
 export default grammar({
   name: "quint",
 
@@ -133,11 +138,18 @@ export default grammar({
       $.binary_expression,
     ),
 
-    binary_expression: $ => prec.left(1, seq(
-      field("left", $._expression),
-      field("operator", "+"),
-      field("right", $._expression),
-    )),
+    binary_expression: $ => choice(
+      prec.left(PREC.ADDITIVE, seq(
+        field("left", $._expression),
+        field("operator", "+"),
+        field("right", $._expression),
+      )),
+      prec.left(PREC.MULTIPLICATIVE, seq(
+        field("left", $._expression),
+        field("operator", "*"),
+        field("right", $._expression),
+      )),
+    ),
 
     integer_literal: _ => /[0-9]+/,
 
