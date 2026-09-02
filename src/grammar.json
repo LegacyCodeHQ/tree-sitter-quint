@@ -80,6 +80,10 @@
         {
           "type": "STRING",
           "value": "bool"
+        },
+        {
+          "type": "STRING",
+          "value": "str"
         }
       ]
     },

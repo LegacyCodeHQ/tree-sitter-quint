@@ -97,6 +97,10 @@
     "named": false
   },
   {
+    "type": "str",
+    "named": false
+  },
+  {
     "type": "{",
     "named": false
   },
