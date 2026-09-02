@@ -40,6 +40,35 @@ module Actions {
       return_type: (primitive_type)
       body: (boolean_literal))))
 
+========================================
+Stateful operator definition
+========================================
+
+module Timers {
+  var timer: int
+  def hasExpired(timestamp: int): bool = timer >= timestamp
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (name_reference
+          name: (identifier))))))
+
 ======================================
 Parameterless pure operator definition
 ======================================

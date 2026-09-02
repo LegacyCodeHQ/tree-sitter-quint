@@ -2256,7 +2256,7 @@
       },
       "qualifier": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "action",
