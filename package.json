@@ -4,11 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "check:generated": "tree-sitter generate && git diff --exit-code -- src",
     "generate": "tree-sitter generate",
+    "install": "node-gyp-build",
     "test": "bun run test:litmus && bun run test:grammar",
     "test:grammar": "tree-sitter test",
     "test:litmus": "bun test test/litmus.test.js",
     "test:update": "bun test test/litmus.test.js --update-snapshots"
   },
-  "packageManager": "bun@1.4.0"
+  "packageManager": "bun@1.4.0",
+  "dependencies": {
+    "node-addon-api": "^8.3.1",
+    "node-gyp-build": "^4.8.4"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "0.27.0"
+  }
 }
