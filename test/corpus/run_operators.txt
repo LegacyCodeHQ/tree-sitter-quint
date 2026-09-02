@@ -55,3 +55,28 @@ module RepeatedRun {
           parameter: (identifier)
           body: (name_reference
             name: (identifier)))))))
+
+========================================
+Expected action failure
+========================================
+
+module FailedRun {
+  action disabled = false
+  run expectedFailure = disabled.fail()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (field_access_expression
+          object: (name_reference
+            name: (identifier))
+          field: (identifier))))))
