@@ -406,6 +406,14 @@ export default grammar({
         $.sum_type_variant,
         repeat1(seq("|", $.sum_type_variant)),
       ),
+      alias($._sum_type_variant_with_payload, $.sum_type_variant),
+    ),
+
+    _sum_type_variant_with_payload: $ => seq(
+      field("name", $.identifier),
+      "(",
+      field("payload", $._type),
+      ")",
     ),
 
     sum_type_variant: $ => seq(

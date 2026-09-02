@@ -242,3 +242,23 @@ module TypeParameters {
         name: (type_variable))
       value: (list_type
         element: (type_variable)))))
+
+========================================
+Single-constructor sum type
+========================================
+
+module SingleConstructorSum {
+  type Wrapped = Wrap(int)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))))))
