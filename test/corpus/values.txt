@@ -16,6 +16,39 @@ module Numbers {
       value: (integer_literal))))
 
 ========================================
+Value destructuring patterns
+========================================
+
+module ValDestructuring {
+  pure val (first, _) = (1, 2)
+  pure val { left, right } = { left: 1, right: 2 }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (tuple_pattern
+        element: (identifier)
+        element: (identifier))
+      value: (tuple_literal
+        element: (integer_literal)
+        element: (integer_literal)))
+    (value_definition
+      name: (record_pattern
+        field: (identifier)
+        field: (identifier))
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))))
+
+========================================
 Hexadecimal integer literals
 ========================================
 

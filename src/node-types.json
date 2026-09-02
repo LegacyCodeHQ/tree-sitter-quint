@@ -4097,6 +4097,22 @@
     }
   },
   {
+    "type": "record_pattern",
+    "named": true,
+    "fields": {
+      "field": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "record_spread",
     "named": true,
     "fields": {
@@ -4945,6 +4961,14 @@
           },
           {
             "type": "qualified_identifier",
+            "named": true
+          },
+          {
+            "type": "record_pattern",
+            "named": true
+          },
+          {
+            "type": "tuple_pattern",
             "named": true
           }
         ]

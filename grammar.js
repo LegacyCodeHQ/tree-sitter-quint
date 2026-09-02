@@ -82,7 +82,12 @@ export default grammar({
     value_definition: $ => seq(
       optional(field("qualifier", "pure")),
       "val",
-      field("name", choice($.identifier, $.qualified_identifier)),
+      field("name", choice(
+        $.identifier,
+        $.qualified_identifier,
+        $.tuple_pattern,
+        $.record_pattern,
+      )),
       optional(seq(
         ":",
         field("type", $._type),
@@ -679,6 +684,13 @@ export default grammar({
       field("element", $.identifier),
       repeat(seq(",", field("element", $.identifier))),
       ")",
+    ),
+
+    record_pattern: $ => seq(
+      "{",
+      field("field", $.identifier),
+      repeat(seq(",", field("field", $.identifier))),
+      "}",
     ),
 
     field_access_expression: $ => prec.left(PREC.POSTFIX, seq(
