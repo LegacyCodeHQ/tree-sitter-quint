@@ -112,6 +112,7 @@ export default grammar({
               "(",
               field("parameter", $.annotated_parameter),
               repeat(seq(",", field("parameter", $.annotated_parameter))),
+              optional(","),
               ")",
               ":",
               field("return_type", $._type),
@@ -288,6 +289,7 @@ export default grammar({
       optional(seq(
         $.instance_override,
         repeat(seq(",", $.instance_override)),
+        optional(","),
       )),
       ")",
       optional(seq(
@@ -313,6 +315,7 @@ export default grammar({
       optional(seq(
         $.instance_override,
         repeat(seq(",", $.instance_override)),
+        optional(","),
       )),
       ")",
       ".",
@@ -555,6 +558,7 @@ export default grammar({
       optional(seq(
         field("element", $._expression),
         repeat(seq(",", field("element", $._expression))),
+        optional(","),
       )),
       "]",
     ),
@@ -565,6 +569,7 @@ export default grammar({
       ",",
       field("element", $._expression),
       repeat(seq(",", field("element", $._expression))),
+      optional(","),
       ")",
     ),
 
@@ -748,6 +753,7 @@ export default grammar({
       optional(seq(
         field("argument", $._expression),
         repeat(seq(",", field("argument", $._expression))),
+        optional(","),
       )),
       ")",
     )),

@@ -694,6 +694,66 @@ module OperatorCalls {
         argument: (boolean_literal)))))
 
 ====================================
+Trailing delimiters
+====================================
+
+module Source { const N: int }
+module TrailingDelimiters {
+  import Source(N = 1,).*
+  pure def add(x: int, y: int,): int = x + y
+  pure val list = [1, 2,]
+  pure val tuple = (1, 2,)
+  pure val result = add(1, 2,)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (primitive_type)))
+  (module_definition
+    name: (identifier)
+    (anonymous_instance_declaration
+      module: (identifier)
+      (instance_override
+        name: (identifier)
+        value: (integer_literal)))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (name_reference
+          name: (identifier))))
+    (value_definition
+      name: (identifier)
+      value: (list_literal
+        element: (integer_literal)
+        element: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (tuple_literal
+        element: (integer_literal)
+        element: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (integer_literal)
+        argument: (integer_literal)))))
+
+====================================
 Record elements and trailing commas
 ====================================
 
