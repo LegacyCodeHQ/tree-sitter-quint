@@ -283,3 +283,28 @@ module Properties {
           name: (identifier))
         argument: (name_reference
           name: (identifier))))))
+
+========================================
+Annotated temporal definition
+========================================
+
+module Properties {
+  temporal stays(value: bool): bool = always(value)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (name_reference
+          name: (identifier))))))
