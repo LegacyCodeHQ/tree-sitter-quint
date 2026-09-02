@@ -5,3 +5,17 @@ Empty source file
 ---
 
 (source_file)
+
+========================================
+Executable source file hashbang
+========================================
+
+#!/usr/bin/env -S quint typecheck
+module Executable {}
+
+---
+
+(source_file
+  (hashbang)
+  (module_definition
+    name: (identifier)))

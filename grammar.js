@@ -45,7 +45,12 @@ export default grammar({
   ],
 
   rules: {
-    source_file: $ => repeat($.module_definition),
+    source_file: $ => seq(
+      optional($.hashbang),
+      repeat($.module_definition),
+    ),
+
+    hashbang: _ => token(seq("#!", /[^\r\n]*/)),
 
     module_definition: $ => seq(
       "module",

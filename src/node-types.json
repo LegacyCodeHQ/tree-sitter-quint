@@ -4489,6 +4489,10 @@
       "required": false,
       "types": [
         {
+          "type": "hashbang",
+          "named": true
+        },
+        {
           "type": "module_definition",
           "named": true
         }
@@ -5588,6 +5592,10 @@
   {
     "type": "from",
     "named": false
+  },
+  {
+    "type": "hashbang",
+    "named": true
   },
   {
     "type": "identifier",
