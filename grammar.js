@@ -457,6 +457,7 @@ export default grammar({
       $.block_expression,
       $.any_expression,
       $.all_expression,
+      $.and_block_expression,
       $.assignment_expression,
       $.if_expression,
       $.lambda_expression,
@@ -528,6 +529,15 @@ export default grammar({
 
     all_expression: $ => seq(
       "all",
+      "{",
+      field("conjunct", $._expression),
+      repeat(seq(",", field("conjunct", $._expression))),
+      optional(","),
+      "}",
+    ),
+
+    and_block_expression: $ => seq(
+      "and",
       "{",
       field("conjunct", $._expression),
       repeat(seq(",", field("conjunct", $._expression))),

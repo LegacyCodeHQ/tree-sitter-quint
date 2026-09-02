@@ -50,6 +50,28 @@ module State {
             right: (integer_literal)))))))
 
 ========================================
+Braced Boolean conjunction
+========================================
+
+module BooleanBlocks {
+  pure val conjunction = and {
+    true,
+    false,
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (and_block_expression
+        conjunct: (boolean_literal)
+        conjunct: (boolean_literal)))))
+
+========================================
 Local nondeterministic binding
 ========================================
 
