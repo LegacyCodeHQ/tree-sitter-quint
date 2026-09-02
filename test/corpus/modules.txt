@@ -26,3 +26,20 @@ module Foo {
     (constant_declaration
       name: (identifier)
       type: (primitive_type))))
+
+=============================
+Boolean constant declaration
+=============================
+
+module Foo {
+  const ENABLED: bool
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (primitive_type))))

@@ -52,6 +52,11 @@
     }
   },
   {
+    "type": "primitive_type",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "source_file",
     "named": true,
     "root": true,
@@ -72,6 +77,10 @@
     "named": false
   },
   {
+    "type": "bool",
+    "named": false
+  },
+  {
     "type": "const",
     "named": false
   },
@@ -80,12 +89,12 @@
     "named": true
   },
   {
-    "type": "module",
+    "type": "int",
     "named": false
   },
   {
-    "type": "primitive_type",
-    "named": true
+    "type": "module",
+    "named": false
   },
   {
     "type": "{",

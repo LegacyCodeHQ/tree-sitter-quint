@@ -71,8 +71,17 @@
       ]
     },
     "primitive_type": {
-      "type": "STRING",
-      "value": "int"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "int"
+        },
+        {
+          "type": "STRING",
+          "value": "bool"
+        }
+      ]
     },
     "identifier": {
       "type": "PATTERN",
