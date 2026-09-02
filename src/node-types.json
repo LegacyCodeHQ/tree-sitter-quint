@@ -102,6 +102,10 @@
             "named": false
           },
           {
+            "type": "implies",
+            "named": false
+          },
+          {
             "type": "leadsTo",
             "named": false
           },
@@ -1072,6 +1076,10 @@
   },
   {
     "type": "iff",
+    "named": false
+  },
+  {
+    "type": "implies",
     "named": false
   },
   {
