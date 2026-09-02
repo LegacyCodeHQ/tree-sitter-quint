@@ -169,6 +169,10 @@ export default grammar({
             ),
           )),
         ),
+        seq(
+          field("qualifier", "run"),
+          field("name", $.identifier),
+        ),
       ),
       "=",
       field("body", $._expression),

@@ -329,3 +329,20 @@ module Properties {
         function: (name_reference
           name: (identifier))
         argument: (boolean_literal)))))
+
+========================================
+Parameterless run definition
+========================================
+
+module Scenarios {
+  run example = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))))
