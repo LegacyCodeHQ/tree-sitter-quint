@@ -52,3 +52,23 @@ module Foo {
     name: (identifier)
     (uninterpreted_type_declaration
       name: (identifier))))
+
+========================================
+Parameterized type alias
+========================================
+
+module Types {
+  type Box[a] = List[a]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      parameter: (type_parameter
+        name: (type_variable))
+      value: (list_type
+        element: (type_variable)))))

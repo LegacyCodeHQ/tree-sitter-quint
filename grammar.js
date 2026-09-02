@@ -224,9 +224,17 @@ export default grammar({
     type_alias_declaration: $ => seq(
       "type",
       field("name", $.identifier),
+      optional(seq(
+        "[",
+        field("parameter", $.type_parameter),
+        repeat(seq(",", field("parameter", $.type_parameter))),
+        "]",
+      )),
       "=",
       field("value", $._type),
     ),
+
+    type_parameter: $ => field("name", $.type_variable),
 
     uninterpreted_type_declaration: $ => seq(
       "type",
@@ -235,6 +243,7 @@ export default grammar({
 
     _type: $ => choice(
       $.primitive_type,
+      $.type_variable,
       $.named_type,
       $.set_type,
       $.list_type,
@@ -245,6 +254,8 @@ export default grammar({
     ),
 
     primitive_type: _ => choice("int", "bool", "str"),
+
+    type_variable: _ => /[a-z]/,
 
     named_type: $ => field("name", $.identifier),
 

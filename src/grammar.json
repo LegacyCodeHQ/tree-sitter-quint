@@ -1006,6 +1006,55 @@
           }
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "["
+                },
+                {
+                  "type": "FIELD",
+                  "name": "parameter",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "type_parameter"
+                  }
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      },
+                      {
+                        "type": "FIELD",
+                        "name": "parameter",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "type_parameter"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "STRING",
+                  "value": "]"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "STRING",
           "value": "="
         },
@@ -1018,6 +1067,14 @@
           }
         }
       ]
+    },
+    "type_parameter": {
+      "type": "FIELD",
+      "name": "name",
+      "content": {
+        "type": "SYMBOL",
+        "name": "type_variable"
+      }
     },
     "uninterpreted_type_declaration": {
       "type": "SEQ",
@@ -1042,6 +1099,10 @@
         {
           "type": "SYMBOL",
           "name": "primitive_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_variable"
         },
         {
           "type": "SYMBOL",
@@ -1089,6 +1150,10 @@
           "value": "str"
         }
       ]
+    },
+    "type_variable": {
+      "type": "PATTERN",
+      "value": "[a-z]"
     },
     "named_type": {
       "type": "FIELD",
