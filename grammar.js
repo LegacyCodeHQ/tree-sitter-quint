@@ -60,7 +60,9 @@ export default grammar({
       $.anonymous_instance_declaration,
       $.named_import_declaration,
       $.wildcard_import_declaration,
+      $.module_import_declaration,
       $.wildcard_export_declaration,
+      $.module_export_declaration,
       $.type_alias_declaration,
       $.uninterpreted_type_declaration,
     ),
@@ -338,6 +340,28 @@ export default grammar({
       field("module", choice($.identifier, $.qualified_identifier)),
       ".",
       "*",
+    ),
+
+    module_import_declaration: $ => seq(
+      "import",
+      field("module", choice($.identifier, $.qualified_identifier)),
+      optional(seq(
+        "as",
+        field("alias", choice($.identifier, $.qualified_identifier)),
+      )),
+      optional(seq(
+        "from",
+        field("source", $.string_literal),
+      )),
+    ),
+
+    module_export_declaration: $ => seq(
+      "export",
+      field("module", choice($.identifier, $.qualified_identifier)),
+      optional(seq(
+        "as",
+        field("alias", choice($.identifier, $.qualified_identifier)),
+      )),
     ),
 
     type_alias_declaration: $ => seq(

@@ -67,6 +67,43 @@ module Consumer {
       source: (string_literal))))
 
 ========================================
+Bare module imports and exports
+========================================
+
+module Math { val answer = 42 }
+module Reexport {
+  export Math
+  export Math as Arithmetic
+}
+module Use {
+  import Math
+  import Math as M
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal)))
+  (module_definition
+    name: (identifier)
+    (module_export_declaration
+      module: (identifier))
+    (module_export_declaration
+      module: (identifier)
+      alias: (identifier)))
+  (module_definition
+    name: (identifier)
+    (module_import_declaration
+      module: (identifier))
+    (module_import_declaration
+      module: (identifier)
+      alias: (identifier))))
+
+========================================
 Namespace access
 ========================================
 
