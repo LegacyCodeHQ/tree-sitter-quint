@@ -23,3 +23,24 @@ module Comments {
     (value_definition
       name: (identifier)
       value: (integer_literal))))
+
+========================================
+Block comments
+========================================
+
+/* module documentation */
+module BlockComment {
+  /* declaration documentation */
+  val answer = 42
+}
+
+---
+
+(source_file
+  (comment)
+  (module_definition
+    name: (identifier)
+    (comment)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))))

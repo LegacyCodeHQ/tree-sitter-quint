@@ -765,7 +765,10 @@ export default grammar({
 
     string_literal: _ => /"[^"\\\r\n]*"/,
 
-    comment: _ => token(seq("//", /[^\r\n]*/)),
+    comment: _ => token(choice(
+      seq("//", /[^\r\n]*/),
+      seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"),
+    )),
 
     name_reference: $ => field("name", $.identifier),
 
