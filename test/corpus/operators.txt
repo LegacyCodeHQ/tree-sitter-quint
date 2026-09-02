@@ -260,3 +260,26 @@ module Properties {
         function: (name_reference
           name: (identifier))
         argument: (boolean_literal)))))
+
+========================================
+Parameterized temporal definition
+========================================
+
+module Properties {
+  temporal stays(value) = always(value)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (name_reference
+          name: (identifier))))))
