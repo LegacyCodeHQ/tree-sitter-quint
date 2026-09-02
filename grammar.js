@@ -153,7 +153,7 @@ export default grammar({
       )),
       prec.left(PREC.MULTIPLICATIVE, seq(
         field("left", $._expression),
-        field("operator", "*"),
+        field("operator", choice("*", "/")),
         field("right", $._expression),
       )),
     ),
