@@ -636,9 +636,11 @@ export default grammar({
 
     match_arm: $ => seq(
       field("variant", $.identifier),
-      "(",
-      field("parameter", $.identifier),
-      ")",
+      optional(seq(
+        "(",
+        field("parameter", $.identifier),
+        ")",
+      )),
       "=>",
       field("body", $._expression),
     ),

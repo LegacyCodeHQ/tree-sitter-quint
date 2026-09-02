@@ -44,3 +44,51 @@ module Matches {
           variant: (identifier)
           parameter: (identifier)
           body: (string_literal))))))
+
+========================================
+Payloadless and wildcard match patterns
+========================================
+
+module MatchPatterns {
+  type Option = Some(int) | None
+  pure def getOrZero(value: Option): int = match value {
+    | Some(x) => x
+    | None => 0
+    | _ => 0
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))
+        (sum_type_variant
+          name: (identifier))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (named_type
+          name: (identifier)))
+      return_type: (primitive_type)
+      body: (match_expression
+        value: (name_reference
+          name: (identifier))
+        arm: (match_arm
+          variant: (identifier)
+          parameter: (identifier)
+          body: (name_reference
+            name: (identifier)))
+        arm: (match_arm
+          variant: (identifier)
+          body: (integer_literal))
+        arm: (match_arm
+          variant: (identifier)
+          body: (integer_literal))))))
