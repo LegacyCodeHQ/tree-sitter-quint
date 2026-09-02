@@ -308,3 +308,24 @@ module Properties {
           name: (identifier))
         argument: (name_reference
           name: (identifier))))))
+
+========================================
+Parameterless annotated temporal definition
+========================================
+
+module Properties {
+  temporal staysReady: bool = always(true)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (boolean_literal)))))
