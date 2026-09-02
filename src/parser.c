@@ -5058,8 +5058,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
     case 256:
       ACCEPT_TOKEN(sym_integer_literal);
       if (lookahead == '_') ADVANCE(93);
-      if (lookahead == 'X' ||
-          lookahead == 'x') ADVANCE(94);
+      if (lookahead == 'x') ADVANCE(94);
       if (('0' <= lookahead && lookahead <= '9')) ADVANCE(257);
       END_STATE();
     case 257:

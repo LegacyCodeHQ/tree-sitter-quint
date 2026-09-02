@@ -8,7 +8,7 @@
     "generate": "tree-sitter generate",
     "install": "node-gyp-build",
     "test": "tree-sitter test && bun run test:tokens",
-    "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures/tokenization.qnt"
+    "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures/tokenization.qnt test/fixtures/tokenization-uppercase-hex.qnt"
   },
   "packageManager": "bun@1.4.0",
   "dependencies": {

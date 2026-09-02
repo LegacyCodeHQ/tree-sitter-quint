@@ -5900,7 +5900,7 @@
     },
     "integer_literal": {
       "type": "PATTERN",
-      "value": "(?:0[xX][0-9a-fA-F](?:_?[0-9a-fA-F])*|[0-9](?:_?[0-9])*)"
+      "value": "(?:0x[0-9a-fA-F](?:_?[0-9a-fA-F])*|[0-9](?:_?[0-9])*)"
     },
     "boolean_literal": {
       "type": "CHOICE",

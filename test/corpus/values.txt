@@ -16,6 +16,26 @@ module Numbers {
       value: (integer_literal))))
 
 ========================================
+Uppercase hexadecimal prefix is rejected
+========================================
+
+module UppercaseHex {
+  pure val value = 0XCAFE
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      (ERROR
+        (integer_literal))
+      value: (name_reference
+        name: (identifier)))))
+
+========================================
 Qualified tuple patterns
 ========================================
 

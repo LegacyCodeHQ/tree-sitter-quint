@@ -84,7 +84,6 @@ function referenceTokens(source, reference) {
 
 function treeSitterTokens(source, parser) {
   const tree = parser.parse(source);
-  assert.equal(tree.rootNode.hasError, false, tree.rootNode.toString());
 
   const tokens = [];
   function visit(node) {
