@@ -144,6 +144,7 @@ export default grammar({
       $.boolean_literal,
       $.string_literal,
       $.list_literal,
+      $.tuple_literal,
       $.call_expression,
       $.name_reference,
       $.parenthesized_expression,
@@ -158,6 +159,15 @@ export default grammar({
         repeat(seq(",", field("element", $._expression))),
       )),
       "]",
+    ),
+
+    tuple_literal: $ => seq(
+      "(",
+      field("element", $._expression),
+      ",",
+      field("element", $._expression),
+      repeat(seq(",", field("element", $._expression))),
+      ")",
     ),
 
     call_expression: $ => seq(
