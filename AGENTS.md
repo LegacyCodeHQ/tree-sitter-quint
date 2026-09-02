@@ -10,12 +10,36 @@ capability.
 
 - Confirm the working tree state with `git status --short`. Preserve unrelated
   user changes.
-- Create the smallest representative `.qnt` fixture for the proposed syntax.
-- Run `quint parse <fixture>` before adding the fixture to the corpus. Positive
-  corpus fixtures must be accepted by the installed Quint compiler; do not add
-  syntax based only on memory or inference.
-- Keep temporary Quint validation files outside the repository and remove them
-  after the feature is complete.
+- Create the smallest representative `.qnt` fixture for the proposed syntax as
+  a uniquely named temporary file outside the repository. For example:
+
+  ```text
+  /private/tmp/quint-tree-sitter-operator-type.qnt
+  ```
+
+- Before editing a corpus file or `grammar.js`, run the installed Quint compiler
+  against that exact temporary file:
+
+  ```sh
+  quint parse /private/tmp/quint-tree-sitter-operator-type.qnt
+  ```
+
+- Treat this as a mandatory reference-parser gate:
+
+  - Exit code zero means the syntax is valid Quint and the same source may be
+    copied into a positive Tree-sitter corpus test.
+  - A nonzero exit code means stop. Correct the fixture or revise the proposed
+    syntax, then rerun `quint parse`. Do not add the fixture to the positive
+    corpus and do not change the grammar while Quint still rejects it.
+  - Never infer support from documentation, memory, or a similar construct when
+    the installed Quint compiler can validate the exact fixture.
+
+- When the feature has multiple positive fixtures, run `quint parse` on every
+  exact fixture before adding it to the corpus. Validate complete integration
+  programs separately even when all of their smaller constructs were already
+  validated.
+- Keep temporary Quint files outside the repository and remove them after the
+  feature is complete.
 
 ### 2. Establish the red test
 
