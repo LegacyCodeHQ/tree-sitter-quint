@@ -305,6 +305,7 @@ export default grammar({
       $.unit_literal,
       $.record_literal,
       $.block_expression,
+      $.any_expression,
       $.assignment_expression,
       $.if_expression,
       $.lambda_expression,
@@ -362,6 +363,15 @@ export default grammar({
       field("name", $.identifier),
       "=",
       field("value", $._expression),
+    ),
+
+    any_expression: $ => seq(
+      "any",
+      "{",
+      field("choice", $._expression),
+      repeat(seq(",", field("choice", $._expression))),
+      optional(","),
+      "}",
     ),
 
     assignment_expression: $ => prec.right(PREC.ASSIGNMENT, seq(

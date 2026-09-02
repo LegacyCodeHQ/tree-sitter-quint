@@ -82,3 +82,41 @@ module Choices {
           left: (name_reference
             name: (identifier))
           right: (integer_literal))))))
+
+========================================
+Nondeterministic choice with trailing comma
+========================================
+
+module Choices {
+  action firstChoice = true
+  action secondChoice = true
+
+  action choose = {
+    any {
+      firstChoice(),
+      secondChoice(),
+    }
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (any_expression
+          choice: (call_expression
+            function: (name_reference
+              name: (identifier)))
+          choice: (call_expression
+            function: (name_reference
+              name: (identifier))))))))
