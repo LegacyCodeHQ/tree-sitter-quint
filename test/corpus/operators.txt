@@ -39,3 +39,25 @@ module Functions {
       name: (identifier)
       return_type: (primitive_type)
       body: (integer_literal))))
+
+======================================
+Type-inferred pure operator definition
+======================================
+
+module Functions {
+  pure def increment(x) = x + 1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))))

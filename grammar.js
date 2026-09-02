@@ -74,17 +74,31 @@ export default grammar({
       field("qualifier", "pure"),
       "def",
       field("name", $.identifier),
-      optional(seq(
-        "(",
-        field("parameter", $.annotated_parameter),
-        repeat(seq(",", field("parameter", $.annotated_parameter))),
-        ")",
-      )),
-      ":",
-      field("return_type", $._type),
+      choice(
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          ")",
+        ),
+        seq(
+          ":",
+          field("return_type", $._type),
+        ),
+      ),
       "=",
       field("body", $._expression),
     ),
+
+    parameter: $ => field("name", $.identifier),
 
     annotated_parameter: $ => seq(
       field("name", $.identifier),

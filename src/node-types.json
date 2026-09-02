@@ -1323,6 +1323,10 @@
           {
             "type": "annotated_parameter",
             "named": true
+          },
+          {
+            "type": "parameter",
+            "named": true
           }
         ]
       },
@@ -1338,7 +1342,7 @@
       },
       "return_type": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "function_type",
@@ -1370,6 +1374,22 @@
           },
           {
             "type": "tuple_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "parameter",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
             "named": true
           }
         ]
