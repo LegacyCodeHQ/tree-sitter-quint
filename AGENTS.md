@@ -77,11 +77,12 @@ bun run generate
 bun run test
 ```
 
-All Tree-sitter corpus tests, the ANTLR tokenization-parity fixtures, and the
-phase-one syntax-acceptance fixtures must pass. The parity checks resolve the
-installed `quint` executable and load its generated lexer or phase-one parser
-directly; set `QUINT_CLI` when `quint` is not on `PATH`. Inspect failures for
-regressions rather than updating existing expected trees automatically.
+All Tree-sitter corpus tests, the ANTLR tokenization-parity fixtures, the
+phase-one syntax-acceptance fixtures, and the parse-structure fixtures must
+pass. The parity checks resolve the installed `quint` executable and load its
+generated lexer or phase-one parser directly; set `QUINT_CLI` when `quint` is
+not on `PATH`. Inspect failures for regressions rather than updating existing
+expected trees automatically.
 
 The same checker accepts directories and recursively checks every `.qnt` file.
 Use it after lexer or token-rule changes to compare against a local checkout of
@@ -90,6 +91,7 @@ the official Quint repository:
 ```sh
 node scripts/check-tokenization-parity.mjs --quiet /path/to/quint
 node scripts/check-syntax-acceptance-parity.mjs --quiet /path/to/quint
+node scripts/check-parse-structure-parity.mjs --quiet /path/to/quint
 ```
 
 Generated files under `src/` are part of the repository contract. Commit every
