@@ -67,14 +67,14 @@ export default grammar({
 
     constant_declaration: $ => seq(
       "const",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       ":",
       field("type", $._type),
     ),
 
     variable_declaration: $ => seq(
       "var",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       ":",
       field("type", $._type),
     ),
@@ -102,7 +102,7 @@ export default grammar({
         seq(
           field("qualifier", "pure"),
           "def",
-          field("name", $.identifier),
+          field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
             seq(
               "(",
@@ -126,7 +126,7 @@ export default grammar({
         ),
         seq(
           "def",
-          field("name", $.identifier),
+          field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
             seq(
               "(",
@@ -154,7 +154,7 @@ export default grammar({
         ),
         seq(
           field("qualifier", "action"),
-          field("name", $.identifier),
+          field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
             seq(
               "(",
@@ -178,7 +178,7 @@ export default grammar({
         ),
         seq(
           field("qualifier", "nondet"),
-          field("name", $.identifier),
+          field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
             seq(
               "(",
@@ -202,7 +202,7 @@ export default grammar({
         ),
         seq(
           field("qualifier", "temporal"),
-          field("name", $.identifier),
+          field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
             seq(
               "(",
@@ -226,7 +226,7 @@ export default grammar({
         ),
         seq(
           field("qualifier", "run"),
-          field("name", $.identifier),
+          field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
             seq(
               "(",
@@ -615,7 +615,7 @@ export default grammar({
     )),
 
     primed_identifier: $ => seq(
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       "'",
     ),
 

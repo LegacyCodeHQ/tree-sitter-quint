@@ -55,3 +55,44 @@ module A::Impl {
     (value_definition
       name: (identifier)
       value: (integer_literal))))
+
+========================================
+Qualified identifiers throughout declarations
+========================================
+
+module QualifiedIdentifiers {
+  var State::counter: int
+  pure def Ops::increment(x: int): int = x + 1
+  action init = State::counter' = 0
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      type: (primitive_type))
+    (operator_definition
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (qualified_identifier
+            namespace: (identifier)
+            name: (identifier)))
+        value: (integer_literal)))))
