@@ -1303,6 +1303,10 @@
             "named": true
           },
           {
+            "type": "reserved_operator",
+            "named": true
+          },
+          {
             "type": "string_literal",
             "named": true
           },
@@ -1402,6 +1406,10 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "reserved_operator",
             "named": true
           }
         ]
@@ -4402,6 +4410,11 @@
         ]
       }
     }
+  },
+  {
+    "type": "reserved_operator",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "set_type",

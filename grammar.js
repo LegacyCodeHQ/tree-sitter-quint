@@ -37,6 +37,8 @@ export default grammar({
     [$.lambda_expression, $.tuple_pattern],
     [$.lambda_expression, $.tuple_pattern, $.name_reference],
     [$.operator_type, $.tuple_type],
+    [$.operator_definition, $.nondet_binding, $.binary_expression],
+    [$.nondet_binding, $.binary_expression],
   ],
 
   rules: {
@@ -730,7 +732,7 @@ export default grammar({
     field_access_expression: $ => prec.left(PREC.POSTFIX, seq(
       field("object", $._expression),
       ".",
-      field("field", $.identifier),
+      field("field", choice($.identifier, $.reserved_operator)),
     )),
 
     index_expression: $ => prec.left(PREC.POSTFIX, seq(
@@ -741,7 +743,7 @@ export default grammar({
     )),
 
     call_expression: $ => prec.left(PREC.POSTFIX, seq(
-      field("function", $._expression),
+      field("function", choice($._expression, $.reserved_operator)),
       "(",
       optional(seq(
         field("argument", $._expression),
@@ -749,6 +751,14 @@ export default grammar({
       )),
       ")",
     )),
+
+    reserved_operator: _ => choice(
+      "and",
+      "or",
+      "iff",
+      "implies",
+      "leadsTo",
+    ),
 
     namespace_access_expression: $ => prec.left(PREC.POSTFIX, seq(
       field("namespace", $.identifier),

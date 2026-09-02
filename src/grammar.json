@@ -3694,8 +3694,17 @@
             "type": "FIELD",
             "name": "field",
             "content": {
-              "type": "SYMBOL",
-              "name": "identifier"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "reserved_operator"
+                }
+              ]
             }
           }
         ]
@@ -3744,8 +3753,17 @@
             "type": "FIELD",
             "name": "function",
             "content": {
-              "type": "SYMBOL",
-              "name": "_expression"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "reserved_operator"
+                }
+              ]
             }
           },
           {
@@ -3799,6 +3817,31 @@
           }
         ]
       }
+    },
+    "reserved_operator": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "and"
+        },
+        {
+          "type": "STRING",
+          "value": "or"
+        },
+        {
+          "type": "STRING",
+          "value": "iff"
+        },
+        {
+          "type": "STRING",
+          "value": "implies"
+        },
+        {
+          "type": "STRING",
+          "value": "leadsTo"
+        }
+      ]
     },
     "namespace_access_expression": {
       "type": "PREC_LEFT",
@@ -4423,6 +4466,15 @@
     [
       "operator_type",
       "tuple_type"
+    ],
+    [
+      "operator_definition",
+      "nondet_binding",
+      "binary_expression"
+    ],
+    [
+      "nondet_binding",
+      "binary_expression"
     ]
   ],
   "precedences": [],
