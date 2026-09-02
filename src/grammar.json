@@ -486,6 +486,10 @@
         {
           "type": "SYMBOL",
           "name": "string_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "name_reference"
         }
       ]
     },
@@ -509,6 +513,14 @@
     "string_literal": {
       "type": "PATTERN",
       "value": "\"[^\"\\\\\\r\\n]*\""
+    },
+    "name_reference": {
+      "type": "FIELD",
+      "name": "name",
+      "content": {
+        "type": "SYMBOL",
+        "name": "identifier"
+      }
     },
     "identifier": {
       "type": "PATTERN",

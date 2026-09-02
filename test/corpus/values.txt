@@ -52,3 +52,25 @@ module Messages {
     (value_definition
       name: (identifier)
       value: (string_literal))))
+
+=========================
+Value definition reference
+=========================
+
+module Example {
+  val answer = 42
+  val copy = answer
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (name_reference
+        name: (identifier)))))

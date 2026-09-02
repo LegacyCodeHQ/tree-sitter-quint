@@ -129,6 +129,7 @@ export default grammar({
       $.integer_literal,
       $.boolean_literal,
       $.string_literal,
+      $.name_reference,
     ),
 
     integer_literal: _ => /[0-9]+/,
@@ -136,6 +137,8 @@ export default grammar({
     boolean_literal: _ => choice("true", "false"),
 
     string_literal: _ => /"[^"\\\r\n]*"/,
+
+    name_reference: $ => field("name", $.identifier),
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
   },

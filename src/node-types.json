@@ -227,6 +227,22 @@
     }
   },
   {
+    "type": "name_reference",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "named_type",
     "named": true,
     "fields": {
@@ -558,6 +574,10 @@
           },
           {
             "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "name_reference",
             "named": true
           },
           {
