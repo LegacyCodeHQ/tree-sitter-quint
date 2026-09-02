@@ -222,3 +222,21 @@ module Choices {
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))))
+
+==================================================
+Parameterless annotated nondeterministic definition
+==================================================
+
+module Choices {
+  nondet choose: bool = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (boolean_literal))))
