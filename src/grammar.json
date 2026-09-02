@@ -3319,7 +3319,7 @@
     },
     "integer_literal": {
       "type": "PATTERN",
-      "value": "[0-9]+"
+      "value": "[0-9](?:_?[0-9])*"
     },
     "boolean_literal": {
       "type": "CHOICE",

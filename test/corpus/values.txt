@@ -124,3 +124,20 @@ module Values {
       name: (identifier)
       type: (primitive_type)
       value: (integer_literal))))
+
+========================================
+Decimal literal with separators
+========================================
+
+module Numbers {
+  pure val million = 1_000_000
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))))
