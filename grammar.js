@@ -172,11 +172,21 @@ export default grammar({
         seq(
           field("qualifier", "run"),
           field("name", $.identifier),
-          optional(seq(
-            "(",
-            field("parameter", $.parameter),
-            repeat(seq(",", field("parameter", $.parameter))),
-            ")",
+          optional(choice(
+            seq(
+              "(",
+              field("parameter", $.annotated_parameter),
+              repeat(seq(",", field("parameter", $.annotated_parameter))),
+              ")",
+              ":",
+              field("return_type", $._type),
+            ),
+            seq(
+              "(",
+              field("parameter", $.parameter),
+              repeat(seq(",", field("parameter", $.parameter))),
+              ")",
+            ),
           )),
         ),
       ),

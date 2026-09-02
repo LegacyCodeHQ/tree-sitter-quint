@@ -368,3 +368,27 @@ module Scenarios {
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))))
+
+========================================
+Annotated run definition
+========================================
+
+module Scenarios {
+  run example(value: int): bool = value > 0
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))))
