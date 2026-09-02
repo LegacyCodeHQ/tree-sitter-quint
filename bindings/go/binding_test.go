@@ -1,0 +1,15 @@
+package tree_sitter_quint_test
+
+import (
+	"testing"
+
+	tree_sitter "github.com/tree-sitter/go-tree-sitter"
+	tree_sitter_quint "github.com/LegacyCodeLabs/quint-tree-sitter/bindings/go"
+)
+
+func TestCanLoadGrammar(t *testing.T) {
+	language := tree_sitter.NewLanguage(tree_sitter_quint.Language())
+	if language == nil {
+		t.Errorf("Error loading Quint grammar")
+	}
+}

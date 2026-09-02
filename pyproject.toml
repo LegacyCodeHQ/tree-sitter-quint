@@ -1,0 +1,30 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [ "setuptools>=62.4.0", "wheel" ]
+
+[project]
+authors = [ { email = "ragunath@legacycode.com", name = "Ragunath Jawahar" } ]
+classifiers = [
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Compilers",
+  "Topic :: Text Processing :: Linguistic",
+  "Typing :: Typed",
+]
+description = "Tree-sitter grammar for Quint"
+keywords = [ "incremental", "parsing", "tree-sitter", "quint" ]
+license.text = "MIT"
+name = "tree-sitter-quint"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "0.1.0"
+
+[project.urls]
+Funding = ""
+Homepage = "https://github.com/LegacyCodeLabs/quint-tree-sitter"
+
+[project.optional-dependencies]
+core = [ "tree-sitter~=0.24" ]
+
+[tool.cibuildwheel]
+build = "cp310-*"
+build-frontend = "build"

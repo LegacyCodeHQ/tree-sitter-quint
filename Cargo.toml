@@ -1,0 +1,27 @@
+[package]
+authors = [ "Ragunath Jawahar <ragunath@legacycode.com>" ]
+autoexamples = false
+categories = [ "parser-implementations", "parsing", "text-editors" ]
+description = "Tree-sitter grammar for Quint"
+edition = "2024"
+keywords = [ "incremental", "parsing", "tree-sitter", "quint" ]
+license = "MIT"
+name = "tree-sitter-quint"
+readme = "README.md"
+repository = "https://github.com/LegacyCodeLabs/quint-tree-sitter"
+version = "0.1.0"
+
+build = "bindings/rust/build.rs"
+include = [ "bindings/rust/*", "grammar.js", "queries/*", "src/*", "tree-sitter.json", "/LICENSE" ]
+
+[lib]
+path = "bindings/rust/lib.rs"
+
+[dependencies]
+tree-sitter-language = "0.1"
+
+[build-dependencies]
+cc = "1.2"
+
+[dev-dependencies]
+tree-sitter = "0.27.0"
