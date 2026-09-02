@@ -129,6 +129,8 @@ function treeSitterTokens(source, parser) {
 
     const kind = node.text === "true" || node.text === "false"
       ? "boolean"
+      : node.text === "Map"
+        ? "identifier"
       : ["Set", "List", "from", "as"].includes(node.text)
         ? node.text
       : ({

@@ -9,7 +9,7 @@
     "install": "node-gyp-build",
     "test": "tree-sitter test && bun run test:tokens && bun run test:syntax",
     "test:syntax": "node scripts/check-syntax-acceptance-parity.mjs test/fixtures",
-    "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures/tokenization.qnt test/fixtures/tokenization-uppercase-hex.qnt test/fixtures/tokenization-leading-zero.qnt test/fixtures/tokenization-zero-separator.qnt test/fixtures/tokenization-hole-contexts.qnt test/fixtures/tokenization-lone-hole-name.qnt"
+    "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures"
   },
   "packageManager": "bun@1.4.0",
   "dependencies": {

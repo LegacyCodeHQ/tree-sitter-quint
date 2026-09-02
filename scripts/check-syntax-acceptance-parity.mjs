@@ -106,9 +106,12 @@ function firstTreeError(node) {
 function treeSitterResult(source, parser) {
   const tree = parser.parse(source);
   const error = firstTreeError(tree.rootNode);
+  const diagnostic = tree.rootNode.descendantsOfType("invalid_map_type")[0];
   return {
-    accepted: !tree.rootNode.hasError,
-    detail: error
+    accepted: !tree.rootNode.hasError && !diagnostic,
+    detail: diagnostic
+      ? `invalid_map_type at ${diagnostic.startPosition.row + 1}:${diagnostic.startPosition.column + 1}`
+      : error
       ? `${error.type} at ${error.startPosition.row + 1}:${error.startPosition.column + 1}`
       : "",
   };

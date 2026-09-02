@@ -629,6 +629,7 @@ export default grammar({
     _type: $ => choice(
       $.primitive_type,
       $.type_variable,
+      $.invalid_map_type,
       $.type_application,
       $.named_type,
       $.set_type,
@@ -649,6 +650,15 @@ export default grammar({
       $.identifier,
       $.qualified_identifier,
       alias($._lowercase_qualified_identifier, $.qualified_identifier),
+    )),
+
+    invalid_map_type: $ => prec(2, seq(
+      "Map",
+      "[",
+      field("key", $._type),
+      ",",
+      field("value", $._type),
+      "]",
     )),
 
     type_application: $ => prec(1, seq(

@@ -100,6 +100,25 @@ module Types {
         argument: (primitive_type)))))
 
 ========================================
+Legacy two-argument Map type diagnostic
+========================================
+
+module LegacyMapType {
+  type WrongMap = Map[int, str]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (invalid_map_type
+        key: (primitive_type)
+        value: (primitive_type)))))
+
+========================================
 Polymorphic sum type declaration
 ========================================
 
