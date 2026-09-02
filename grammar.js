@@ -24,8 +24,91 @@ const PREC = {
   POSTFIX: 12,
 };
 
+const RESERVED_IDENTIFIERS = [
+  "action",
+  "all",
+  "and",
+  "any",
+  "assume",
+  "bool",
+  "const",
+  "def",
+  "else",
+  "export",
+  "false",
+  "if",
+  "iff",
+  "implies",
+  "import",
+  "int",
+  "leadsTo",
+  "match",
+  "module",
+  "nondet",
+  "or",
+  "pure",
+  "run",
+  "str",
+  "temporal",
+  "true",
+  "type",
+  "val",
+  "var",
+];
+
+const IDENTIFIER_TAIL_CHARACTERS =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+
+function identifierPatternWithout(reservedWords) {
+  const root = { terminal: false, children: new Map() };
+
+  for (const word of reservedWords) {
+    let node = root;
+    for (const character of word) {
+      if (!node.children.has(character)) {
+        node.children.set(character, { terminal: false, children: new Map() });
+      }
+      node = node.children.get(character);
+    }
+    node.terminal = true;
+  }
+
+  const alternatives = ["[A-Z_][A-Za-z0-9_]*"];
+
+  function addAlternatives(node, prefix) {
+    if (prefix && !node.terminal) {
+      alternatives.push(prefix);
+    }
+
+    const alphabet = prefix
+      ? IDENTIFIER_TAIL_CHARACTERS
+      : "abcdefghijklmnopqrstuvwxyz";
+    const childCharacters = new Set(node.children.keys());
+    const remainingCharacters = [...alphabet]
+      .filter(character => !childCharacters.has(character))
+      .join("");
+
+    if (remainingCharacters) {
+      alternatives.push(
+        `${prefix}[${remainingCharacters}][A-Za-z0-9_]*`,
+      );
+    }
+
+    for (const [character, child] of node.children) {
+      addAlternatives(child, prefix + character);
+    }
+  }
+
+  addAlternatives(root, "");
+  return new RegExp(`(?:${alternatives.join("|")})`);
+}
+
+const IDENTIFIER_PATTERN = identifierPatternWithout(RESERVED_IDENTIFIERS);
+
 export default grammar({
   name: "quint",
+
+  word: $ => $.identifier,
 
   externals: $ => [
     $._newline,
@@ -100,7 +183,7 @@ export default grammar({
       "val",
       choice(
         seq(
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           optional(seq(
             ":",
             field("type", $._type),
@@ -139,7 +222,7 @@ export default grammar({
         seq(
           field("qualifier", "pure"),
           "val",
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           choice(
             seq(
               "(",
@@ -162,7 +245,7 @@ export default grammar({
         ),
         seq(
           "val",
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           choice(
             seq(
               "(",
@@ -186,7 +269,7 @@ export default grammar({
         seq(
           field("qualifier", "pure"),
           "def",
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           optional(choice(
             seq("(", ")", optional($._return_type_annotation)),
             seq(
@@ -214,7 +297,7 @@ export default grammar({
         ),
         seq(
           "def",
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           optional(choice(
             seq("(", ")", optional($._return_type_annotation)),
             seq(
@@ -242,7 +325,7 @@ export default grammar({
         ),
         seq(
           field("qualifier", "action"),
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           optional(choice(
             seq(
               "(",
@@ -277,7 +360,7 @@ export default grammar({
         ),
         seq(
           field("qualifier", "nondet"),
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           optional(choice(
             seq("(", ")", optional($._return_type_annotation)),
             seq(
@@ -305,7 +388,7 @@ export default grammar({
         ),
         seq(
           field("qualifier", "temporal"),
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           optional(choice(
             seq("(", ")", optional($._return_type_annotation)),
             seq(
@@ -333,7 +416,7 @@ export default grammar({
         ),
         seq(
           field("qualifier", "run"),
-          field("name", choice($.identifier, $.qualified_identifier)),
+          field("name", $._normal_call_name),
           optional(choice(
             seq("(", ")", optional($._return_type_annotation)),
             seq(
@@ -360,6 +443,12 @@ export default grammar({
           )),
         ),
     )),
+
+    _normal_call_name: $ => choice(
+      $.identifier,
+      $.qualified_identifier,
+      $.reserved_operator,
+    ),
 
     parameter: $ => field("name", choice($.identifier, $.qualified_identifier)),
 
@@ -743,7 +832,7 @@ export default grammar({
 
     nondet_binding: $ => prec(1, seq(
       "nondet",
-      field("name", choice($.identifier, $.qualified_identifier)),
+      field("name", $._normal_call_name),
       "=",
       field("value", $._expression),
     )),
@@ -852,7 +941,7 @@ export default grammar({
     _local_value_header: $ => seq(
       optional(field("qualifier", "pure")),
       "val",
-      field("name", choice($.identifier, $.qualified_identifier)),
+      field("name", $._normal_call_name),
       optional(seq(
         ":",
         field("type", $._type),
@@ -864,8 +953,7 @@ export default grammar({
       optional(field("qualifier", "pure")),
       "val",
       field("name", choice(
-        $.identifier,
-        $.qualified_identifier,
+        $._normal_call_name,
         $.tuple_pattern,
         $.record_pattern,
       )),
@@ -882,8 +970,7 @@ export default grammar({
       optional(field("qualifier", "pure")),
       "val",
       field("name", choice(
-        $.identifier,
-        $.qualified_identifier,
+        $._normal_call_name,
         $.tuple_pattern,
         $.record_pattern,
       )),
@@ -1084,6 +1171,6 @@ export default grammar({
       )))),
     ),
 
-    identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
+    identifier: _ => IDENTIFIER_PATTERN,
   },
 });

@@ -1,0 +1,106 @@
+========================================
+Contextual keywords allowed as identifiers
+========================================
+
+module KeywordExceptions {
+  pure val from = 1
+  pure val as = 2
+  pure val recordValue = { from: 1, as: 2, Set: 3, List: 4 }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))))
+
+========================================
+Reserved operator keyword rejected as identifier
+========================================
+
+module InvalidReservedKeyword {
+  pure val match = 1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (ERROR
+      (integer_literal))))
+
+========================================
+Structural keyword rejected as identifier
+========================================
+
+module InvalidStructuralKeyword {
+  pure val module = 1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      (ERROR
+        (identifier))
+      value: (integer_literal))))
+
+========================================
+Boolean keyword rejected as identifier
+========================================
+
+module InvalidBooleanKeyword {
+  pure val true = 1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (ERROR
+      (integer_literal))))
+
+========================================
+Primitive type keyword rejected as identifier
+========================================
+
+module InvalidTypeKeyword {
+  pure val int = 1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      (ERROR
+        (identifier))
+      value: (integer_literal))))

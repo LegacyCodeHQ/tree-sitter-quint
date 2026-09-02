@@ -1,6 +1,7 @@
 {
   "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "quint",
+  "word": "identifier",
   "rules": {
     "source_file": {
       "type": "SEQ",
@@ -266,17 +267,8 @@
                   "type": "FIELD",
                   "name": "name",
                   "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "identifier"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "qualified_identifier"
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_normal_call_name"
                   }
                 },
                 {
@@ -485,17 +477,8 @@
                 "type": "FIELD",
                 "name": "name",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "qualified_identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_normal_call_name"
                 }
               },
               {
@@ -646,17 +629,8 @@
                 "type": "FIELD",
                 "name": "name",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "qualified_identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_normal_call_name"
                 }
               },
               {
@@ -815,17 +789,8 @@
                 "type": "FIELD",
                 "name": "name",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "qualified_identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_normal_call_name"
                 }
               },
               {
@@ -1026,17 +991,8 @@
                 "type": "FIELD",
                 "name": "name",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "qualified_identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_normal_call_name"
                 }
               },
               {
@@ -1241,17 +1197,8 @@
                 "type": "FIELD",
                 "name": "name",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "qualified_identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_normal_call_name"
                 }
               },
               {
@@ -1469,17 +1416,8 @@
                 "type": "FIELD",
                 "name": "name",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "qualified_identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_normal_call_name"
                 }
               },
               {
@@ -1684,17 +1622,8 @@
                 "type": "FIELD",
                 "name": "name",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "qualified_identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_normal_call_name"
                 }
               },
               {
@@ -1899,17 +1828,8 @@
                 "type": "FIELD",
                 "name": "name",
                 "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "qualified_identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_normal_call_name"
                 }
               },
               {
@@ -2101,6 +2021,23 @@
           }
         ]
       }
+    },
+    "_normal_call_name": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "qualified_identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "reserved_operator"
+        }
+      ]
     },
     "parameter": {
       "type": "FIELD",
@@ -4142,17 +4079,8 @@
             "type": "FIELD",
             "name": "name",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "identifier"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "qualified_identifier"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "_normal_call_name"
             }
           },
           {
@@ -4802,17 +4730,8 @@
           "type": "FIELD",
           "name": "name",
           "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "identifier"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "qualified_identifier"
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "_normal_call_name"
           }
         },
         {
@@ -4885,11 +4804,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "identifier"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "qualified_identifier"
+                "name": "_normal_call_name"
               },
               {
                 "type": "SYMBOL",
@@ -4985,11 +4900,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "identifier"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "qualified_identifier"
+                "name": "_normal_call_name"
               },
               {
                 "type": "SYMBOL",
@@ -6161,7 +6072,7 @@
     },
     "identifier": {
       "type": "PATTERN",
-      "value": "[A-Za-z_][A-Za-z0-9_]*"
+      "value": "(?:[A-Z_][A-Za-z0-9_]*|[ghjkquwxyz][A-Za-z0-9_]*|a|a[ABCDEFGHIJKLMNOPQRSTUVWXYZabdefghijkmopqrtuvwxyz0123456789_][A-Za-z0-9_]*|ac|ac[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrsuvwxyz0123456789_][A-Za-z0-9_]*|act|act[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghjklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|acti|acti[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|actio|actio[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz0123456789_][A-Za-z0-9_]*|action[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|al|al[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|all[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|an|an[ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxz0123456789_][A-Za-z0-9_]*|and[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|any[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|as|as[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrtuvwxyz0123456789_][A-Za-z0-9_]*|ass|ass[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstvwxyz0123456789_][A-Za-z0-9_]*|assu|assu[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|assum|assum[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|assume[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|b|b[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|bo|bo[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|boo|boo[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|bool[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|c|c[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|co|co[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz0123456789_][A-Za-z0-9_]*|con|con[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrtuvwxyz0123456789_][A-Za-z0-9_]*|cons|cons[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrsuvwxyz0123456789_][A-Za-z0-9_]*|const[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|d|d[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|de|de[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|def[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|e|e[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwyz0123456789_][A-Za-z0-9_]*|el|el[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrtuvwxyz0123456789_][A-Za-z0-9_]*|els|els[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|else[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|ex|ex[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoqrstuvwxyz0123456789_][A-Za-z0-9_]*|exp|exp[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|expo|expo[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqstuvwxyz0123456789_][A-Za-z0-9_]*|expor|expor[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrsuvwxyz0123456789_][A-Za-z0-9_]*|export[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|f|f[ABCDEFGHIJKLMNOPQRSTUVWXYZbcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|fa|fa[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|fal|fal[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrtuvwxyz0123456789_][A-Za-z0-9_]*|fals|fals[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|false[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|i|i[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdeghijklopqrstuvwxyz0123456789_][A-Za-z0-9_]*|if[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|iff[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|im|im[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoqrstuvwxyz0123456789_][A-Za-z0-9_]*|imp|imp[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|impl|impl[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghjklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|impli|impli[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|implie|implie[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrtuvwxyz0123456789_][A-Za-z0-9_]*|implies[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|impo|impo[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqstuvwxyz0123456789_][A-Za-z0-9_]*|impor|impor[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrsuvwxyz0123456789_][A-Za-z0-9_]*|import[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|in|in[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrsuvwxyz0123456789_][A-Za-z0-9_]*|int[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|l|l[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|le|le[ABCDEFGHIJKLMNOPQRSTUVWXYZbcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|lea|lea[ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|lead|lead[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrtuvwxyz0123456789_][A-Za-z0-9_]*|leads|leads[ABCDEFGHIJKLMNOPQRSUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|leadsT|leadsT[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|leadsTo[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|m|m[ABCDEFGHIJKLMNOPQRSTUVWXYZbcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|ma|ma[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrsuvwxyz0123456789_][A-Za-z0-9_]*|mat|mat[ABCDEFGHIJKLMNOPQRSTUVWXYZabdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|matc|matc[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefgijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|match[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|mo|mo[ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|mod|mod[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstvwxyz0123456789_][A-Za-z0-9_]*|modu|modu[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|modul|modul[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|module[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|n|n[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|no|no[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz0123456789_][A-Za-z0-9_]*|non|non[ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|nond|nond[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|nonde|nonde[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrsuvwxyz0123456789_][A-Za-z0-9_]*|nondet[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|o|o[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqstuvwxyz0123456789_][A-Za-z0-9_]*|or[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|p|p[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstvwxyz0123456789_][A-Za-z0-9_]*|pu|pu[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqstuvwxyz0123456789_][A-Za-z0-9_]*|pur|pur[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|pure[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|r|r[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstvwxyz0123456789_][A-Za-z0-9_]*|ru|ru[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz0123456789_][A-Za-z0-9_]*|run[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|s|s[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrsuvwxyz0123456789_][A-Za-z0-9_]*|st|st[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqstuvwxyz0123456789_][A-Za-z0-9_]*|str[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|t|t[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqstuvwxz0123456789_][A-Za-z0-9_]*|te|te[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|tem|tem[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoqrstuvwxyz0123456789_][A-Za-z0-9_]*|temp|temp[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789_][A-Za-z0-9_]*|tempo|tempo[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqstuvwxyz0123456789_][A-Za-z0-9_]*|tempor|tempor[ABCDEFGHIJKLMNOPQRSTUVWXYZbcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|tempora|tempora[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|temporal[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|tr|tr[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstvwxyz0123456789_][A-Za-z0-9_]*|tru|tru[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|true[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|ty|ty[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoqrstuvwxyz0123456789_][A-Za-z0-9_]*|typ|typ[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdfghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|type[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|v|v[ABCDEFGHIJKLMNOPQRSTUVWXYZbcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|va|va[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqstuvwxyz0123456789_][A-Za-z0-9_]*|val[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*|var[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_][A-Za-z0-9_]*)"
     }
   },
   "extras": [

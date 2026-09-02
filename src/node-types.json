@@ -3295,6 +3295,10 @@
           {
             "type": "qualified_identifier",
             "named": true
+          },
+          {
+            "type": "reserved_operator",
+            "named": true
           }
         ]
       },
@@ -3526,6 +3530,10 @@
           },
           {
             "type": "qualified_identifier",
+            "named": true
+          },
+          {
+            "type": "reserved_operator",
             "named": true
           }
         ]
@@ -5186,6 +5194,10 @@
           },
           {
             "type": "record_pattern",
+            "named": true
+          },
+          {
+            "type": "reserved_operator",
             "named": true
           },
           {
