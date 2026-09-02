@@ -80,3 +80,39 @@ module FailedRun {
           object: (name_reference
             name: (identifier))
           field: (identifier))))))
+
+========================================
+Run expectation
+========================================
+
+module ExpectedRun {
+  var n: int
+  action initialize = n' = 0
+  run checked = initialize.expect(n == 0)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (identifier))
+        value: (integer_literal)))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (field_access_expression
+          object: (name_reference
+            name: (identifier))
+          field: (identifier))
+        argument: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))))
