@@ -346,3 +346,25 @@ module Scenarios {
     (operator_definition
       name: (identifier)
       body: (boolean_literal))))
+
+========================================
+Parameterized run definition
+========================================
+
+module Scenarios {
+  run example(value) = value > 0
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))))
