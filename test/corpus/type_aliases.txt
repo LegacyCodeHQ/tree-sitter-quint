@@ -262,3 +262,29 @@ module SingleConstructorSum {
         (sum_type_variant
           name: (identifier)
           payload: (primitive_type))))))
+
+========================================
+Trailing commas in type lists
+========================================
+
+module TrailingTypeCommas {
+  type Pair = (int, str,)
+  type Predicate = (int, str,) => bool
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (tuple_type
+        element: (primitive_type)
+        element: (primitive_type)))
+    (type_alias_declaration
+      name: (identifier)
+      value: (operator_type
+        parameter: (primitive_type)
+        parameter: (primitive_type)
+        result: (primitive_type)))))

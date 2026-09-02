@@ -519,6 +519,7 @@ export default grammar({
         optional(seq(
           field("parameter", $._type),
           repeat(seq(",", field("parameter", $._type))),
+          optional(","),
         )),
         ")",
         "=>",
@@ -549,6 +550,7 @@ export default grammar({
       ",",
       field("element", $._type),
       repeat(seq(",", field("element", $._type))),
+      optional(","),
       ")",
     ),
 
