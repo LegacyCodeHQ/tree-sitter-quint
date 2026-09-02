@@ -27,6 +27,10 @@ const PREC = {
 export default grammar({
   name: "quint",
 
+  externals: $ => [
+    $._newline,
+  ],
+
   extras: $ => [
     /\s/,
     $.comment,
@@ -693,6 +697,10 @@ export default grammar({
 
     nested_definition_expression: $ => choice(
       prec.right(seq(
+        field("definition", alias($._local_value_definition_unterminated, $.value_definition)),
+        field("body", choice($.all_expression, $.any_expression)),
+      )),
+      prec.right(seq(
         field("definition", alias($._local_value_definition, $.value_definition)),
         field("body", $._expression),
       )),
@@ -720,7 +728,22 @@ export default grammar({
       choice(";", $._newline),
     ),
 
-    _newline: _ => token(prec(1, /\r?\n/)),
+    _local_value_definition_unterminated: $ => seq(
+      optional(field("qualifier", "pure")),
+      "val",
+      field("name", choice(
+        $.identifier,
+        $.qualified_identifier,
+        $.tuple_pattern,
+        $.record_pattern,
+      )),
+      optional(seq(
+        ":",
+        field("type", $._type),
+      )),
+      "=",
+      field("value", $._expression),
+    ),
 
     lambda_expression: $ => prec.right(seq(
       choice(
