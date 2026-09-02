@@ -404,15 +404,15 @@ export default grammar({
       "]",
     )),
 
-    call_expression: $ => seq(
-      field("function", $.name_reference),
+    call_expression: $ => prec.left(PREC.POSTFIX, seq(
+      field("function", $._expression),
       "(",
       optional(seq(
         field("argument", $._expression),
         repeat(seq(",", field("argument", $._expression))),
       )),
       ")",
-    ),
+    )),
 
     parenthesized_expression: $ => seq(
       "(",

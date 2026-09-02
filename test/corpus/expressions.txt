@@ -635,6 +635,30 @@ module Functions {
             name: (identifier))
           right: (integer_literal))))))
 
+========================================
+Chained method calls
+========================================
+
+module Ranges {
+  val selected = 1.to(100).oneOf()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (field_access_expression
+          object: (call_expression
+            function: (field_access_expression
+              object: (integer_literal)
+              field: (identifier))
+            argument: (integer_literal))
+          field: (identifier))))))
+
 ======================
 Multi-parameter lambda
 ======================
