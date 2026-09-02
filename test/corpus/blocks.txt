@@ -48,3 +48,37 @@ module State {
             left: (name_reference
               name: (identifier))
             right: (integer_literal)))))))
+
+========================================
+Local nondeterministic binding
+========================================
+
+module Choices {
+  action choose = {
+    nondet value = Set(1, 2).oneOf()
+    value > 0
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        binding: (nondet_binding
+          name: (identifier)
+          value: (call_expression
+            function: (field_access_expression
+              object: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (integer_literal)
+                argument: (integer_literal))
+              field: (identifier))))
+        expression: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))))

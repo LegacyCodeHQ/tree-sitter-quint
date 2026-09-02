@@ -352,8 +352,16 @@ export default grammar({
 
     block_expression: $ => seq(
       "{",
+      repeat(field("binding", $.nondet_binding)),
       field("expression", $._expression),
       "}",
+    ),
+
+    nondet_binding: $ => seq(
+      "nondet",
+      field("name", $.identifier),
+      "=",
+      field("value", $._expression),
     ),
 
     assignment_expression: $ => prec.right(PREC.ASSIGNMENT, seq(

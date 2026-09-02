@@ -1572,6 +1572,17 @@
           "value": "{"
         },
         {
+          "type": "REPEAT",
+          "content": {
+            "type": "FIELD",
+            "name": "binding",
+            "content": {
+              "type": "SYMBOL",
+              "name": "nondet_binding"
+            }
+          }
+        },
+        {
           "type": "FIELD",
           "name": "expression",
           "content": {
@@ -1582,6 +1593,35 @@
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "nondet_binding": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "nondet"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
         }
       ]
     },
