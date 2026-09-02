@@ -559,3 +559,59 @@ module Consumer {
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))))
+
+========================================
+Complete operator forms
+========================================
+
+module OperatorForms {
+  pure val conjunction = and {
+    1 < 2,
+    2 < 3,
+  }
+
+  pure val disjunction = or {
+    false,
+    conjunction,
+  }
+
+  pure val entry = 1 + 2 -> 3 * 4
+  pure val result = conjunction -> disjunction
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (and_block_expression
+        conjunct: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        conjunct: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (or_block_expression
+        disjunct: (boolean_literal)
+        disjunct: (name_reference
+          name: (identifier))))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        right: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (name_reference
+          name: (identifier))))))
