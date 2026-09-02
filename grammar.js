@@ -512,13 +512,21 @@ export default grammar({
 
     record_type: $ => seq(
       "{",
-      optional(seq(
-        $.record_type_field,
-        repeat(seq(",", $.record_type_field)),
-        optional(","),
+      optional(choice(
+        seq(
+          $.record_type_field,
+          repeat(seq(",", $.record_type_field)),
+          optional(choice(
+            ",",
+            seq("|", field("row", $.record_row)),
+          )),
+        ),
+        seq("|", field("row", $.record_row)),
       )),
       "}",
     ),
+
+    record_row: $ => field("name", $.identifier),
 
     record_type_field: $ => seq(
       field("name", $.identifier),

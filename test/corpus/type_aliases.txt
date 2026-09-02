@@ -190,3 +190,35 @@ module UnitType {
     (type_alias_declaration
       name: (identifier)
       value: (unit_type))))
+
+========================================
+Open record row types
+========================================
+
+module OpenRecordRows {
+  type Extended[r] = { value: int | r }
+  type OnlyRow[r] = { | r }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      parameter: (type_parameter
+        name: (type_variable))
+      value: (record_type
+        (record_type_field
+          name: (identifier)
+          type: (primitive_type))
+        row: (record_row
+          name: (identifier))))
+    (type_alias_declaration
+      name: (identifier)
+      parameter: (type_parameter
+        name: (type_variable))
+      value: (record_type
+        row: (record_row
+          name: (identifier))))))

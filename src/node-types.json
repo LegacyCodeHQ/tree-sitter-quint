@@ -4167,6 +4167,22 @@
     }
   },
   {
+    "type": "record_row",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "record_spread",
     "named": true,
     "fields": {
@@ -4281,7 +4297,18 @@
   {
     "type": "record_type",
     "named": true,
-    "fields": {},
+    "fields": {
+      "row": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "record_row",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,
