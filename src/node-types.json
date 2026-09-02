@@ -46,6 +46,10 @@
           {
             "type": "unary_expression",
             "named": true
+          },
+          {
+            "type": "unit_literal",
+            "named": true
           }
         ]
       },
@@ -166,6 +170,10 @@
           {
             "type": "unary_expression",
             "named": true
+          },
+          {
+            "type": "unit_literal",
+            "named": true
           }
         ]
       }
@@ -222,6 +230,10 @@
           },
           {
             "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "unit_literal",
             "named": true
           }
         ]
@@ -421,6 +433,10 @@
           {
             "type": "unary_expression",
             "named": true
+          },
+          {
+            "type": "unit_literal",
+            "named": true
           }
         ]
       }
@@ -590,6 +606,10 @@
           },
           {
             "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "unit_literal",
             "named": true
           }
         ]
@@ -821,6 +841,10 @@
           {
             "type": "unary_expression",
             "named": true
+          },
+          {
+            "type": "unit_literal",
+            "named": true
           }
         ]
       }
@@ -971,6 +995,10 @@
           {
             "type": "unary_expression",
             "named": true
+          },
+          {
+            "type": "unit_literal",
+            "named": true
           }
         ]
       },
@@ -1001,6 +1029,11 @@
         ]
       }
     }
+  },
+  {
+    "type": "unit_literal",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "value_definition",
@@ -1058,6 +1091,10 @@
           },
           {
             "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "unit_literal",
             "named": true
           }
         ]
