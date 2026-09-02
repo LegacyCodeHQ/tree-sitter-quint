@@ -198,6 +198,43 @@ module QualifiedTypes {
         argument: (primitive_type)))))
 
 ========================================
+Lowercase namespace in a qualified type
+========================================
+
+module types {
+  type Box[a] = List[a]
+}
+
+module use {
+  import types as t
+  type Local = t::Box[int]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      parameter: (type_parameter
+        name: (type_variable))
+      value: (list_type
+        element: (type_variable))))
+  (module_definition
+    name: (identifier)
+    (module_import_declaration
+      module: (identifier)
+      alias: (identifier))
+    (type_alias_declaration
+      name: (identifier)
+      value: (type_application
+        constructor: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))
+        argument: (primitive_type)))))
+
+========================================
 Qualified UFCS operator names
 ========================================
 

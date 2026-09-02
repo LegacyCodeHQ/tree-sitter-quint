@@ -542,10 +542,18 @@ export default grammar({
 
     type_variable: _ => /(?:[a-z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)/,
 
-    named_type: $ => field("name", choice($.identifier, $.qualified_identifier)),
+    named_type: $ => field("name", choice(
+      $.identifier,
+      $.qualified_identifier,
+      alias($._lowercase_qualified_identifier, $.qualified_identifier),
+    )),
 
     type_application: $ => seq(
-      field("constructor", choice($.identifier, $.qualified_identifier)),
+      field("constructor", choice(
+        $.identifier,
+        $.qualified_identifier,
+        alias($._lowercase_qualified_identifier, $.qualified_identifier),
+      )),
       "[",
       field("argument", $._type),
       repeat(seq(",", field("argument", $._type))),
@@ -1029,6 +1037,14 @@ export default grammar({
     qualified_identifier: $ => seq(
       field("namespace", $.identifier),
       repeat1(seq("::", field("name", $.identifier))),
+    ),
+
+    _lowercase_qualified_identifier: $ => seq(
+      field("namespace", alias($.type_variable, $.identifier)),
+      repeat1(seq("::", field("name", choice(
+        $.identifier,
+        alias($.type_variable, $.identifier),
+      )))),
     ),
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
