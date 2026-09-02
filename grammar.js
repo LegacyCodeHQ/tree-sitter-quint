@@ -133,6 +133,7 @@ export default grammar({
           "def",
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
+            seq("(", ")"),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -158,6 +159,7 @@ export default grammar({
           "def",
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
+            seq("(", ")"),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -218,6 +220,7 @@ export default grammar({
           field("qualifier", "nondet"),
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
+            seq("(", ")"),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -242,6 +245,7 @@ export default grammar({
           field("qualifier", "temporal"),
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
+            seq("(", ")"),
             seq(
               "(",
               field("parameter", $.annotated_parameter),
@@ -266,6 +270,7 @@ export default grammar({
           field("qualifier", "run"),
           field("name", choice($.identifier, $.qualified_identifier)),
           optional(choice(
+            seq("(", ")"),
             seq(
               "(",
               field("parameter", $.annotated_parameter),

@@ -90,6 +90,39 @@ module EmptyOperatorParameters {
       body: (boolean_literal))))
 
 ========================================
+Empty parameter lists for every qualifier
+========================================
+
+module EmptyParameterLists {
+  pure def pureAnswer() = 42
+  def stateAnswer() = 42
+  nondet nondetAnswer() = 42
+  temporal temporalAnswer() = true
+  run runAnswer() = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))))
+
+========================================
 Stateful operator definition
 ========================================
 
