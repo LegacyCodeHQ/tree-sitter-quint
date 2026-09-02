@@ -59,3 +59,24 @@ module Arithmetic {
             left: (integer_literal)
             right: (integer_literal)))
         right: (integer_literal)))))
+
+============================================
+Additive operators associate from the left
+============================================
+
+module Arithmetic {
+  val result = 10 - 3 + 1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        right: (integer_literal)))))
