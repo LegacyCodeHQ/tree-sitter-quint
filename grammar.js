@@ -33,6 +33,8 @@ export default grammar({
 
   conflicts: $ => [
     [$.lambda_expression, $.name_reference],
+    [$.lambda_expression, $.tuple_pattern],
+    [$.lambda_expression, $.tuple_pattern, $.name_reference],
     [$.operator_type, $.tuple_type],
   ],
 
@@ -563,10 +565,24 @@ export default grammar({
           repeat(seq(",", field("parameter", $.identifier))),
           ")",
         ),
+        seq(
+          "(",
+          field("parameter", $.tuple_pattern),
+          ")",
+        ),
       ),
       "=>",
       field("body", $._expression),
     )),
+
+    tuple_pattern: $ => seq(
+      "(",
+      field("element", $.identifier),
+      ",",
+      field("element", $.identifier),
+      repeat(seq(",", field("element", $.identifier))),
+      ")",
+    ),
 
     field_access_expression: $ => prec.left(PREC.POSTFIX, seq(
       field("object", $._expression),

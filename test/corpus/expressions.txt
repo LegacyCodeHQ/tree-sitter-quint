@@ -636,6 +636,43 @@ module Functions {
           right: (integer_literal))))))
 
 ========================================
+Tuple-unpacking lambda
+========================================
+
+module TupleLambda {
+  pure val pairs = [(1, 2)]
+  pure val sums = pairs.map(((x, y)) => x + y)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (list_literal
+        element: (tuple_literal
+          element: (integer_literal)
+          element: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (field_access_expression
+          object: (name_reference
+            name: (identifier))
+          field: (identifier))
+        argument: (lambda_expression
+          parameter: (tuple_pattern
+            element: (identifier)
+            element: (identifier))
+          body: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (name_reference
+              name: (identifier))))))))
+
+========================================
 Chained method calls
 ========================================
 

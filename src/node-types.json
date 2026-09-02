@@ -2019,6 +2019,10 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "tuple_pattern",
+            "named": true
           }
         ]
       }
@@ -3402,6 +3406,22 @@
           },
           {
             "type": "unit_literal",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "tuple_pattern",
+    "named": true,
+    "fields": {
+      "element": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
             "named": true
           }
         ]
