@@ -43,7 +43,7 @@ module bank {
 (source_file
   (module_definition
     name: (identifier)
-    (comment)
+    (documentation_comment)
     (variable_declaration
       name: (identifier)
       type: (function_type
@@ -159,7 +159,7 @@ module bank {
               name: (identifier))
             argument: (name_reference
               name: (identifier))))))
-    (comment)
+    (documentation_comment)
     (value_definition
       name: (identifier)
       value: (call_expression

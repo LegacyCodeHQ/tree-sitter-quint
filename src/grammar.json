@@ -5697,6 +5697,26 @@
       "type": "PATTERN",
       "value": "\"[^\"\\r\\n]*\""
     },
+    "documentation_comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "///"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[^\\r\\n]*"
+            }
+          ]
+        }
+      }
+    },
     "comment": {
       "type": "TOKEN",
       "content": {
@@ -5785,6 +5805,10 @@
     {
       "type": "PATTERN",
       "value": "\\s"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "documentation_comment"
     },
     {
       "type": "SYMBOL",

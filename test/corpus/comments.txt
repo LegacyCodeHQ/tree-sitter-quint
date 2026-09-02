@@ -15,7 +15,7 @@ module Comments {
 (source_file
   (module_definition
     name: (identifier)
-    (comment)
+    (documentation_comment)
     (variable_declaration
       name: (identifier)
       type: (primitive_type))
@@ -41,6 +41,27 @@ module BlockComment {
   (module_definition
     name: (identifier)
     (comment)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))))
+
+========================================
+Documentation comment nodes
+========================================
+
+/// Module documentation
+module Documented {
+  /// Value documentation
+  val answer = 42
+}
+
+---
+
+(source_file
+  (documentation_comment)
+  (module_definition
+    name: (identifier)
+    (documentation_comment)
     (value_definition
       name: (identifier)
       value: (integer_literal))))

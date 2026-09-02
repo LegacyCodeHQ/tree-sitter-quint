@@ -5578,6 +5578,11 @@
     "named": false
   },
   {
+    "type": "documentation_comment",
+    "named": true,
+    "extra": true
+  },
+  {
     "type": "else",
     "named": false
   },

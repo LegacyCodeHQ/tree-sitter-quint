@@ -33,6 +33,7 @@ export default grammar({
 
   extras: $ => [
     /\s/,
+    $.documentation_comment,
     $.comment,
   ],
 
@@ -1015,6 +1016,8 @@ export default grammar({
     boolean_literal: _ => choice("true", "false"),
 
     string_literal: _ => /"[^"\r\n]*"/,
+
+    documentation_comment: _ => token(prec(1, seq("///", /[^\r\n]*/))),
 
     comment: _ => token(choice(
       seq("//", /[^\r\n]*/),
