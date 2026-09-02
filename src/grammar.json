@@ -801,18 +801,6 @@
                     }
                   },
                   {
-                    "type": "STRING",
-                    "value": ","
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "parameter",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    }
-                  },
-                  {
                     "type": "REPEAT",
                     "content": {
                       "type": "SEQ",

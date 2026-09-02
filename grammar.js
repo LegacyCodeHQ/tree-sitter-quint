@@ -212,8 +212,6 @@ export default grammar({
         seq(
           "(",
           field("parameter", $.identifier),
-          ",",
-          field("parameter", $.identifier),
           repeat(seq(",", field("parameter", $.identifier))),
           ")",
         ),
