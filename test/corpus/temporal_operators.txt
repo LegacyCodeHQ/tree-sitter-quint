@@ -78,3 +78,50 @@ module EnabledAction {
         object: (name_reference
           name: (identifier))
         field: (identifier)))))
+
+========================================
+Action temporal conversion
+========================================
+
+module ActionConversion {
+  var n: int
+  action increment = n' = n + 1
+  temporal mayStutter = increment.orKeep(n)
+  temporal mustAdvance = increment.mustChange(n)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (identifier))
+        value: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (field_access_expression
+          object: (name_reference
+            name: (identifier))
+          field: (identifier))
+        argument: (name_reference
+          name: (identifier))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (field_access_expression
+          object: (name_reference
+            name: (identifier))
+          field: (identifier))
+        argument: (name_reference
+          name: (identifier))))))
