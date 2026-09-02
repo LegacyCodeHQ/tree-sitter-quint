@@ -32,6 +32,7 @@ export default grammar({
       $.primitive_type,
       $.set_type,
       $.list_type,
+      $.tuple_type,
       $.function_type,
     ),
 
@@ -49,6 +50,15 @@ export default grammar({
       "[",
       field("element", $._type),
       "]",
+    ),
+
+    tuple_type: $ => seq(
+      "(",
+      field("element", $._type),
+      ",",
+      field("element", $._type),
+      repeat(seq(",", field("element", $._type))),
+      ")",
     ),
 
     function_type: $ => prec.right(seq(

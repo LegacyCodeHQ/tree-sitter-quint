@@ -115,3 +115,22 @@ module Foo {
       type: (function_type
         parameter: (primitive_type)
         result: (primitive_type)))))
+
+==========================
+Tuple constant declaration
+==========================
+
+module Foo {
+  const ENTRY: (str, int)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (tuple_type
+        element: (primitive_type)
+        element: (primitive_type)))))
