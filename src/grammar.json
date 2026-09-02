@@ -482,6 +482,10 @@
         {
           "type": "SYMBOL",
           "name": "boolean_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string_literal"
         }
       ]
     },
@@ -501,6 +505,10 @@
           "value": "false"
         }
       ]
+    },
+    "string_literal": {
+      "type": "PATTERN",
+      "value": "\"[^\"\\\\\\r\\n]*\""
     },
     "identifier": {
       "type": "PATTERN",

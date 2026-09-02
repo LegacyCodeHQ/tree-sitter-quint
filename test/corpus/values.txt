@@ -35,3 +35,20 @@ module Flags {
     (value_definition
       name: (identifier)
       value: (boolean_literal))))
+
+=======================
+String value definition
+=======================
+
+module Messages {
+  val greeting = "hello"
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (string_literal))))

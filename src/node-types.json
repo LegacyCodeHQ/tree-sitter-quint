@@ -559,6 +559,10 @@
           {
             "type": "integer_literal",
             "named": true
+          },
+          {
+            "type": "string_literal",
+            "named": true
           }
         ]
       }
@@ -689,6 +693,10 @@
   {
     "type": "str",
     "named": false
+  },
+  {
+    "type": "string_literal",
+    "named": true
   },
   {
     "type": "true",

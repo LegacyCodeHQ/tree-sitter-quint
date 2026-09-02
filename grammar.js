@@ -128,11 +128,14 @@ export default grammar({
     _expression: $ => choice(
       $.integer_literal,
       $.boolean_literal,
+      $.string_literal,
     ),
 
     integer_literal: _ => /[0-9]+/,
 
     boolean_literal: _ => choice("true", "false"),
+
+    string_literal: _ => /"[^"\\\r\n]*"/,
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
   },
