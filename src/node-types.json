@@ -30,6 +30,10 @@
             "named": true
           },
           {
+            "type": "record_type",
+            "named": true
+          },
+          {
             "type": "set_type",
             "named": true
           },
@@ -62,6 +66,10 @@
             "named": true
           },
           {
+            "type": "record_type",
+            "named": true
+          },
+          {
             "type": "set_type",
             "named": true
           },
@@ -85,6 +93,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "record_type",
             "named": true
           },
           {
@@ -117,6 +129,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "record_type",
             "named": true
           },
           {
@@ -163,6 +179,67 @@
     "fields": {}
   },
   {
+    "type": "record_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "record_type_field",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "record_type_field",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "function_type",
+            "named": true
+          },
+          {
+            "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "record_type",
+            "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
+          },
+          {
+            "type": "tuple_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "set_type",
     "named": true,
     "fields": {
@@ -180,6 +257,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "record_type",
             "named": true
           },
           {
@@ -228,6 +309,10 @@
           },
           {
             "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "record_type",
             "named": true
           },
           {

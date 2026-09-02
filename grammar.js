@@ -33,6 +33,7 @@ export default grammar({
       $.set_type,
       $.list_type,
       $.tuple_type,
+      $.record_type,
       $.function_type,
     ),
 
@@ -59,6 +60,19 @@ export default grammar({
       field("element", $._type),
       repeat(seq(",", field("element", $._type))),
       ")",
+    ),
+
+    record_type: $ => seq(
+      "{",
+      $.record_type_field,
+      repeat(seq(",", $.record_type_field)),
+      "}",
+    ),
+
+    record_type_field: $ => seq(
+      field("name", $.identifier),
+      ":",
+      field("type", $._type),
     ),
 
     function_type: $ => prec.right(seq(

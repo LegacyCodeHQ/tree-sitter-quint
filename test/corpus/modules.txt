@@ -134,3 +134,26 @@ module Foo {
       type: (tuple_type
         element: (primitive_type)
         element: (primitive_type)))))
+
+===========================
+Record constant declaration
+===========================
+
+module Foo {
+  const USER: { name: str, age: int }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (record_type
+        (record_type_field
+          name: (identifier)
+          type: (primitive_type))
+        (record_type_field
+          name: (identifier)
+          type: (primitive_type))))))
