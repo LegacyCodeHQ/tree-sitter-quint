@@ -1,0 +1,46 @@
+========================================
+UFCS temporal operators
+========================================
+
+module UfcsTemporal {
+  var n: int
+  temporal invariant = (n >= 0).always
+  temporal progress = (n == 1).eventually
+  temporal nextInvariant = (n >= 0).next
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (field_access_expression
+        object: (parenthesized_expression
+          expression: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal)))
+        field: (identifier)))
+    (operator_definition
+      name: (identifier)
+      body: (field_access_expression
+        object: (parenthesized_expression
+          expression: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal)))
+        field: (identifier)))
+    (operator_definition
+      name: (identifier)
+      body: (field_access_expression
+        object: (parenthesized_expression
+          expression: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (integer_literal)))
+        field: (identifier)))))
