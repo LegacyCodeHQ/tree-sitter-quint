@@ -533,3 +533,33 @@ module Collections {
         (record_literal_field
           name: (identifier)
           value: (integer_literal))))))
+
+===================
+Record field access
+===================
+
+module Collections {
+  val user = { name: "Alice", age: 42 }
+  val userName = user.name
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (string_literal))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (field_access_expression
+        object: (name_reference
+          name: (identifier))
+        field: (identifier)))))

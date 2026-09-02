@@ -19,6 +19,7 @@ const PREC = {
   MULTIPLICATIVE: 9,
   UNARY: 10,
   POWER: 11,
+  POSTFIX: 12,
 };
 
 export default grammar({
@@ -148,6 +149,7 @@ export default grammar({
       $.unit_literal,
       $.record_literal,
       $.call_expression,
+      $.field_access_expression,
       $.name_reference,
       $.parenthesized_expression,
       $.unary_expression,
@@ -186,6 +188,12 @@ export default grammar({
       ":",
       field("value", $._expression),
     ),
+
+    field_access_expression: $ => prec.left(PREC.POSTFIX, seq(
+      field("object", $._expression),
+      ".",
+      field("field", $.identifier),
+    )),
 
     call_expression: $ => seq(
       field("function", $.name_reference),
