@@ -1,0 +1,16 @@
+====================
+Variable declaration
+====================
+
+module Counter {
+  var count: int
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))))

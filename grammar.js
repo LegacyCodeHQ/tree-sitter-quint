@@ -23,12 +23,20 @@ export default grammar({
 
     _declaration: $ => choice(
       $.constant_declaration,
+      $.variable_declaration,
       $.type_alias_declaration,
       $.uninterpreted_type_declaration,
     ),
 
     constant_declaration: $ => seq(
       "const",
+      field("name", $.identifier),
+      ":",
+      field("type", $._type),
+    ),
+
+    variable_declaration: $ => seq(
+      "var",
       field("name", $.identifier),
       ":",
       field("type", $._type),
