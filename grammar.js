@@ -187,6 +187,10 @@ export default grammar({
               repeat(seq(",", field("parameter", $.parameter))),
               ")",
             ),
+            seq(
+              ":",
+              field("return_type", $._type),
+            ),
           )),
         ),
       ),

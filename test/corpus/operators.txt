@@ -392,3 +392,21 @@ module Scenarios {
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))))
+
+========================================
+Parameterless annotated run definition
+========================================
+
+module Scenarios {
+  run example: bool = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (boolean_literal))))
