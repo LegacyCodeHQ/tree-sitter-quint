@@ -24,6 +24,7 @@ export default grammar({
     _declaration: $ => choice(
       $.constant_declaration,
       $.type_alias_declaration,
+      $.uninterpreted_type_declaration,
     ),
 
     constant_declaration: $ => seq(
@@ -38,6 +39,11 @@ export default grammar({
       field("name", $.identifier),
       "=",
       field("value", $._type),
+    ),
+
+    uninterpreted_type_declaration: $ => seq(
+      "type",
+      field("name", $.identifier),
     ),
 
     _type: $ => choice(

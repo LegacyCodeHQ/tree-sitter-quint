@@ -205,6 +205,10 @@
         {
           "type": "type_alias_declaration",
           "named": true
+        },
+        {
+          "type": "uninterpreted_type_declaration",
+          "named": true
         }
       ]
     }
@@ -495,6 +499,22 @@
           },
           {
             "type": "tuple_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "uninterpreted_type_declaration",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
             "named": true
           }
         ]

@@ -36,3 +36,19 @@ module Foo {
       name: (identifier)
       type: (named_type
         name: (identifier)))))
+
+==============================
+Uninterpreted type declaration
+==============================
+
+module Foo {
+  type USER_ID
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (uninterpreted_type_declaration
+      name: (identifier))))
