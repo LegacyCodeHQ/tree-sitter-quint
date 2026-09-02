@@ -423,7 +423,7 @@ export default grammar({
 
     type_alias_declaration: $ => seq(
       "type",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       optional(seq(
         "[",
         field("parameter", $.type_parameter),
@@ -467,7 +467,7 @@ export default grammar({
 
     uninterpreted_type_declaration: $ => seq(
       "type",
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
     ),
 
     _type: $ => choice(
@@ -489,10 +489,10 @@ export default grammar({
 
     type_variable: _ => /(?:[a-z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)/,
 
-    named_type: $ => field("name", $.identifier),
+    named_type: $ => field("name", choice($.identifier, $.qualified_identifier)),
 
     type_application: $ => seq(
-      field("constructor", $.identifier),
+      field("constructor", choice($.identifier, $.qualified_identifier)),
       "[",
       field("argument", $._type),
       repeat(seq(",", field("argument", $._type))),

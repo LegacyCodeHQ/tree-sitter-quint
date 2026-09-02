@@ -148,3 +148,51 @@ module NamespaceChain {
           member: (identifier))
         argument: (integer_literal)
         argument: (integer_literal)))))
+
+========================================
+Qualified identifiers in types
+========================================
+
+module QualifiedTypes {
+  type Domain::Item = int
+  type Domain::Box[a] = List[a]
+  type Domain::Opaque
+  const localItem: Domain::Item
+  const localBox: Domain::Box[int]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      value: (primitive_type))
+    (type_alias_declaration
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      parameter: (type_parameter
+        name: (type_variable))
+      value: (list_type
+        element: (type_variable)))
+    (uninterpreted_type_declaration
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier)))
+    (constant_declaration
+      name: (identifier)
+      type: (named_type
+        name: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))))
+    (constant_declaration
+      name: (identifier)
+      type: (type_application
+        constructor: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))
+        argument: (primitive_type)))))
