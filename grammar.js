@@ -497,12 +497,18 @@ export default grammar({
       "{",
       $.record_literal_field,
       repeat(seq(",", $.record_literal_field)),
+      optional(seq(",", $.record_spread)),
       "}",
     ),
 
     record_literal_field: $ => seq(
       field("name", $.identifier),
       ":",
+      field("value", $._expression),
+    ),
+
+    record_spread: $ => seq(
+      "...",
       field("value", $._expression),
     ),
 

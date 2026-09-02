@@ -534,6 +534,36 @@ module Collections {
           name: (identifier)
           value: (integer_literal))))))
 
+========================================
+Record extension
+========================================
+
+module Records {
+  pure val base = { a: 1 }
+  pure val extended = { b: 2, ...base }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))
+        (record_spread
+          value: (name_reference
+            name: (identifier)))))))
+
 ===================
 Record field access
 ===================
