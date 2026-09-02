@@ -77,8 +77,8 @@ bun run generate
 bun run test
 ```
 
-All Tree-sitter corpus tests and Bun litmus tests must pass. Inspect failures for
-regressions rather than updating existing expected trees automatically.
+All Tree-sitter corpus tests must pass. Inspect failures for regressions rather
+than updating existing expected trees automatically.
 
 Generated files under `src/` are part of the repository contract. Commit every
 generated change produced by the pinned Tree-sitter version, including

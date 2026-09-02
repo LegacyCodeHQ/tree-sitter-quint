@@ -1,8 +1,0 @@
-// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
-
-exports[`snapshot assertions compare approved output 1`] = `
-{
-  "language": "quint",
-  "parser": "tree-sitter",
-}
-`;

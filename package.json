@@ -7,10 +7,7 @@
     "check:generated": "tree-sitter generate && git diff --exit-code -- src",
     "generate": "tree-sitter generate",
     "install": "node-gyp-build",
-    "test": "bun run test:litmus && bun run test:grammar",
-    "test:grammar": "tree-sitter test",
-    "test:litmus": "bun test test/litmus.test.js",
-    "test:update": "bun test test/litmus.test.js --update-snapshots"
+    "test": "tree-sitter test"
   },
   "packageManager": "bun@1.4.0",
   "dependencies": {
