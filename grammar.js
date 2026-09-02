@@ -25,6 +25,10 @@ const PREC = {
 export default grammar({
   name: "quint",
 
+  conflicts: $ => [
+    [$.lambda_expression, $.name_reference],
+  ],
+
   rules: {
     source_file: $ => repeat($.module_definition),
 
@@ -203,7 +207,17 @@ export default grammar({
     )),
 
     lambda_expression: $ => prec.right(seq(
-      field("parameter", $.identifier),
+      choice(
+        field("parameter", $.identifier),
+        seq(
+          "(",
+          field("parameter", $.identifier),
+          ",",
+          field("parameter", $.identifier),
+          repeat(seq(",", field("parameter", $.identifier))),
+          ")",
+        ),
+      ),
       "=>",
       field("body", $._expression),
     )),

@@ -634,3 +634,27 @@ module Functions {
           left: (name_reference
             name: (identifier))
           right: (integer_literal))))))
+
+======================
+Multi-parameter lambda
+======================
+
+module Functions {
+  val add = (x, y) => x + y
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (lambda_expression
+        parameter: (identifier)
+        parameter: (identifier)
+        body: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (name_reference
+            name: (identifier)))))))
