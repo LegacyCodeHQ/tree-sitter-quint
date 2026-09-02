@@ -44,6 +44,7 @@ export default grammar({
       $.constant_declaration,
       $.variable_declaration,
       $.value_definition,
+      $.operator_definition,
       $.type_alias_declaration,
       $.uninterpreted_type_declaration,
     ),
@@ -67,6 +68,26 @@ export default grammar({
       field("name", $.identifier),
       "=",
       field("value", $._expression),
+    ),
+
+    operator_definition: $ => seq(
+      field("qualifier", "pure"),
+      "def",
+      field("name", $.identifier),
+      "(",
+      field("parameter", $.annotated_parameter),
+      repeat(seq(",", field("parameter", $.annotated_parameter))),
+      ")",
+      ":",
+      field("return_type", $._type),
+      "=",
+      field("body", $._expression),
+    ),
+
+    annotated_parameter: $ => seq(
+      field("name", $.identifier),
+      ":",
+      field("type", $._type),
     ),
 
     type_alias_declaration: $ => seq(

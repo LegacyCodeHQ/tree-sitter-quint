@@ -1,5 +1,59 @@
 [
   {
+    "type": "annotated_parameter",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "function_type",
+            "named": true
+          },
+          {
+            "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "named_type",
+            "named": true
+          },
+          {
+            "type": "parenthesized_type",
+            "named": true
+          },
+          {
+            "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "record_type",
+            "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
+          },
+          {
+            "type": "tuple_type",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "binary_expression",
     "named": true,
     "fields": {
@@ -1124,6 +1178,10 @@
           "named": true
         },
         {
+          "type": "operator_definition",
+          "named": true
+        },
+        {
           "type": "type_alias_declaration",
           "named": true
         },
@@ -1168,6 +1226,150 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "operator_definition",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean_literal",
+            "named": true
+          },
+          {
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "field_access_expression",
+            "named": true
+          },
+          {
+            "type": "if_expression",
+            "named": true
+          },
+          {
+            "type": "index_expression",
+            "named": true
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "lambda_expression",
+            "named": true
+          },
+          {
+            "type": "list_literal",
+            "named": true
+          },
+          {
+            "type": "name_reference",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "record_literal",
+            "named": true
+          },
+          {
+            "type": "string_literal",
+            "named": true
+          },
+          {
+            "type": "tuple_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "unit_literal",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "parameter": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "annotated_parameter",
+            "named": true
+          }
+        ]
+      },
+      "qualifier": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "pure",
+            "named": false
+          }
+        ]
+      },
+      "return_type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "function_type",
+            "named": true
+          },
+          {
+            "type": "list_type",
+            "named": true
+          },
+          {
+            "type": "named_type",
+            "named": true
+          },
+          {
+            "type": "parenthesized_type",
+            "named": true
+          },
+          {
+            "type": "primitive_type",
+            "named": true
+          },
+          {
+            "type": "record_type",
+            "named": true
+          },
+          {
+            "type": "set_type",
+            "named": true
+          },
+          {
+            "type": "tuple_type",
             "named": true
           }
         ]
@@ -2059,6 +2261,10 @@
     "named": false
   },
   {
+    "type": "def",
+    "named": false
+  },
+  {
     "type": "else",
     "named": false
   },
@@ -2100,6 +2306,10 @@
   },
   {
     "type": "or",
+    "named": false
+  },
+  {
+    "type": "pure",
     "named": false
   },
   {

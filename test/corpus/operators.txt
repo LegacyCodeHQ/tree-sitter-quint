@@ -1,0 +1,23 @@
+====================================
+Annotated pure operator definition
+====================================
+
+module Functions {
+  pure def increment(x: int): int = x + 1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))))
