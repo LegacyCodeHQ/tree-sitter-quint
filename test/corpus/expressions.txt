@@ -636,6 +636,37 @@ module Functions {
           right: (integer_literal))))))
 
 ========================================
+Pair expressions have low precedence
+========================================
+
+module Pairs {
+  pure val entry = 1 + 2 -> 3 * 4
+  pure val nested = 1 -> 2 -> 3
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        right: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        right: (integer_literal)))))
+
+========================================
 Tuple-unpacking lambda
 ========================================
 

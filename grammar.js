@@ -8,6 +8,7 @@
 // @ts-check
 
 const PREC = {
+  PAIR: -1,
   ASSIGNMENT: 0,
   IMPLICATION: 1,
   LEADS_TO: 2,
@@ -645,6 +646,11 @@ export default grammar({
     )),
 
     binary_expression: $ => choice(
+      prec.left(PREC.PAIR, seq(
+        field("left", $._expression),
+        field("operator", "->"),
+        field("right", $._expression),
+      )),
       prec.left(PREC.IMPLICATION, seq(
         field("left", $._expression),
         field("operator", "implies"),
