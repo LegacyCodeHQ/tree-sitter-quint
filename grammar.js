@@ -10,6 +10,7 @@
 const PREC = {
   ADDITIVE: 1,
   MULTIPLICATIVE: 2,
+  UNARY: 3,
 };
 
 export default grammar({
@@ -136,6 +137,7 @@ export default grammar({
       $.string_literal,
       $.name_reference,
       $.parenthesized_expression,
+      $.unary_expression,
       $.binary_expression,
     ),
 
@@ -144,6 +146,11 @@ export default grammar({
       field("expression", $._expression),
       ")",
     ),
+
+    unary_expression: $ => prec(PREC.UNARY, seq(
+      field("operator", "-"),
+      field("operand", $._expression),
+    )),
 
     binary_expression: $ => choice(
       prec.left(PREC.ADDITIVE, seq(
