@@ -44,3 +44,37 @@ module UfcsTemporal {
               name: (identifier))
             right: (integer_literal)))
         field: (identifier)))))
+
+========================================
+Enabled action
+========================================
+
+module EnabledAction {
+  var n: int
+  action increment = n' = n + 1
+  temporal canIncrement = increment.enabled
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (identifier))
+        value: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (field_access_expression
+        object: (name_reference
+          name: (identifier))
+        field: (identifier)))))
