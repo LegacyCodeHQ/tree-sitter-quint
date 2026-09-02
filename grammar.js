@@ -130,7 +130,14 @@ export default grammar({
       $.boolean_literal,
       $.string_literal,
       $.name_reference,
+      $.binary_expression,
     ),
+
+    binary_expression: $ => prec.left(1, seq(
+      field("left", $._expression),
+      field("operator", "+"),
+      field("right", $._expression),
+    )),
 
     integer_literal: _ => /[0-9]+/,
 

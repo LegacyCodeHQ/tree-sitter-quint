@@ -1,0 +1,18 @@
+===================
+Addition expression
+===================
+
+module Arithmetic {
+  val result = 1 + 2
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        right: (integer_literal)))))
