@@ -74,6 +74,7 @@ export default grammar({
       $.named_import_declaration,
       $.wildcard_import_declaration,
       $.module_import_declaration,
+      $.named_export_declaration,
       $.wildcard_export_declaration,
       $.module_export_declaration,
       $.type_alias_declaration,
@@ -451,6 +452,13 @@ export default grammar({
       field("module", choice($.identifier, $.qualified_identifier)),
       ".",
       "*",
+    ),
+
+    named_export_declaration: $ => seq(
+      "export",
+      field("module", choice($.identifier, $.qualified_identifier)),
+      ".",
+      field("name", choice($.identifier, $.qualified_identifier)),
     ),
 
     module_import_declaration: $ => seq(

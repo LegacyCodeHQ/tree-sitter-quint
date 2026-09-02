@@ -137,6 +137,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "named_export_declaration"
+        },
+        {
+          "type": "SYMBOL",
           "name": "wildcard_export_declaration"
         },
         {
@@ -2646,6 +2650,53 @@
         {
           "type": "STRING",
           "value": "*"
+        }
+      ]
+    },
+    "named_export_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "export"
+        },
+        {
+          "type": "FIELD",
+          "name": "module",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "qualified_identifier"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "."
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "qualified_identifier"
+              }
+            ]
+          }
         }
       ]
     },

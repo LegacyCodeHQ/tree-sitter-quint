@@ -219,6 +219,44 @@ module Use {
         name: (identifier)))))
 
 ========================================
+Named exports
+========================================
+
+module Lib {
+  pure val value = 1
+  pure val Member::value = 2
+}
+
+module Use {
+  export Lib.value
+  export Lib.Member::value
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (value_definition
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier))
+      value: (integer_literal)))
+  (module_definition
+    name: (identifier)
+    (named_export_declaration
+      module: (identifier)
+      name: (identifier))
+    (named_export_declaration
+      module: (identifier)
+      name: (qualified_identifier
+        namespace: (identifier)
+        name: (identifier)))))
+
+========================================
 Wildcard import
 ========================================
 
