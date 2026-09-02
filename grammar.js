@@ -143,11 +143,19 @@ export default grammar({
       $.integer_literal,
       $.boolean_literal,
       $.string_literal,
+      $.list_literal,
       $.call_expression,
       $.name_reference,
       $.parenthesized_expression,
       $.unary_expression,
       $.binary_expression,
+    ),
+
+    list_literal: $ => seq(
+      "[",
+      field("element", $._expression),
+      repeat(seq(",", field("element", $._expression))),
+      "]",
     ),
 
     call_expression: $ => seq(

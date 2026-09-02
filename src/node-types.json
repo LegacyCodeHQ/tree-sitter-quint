@@ -24,6 +24,10 @@
             "named": true
           },
           {
+            "type": "list_literal",
+            "named": true
+          },
+          {
             "type": "name_reference",
             "named": true
           },
@@ -136,6 +140,10 @@
             "named": true
           },
           {
+            "type": "list_literal",
+            "named": true
+          },
+          {
             "type": "name_reference",
             "named": true
           },
@@ -182,6 +190,10 @@
           },
           {
             "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "list_literal",
             "named": true
           },
           {
@@ -351,6 +363,54 @@
     }
   },
   {
+    "type": "list_literal",
+    "named": true,
+    "fields": {
+      "element": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean_literal",
+            "named": true
+          },
+          {
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "list_literal",
+            "named": true
+          },
+          {
+            "type": "name_reference",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "string_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "list_type",
     "named": true,
     "fields": {
@@ -490,6 +550,10 @@
           },
           {
             "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "list_literal",
             "named": true
           },
           {
@@ -813,6 +877,10 @@
             "named": true
           },
           {
+            "type": "list_literal",
+            "named": true
+          },
+          {
             "type": "name_reference",
             "named": true
           },
@@ -890,6 +958,10 @@
           },
           {
             "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "list_literal",
             "named": true
           },
           {

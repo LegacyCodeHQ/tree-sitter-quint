@@ -437,3 +437,23 @@ module Logic {
         right: (binary_expression
           left: (boolean_literal)
           right: (boolean_literal))))))
+
+======================
+Non-empty list literal
+======================
+
+module Collections {
+  val numbers = [1, 2, 3]
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (list_literal
+        element: (integer_literal)
+        element: (integer_literal)
+        element: (integer_literal)))))
