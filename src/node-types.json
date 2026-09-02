@@ -98,6 +98,10 @@
             "named": false
           },
           {
+            "type": "iff",
+            "named": false
+          },
+          {
             "type": "or",
             "named": false
           }
@@ -1061,6 +1065,10 @@
   {
     "type": "identifier",
     "named": true
+  },
+  {
+    "type": "iff",
+    "named": false
   },
   {
     "type": "int",

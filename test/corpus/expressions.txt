@@ -374,3 +374,24 @@ module Arithmetic {
         right: (binary_expression
           left: (integer_literal)
           right: (integer_literal))))))
+
+=============================================
+Equivalence binds more loosely than disjunction
+=============================================
+
+module Logic {
+  val result = true iff false or true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (boolean_literal)
+        right: (binary_expression
+          left: (boolean_literal)
+          right: (boolean_literal))))))
