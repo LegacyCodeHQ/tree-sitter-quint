@@ -510,3 +510,26 @@ module Collections {
     (value_definition
       name: (identifier)
       value: (unit_literal))))
+
+========================
+Non-empty record literal
+========================
+
+module Collections {
+  val user = { name: "Alice", age: 42 }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (string_literal))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))))

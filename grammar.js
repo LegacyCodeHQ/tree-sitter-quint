@@ -146,6 +146,7 @@ export default grammar({
       $.list_literal,
       $.tuple_literal,
       $.unit_literal,
+      $.record_literal,
       $.call_expression,
       $.name_reference,
       $.parenthesized_expression,
@@ -172,6 +173,19 @@ export default grammar({
     ),
 
     unit_literal: _ => seq("(", ")"),
+
+    record_literal: $ => seq(
+      "{",
+      $.record_literal_field,
+      repeat(seq(",", $.record_literal_field)),
+      "}",
+    ),
+
+    record_literal_field: $ => seq(
+      field("name", $.identifier),
+      ":",
+      field("value", $._expression),
+    ),
 
     call_expression: $ => seq(
       field("function", $.name_reference),
