@@ -8,15 +8,16 @@
 // @ts-check
 
 const PREC = {
-  EQUIVALENCE: 1,
-  DISJUNCTION: 2,
-  CONJUNCTION: 3,
-  EQUALITY: 4,
-  COMPARISON: 5,
-  ADDITIVE: 6,
-  MULTIPLICATIVE: 7,
-  UNARY: 8,
-  POWER: 9,
+  LEADS_TO: 1,
+  EQUIVALENCE: 2,
+  DISJUNCTION: 3,
+  CONJUNCTION: 4,
+  EQUALITY: 5,
+  COMPARISON: 6,
+  ADDITIVE: 7,
+  MULTIPLICATIVE: 8,
+  UNARY: 9,
+  POWER: 10,
 };
 
 export default grammar({
@@ -170,6 +171,11 @@ export default grammar({
     )),
 
     binary_expression: $ => choice(
+      prec.left(PREC.LEADS_TO, seq(
+        field("left", $._expression),
+        field("operator", "leadsTo"),
+        field("right", $._expression),
+      )),
       prec.left(PREC.EQUIVALENCE, seq(
         field("left", $._expression),
         field("operator", "iff"),

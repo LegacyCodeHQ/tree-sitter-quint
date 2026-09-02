@@ -102,6 +102,10 @@
             "named": false
           },
           {
+            "type": "leadsTo",
+            "named": false
+          },
+          {
             "type": "or",
             "named": false
           }
@@ -1077,6 +1081,10 @@
   {
     "type": "integer_literal",
     "named": true
+  },
+  {
+    "type": "leadsTo",
+    "named": false
   },
   {
     "type": "module",
