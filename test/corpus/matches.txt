@@ -42,7 +42,7 @@ module Matches {
             name: (identifier)))
         arm: (match_arm
           variant: (identifier)
-          parameter: (identifier)
+          parameter: (hole)
           body: (string_literal))))))
 
 ========================================
@@ -90,5 +90,5 @@ module MatchPatterns {
           variant: (identifier)
           body: (integer_literal))
         arm: (match_arm
-          variant: (identifier)
+          variant: (hole)
           body: (integer_literal))))))

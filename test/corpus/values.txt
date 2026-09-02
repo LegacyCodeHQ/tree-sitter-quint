@@ -130,7 +130,7 @@ module ValDestructuring {
     (value_definition
       name: (tuple_pattern
         element: (identifier)
-        element: (identifier))
+        element: (hole))
       value: (tuple_literal
         element: (integer_literal)
         element: (integer_literal)))

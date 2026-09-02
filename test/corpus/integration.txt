@@ -120,7 +120,7 @@ module bank {
                 name: (identifier))
               field: (identifier))
             argument: (lambda_expression
-              parameter: (identifier)
+              parameter: (hole)
               body: (integer_literal))))))
     (operator_definition
       name: (identifier)
@@ -677,7 +677,7 @@ module DataFeatures {
                 name: (identifier)))
             arm: (match_arm
               variant: (identifier)
-              parameter: (identifier)
+              parameter: (hole)
               body: (field_access_expression
                 object: (name_reference
                   name: (identifier))

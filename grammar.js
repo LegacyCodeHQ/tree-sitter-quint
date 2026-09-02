@@ -73,7 +73,7 @@ function identifierPatternWithout(reservedWords) {
     node.terminal = true;
   }
 
-  const alternatives = ["[A-Z_][A-Za-z0-9_]*"];
+  const alternatives = ["[A-Z][A-Za-z0-9_]*", "_[A-Za-z0-9_]+"];
 
   function addAlternatives(node, prefix) {
     if (prefix && !node.terminal) {
@@ -104,6 +104,11 @@ function identifierPatternWithout(reservedWords) {
 }
 
 const IDENTIFIER_PATTERN = identifierPatternWithout(RESERVED_IDENTIFIERS);
+const identifierOrHole = $ => choice(
+  $.identifier,
+  $.qualified_identifier,
+  $.hole,
+);
 
 export default grammar({
   name: "quint",
@@ -450,10 +455,10 @@ export default grammar({
       $.reserved_operator,
     ),
 
-    parameter: $ => field("name", choice($.identifier, $.qualified_identifier)),
+    parameter: $ => field("name", identifierOrHole($)),
 
     annotated_parameter: $ => seq(
-      field("name", choice($.identifier, $.qualified_identifier)),
+      field("name", identifierOrHole($)),
       ":",
       field("type", $._type),
     ),
@@ -465,7 +470,7 @@ export default grammar({
 
     assumption_declaration: $ => seq(
       "assume",
-      field("name", choice($.identifier, $.qualified_identifier)),
+      field("name", identifierOrHole($)),
       "=",
       field("condition", $._expression),
     ),
@@ -905,10 +910,10 @@ export default grammar({
     )),
 
     match_arm: $ => seq(
-      field("variant", $.identifier),
+      field("variant", choice($.identifier, $.hole)),
       optional(seq(
         "(",
-        field("parameter", $.identifier),
+        field("parameter", choice($.identifier, $.hole)),
         ")",
       )),
       "=>",
@@ -984,20 +989,11 @@ export default grammar({
 
     lambda_expression: $ => prec.right(seq(
       choice(
-        field("parameter", choice(
-          $.identifier,
-          $.qualified_identifier,
-        )),
+        field("parameter", identifierOrHole($)),
         seq(
           "(",
-          field("parameter", choice(
-            $.identifier,
-            $.qualified_identifier,
-          )),
-          repeat(seq(",", field("parameter", choice(
-            $.identifier,
-            $.qualified_identifier,
-          )))),
+          field("parameter", identifierOrHole($)),
+          repeat(seq(",", field("parameter", identifierOrHole($)))),
           ")",
         ),
         seq(
@@ -1012,10 +1008,10 @@ export default grammar({
 
     tuple_pattern: $ => seq(
       "(",
-      field("element", choice($.identifier, $.qualified_identifier)),
+      field("element", identifierOrHole($)),
       ",",
-      field("element", choice($.identifier, $.qualified_identifier)),
-      repeat(seq(",", field("element", choice($.identifier, $.qualified_identifier)))),
+      field("element", identifierOrHole($)),
+      repeat(seq(",", field("element", identifierOrHole($)))),
       ")",
     ),
 
@@ -1170,6 +1166,8 @@ export default grammar({
         alias($.type_variable, $.identifier),
       )))),
     ),
+
+    hole: _ => "_",
 
     identifier: _ => IDENTIFIER_PATTERN,
   },

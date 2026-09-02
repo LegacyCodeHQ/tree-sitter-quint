@@ -52,7 +52,7 @@ module RepeatedRun {
           object: (integer_literal)
           field: (identifier))
         argument: (lambda_expression
-          parameter: (identifier)
+          parameter: (hole)
           body: (name_reference
             name: (identifier)))))))
 

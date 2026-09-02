@@ -105,6 +105,7 @@ function treeSitterTokens(source, parser) {
       integer_literal: "integer",
       identifier: "identifier",
       type_variable: "identifier",
+      hole: "_",
       }[node.type] ?? node.type);
 
     tokens.push({

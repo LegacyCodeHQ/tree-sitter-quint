@@ -232,6 +232,10 @@
         "required": true,
         "types": [
           {
+            "type": "hole",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -685,6 +689,10 @@
         "multiple": false,
         "required": true,
         "types": [
+          {
+            "type": "hole",
+            "named": true
+          },
           {
             "type": "identifier",
             "named": true
@@ -2409,6 +2417,10 @@
         "required": true,
         "types": [
           {
+            "type": "hole",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -2711,6 +2723,10 @@
         "required": false,
         "types": [
           {
+            "type": "hole",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           }
@@ -2720,6 +2736,10 @@
         "multiple": false,
         "required": true,
         "types": [
+          {
+            "type": "hole",
+            "named": true
+          },
           {
             "type": "identifier",
             "named": true
@@ -3869,6 +3889,10 @@
         "required": true,
         "types": [
           {
+            "type": "hole",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -4775,6 +4799,10 @@
         "required": true,
         "types": [
           {
+            "type": "hole",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -5678,6 +5706,10 @@
   },
   {
     "type": "hashbang",
+    "named": true
+  },
+  {
+    "type": "hole",
     "named": true
   },
   {
