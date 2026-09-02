@@ -612,3 +612,25 @@ module Control {
           right: (integer_literal))
         consequence: (integer_literal)
         alternative: (integer_literal)))))
+
+=======================
+Single-parameter lambda
+=======================
+
+module Functions {
+  val increment = x => x + 1
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (lambda_expression
+        parameter: (identifier)
+        body: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))))

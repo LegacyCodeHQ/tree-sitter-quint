@@ -149,6 +149,7 @@ export default grammar({
       $.unit_literal,
       $.record_literal,
       $.if_expression,
+      $.lambda_expression,
       $.call_expression,
       $.field_access_expression,
       $.index_expression,
@@ -199,6 +200,12 @@ export default grammar({
       field("consequence", $._expression),
       "else",
       field("alternative", $._expression),
+    )),
+
+    lambda_expression: $ => prec.right(seq(
+      field("parameter", $.identifier),
+      "=>",
+      field("body", $._expression),
     )),
 
     field_access_expression: $ => prec.left(PREC.POSTFIX, seq(
