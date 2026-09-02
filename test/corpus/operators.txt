@@ -90,6 +90,36 @@ module Flexible {
       body: (name_reference
         name: (identifier)))))
 
+========================================
+Optional definition semicolons
+========================================
+
+module Terminators {
+  val answer = 42;
+  pure def identity(x: int): int = x;
+  action ready = true;
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (name_reference
+        name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      body: (boolean_literal))))
+
 ======================================
 Parameterless pure operator definition
 ======================================

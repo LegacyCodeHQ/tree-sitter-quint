@@ -81,6 +81,7 @@ export default grammar({
       )),
       "=",
       field("value", $._expression),
+      optional(";"),
     ),
 
     operator_definition: $ => seq(
@@ -237,6 +238,7 @@ export default grammar({
       ),
       "=",
       field("body", $._expression),
+      optional(";"),
     ),
 
     parameter: $ => field("name", $.identifier),
