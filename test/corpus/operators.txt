@@ -123,6 +123,35 @@ module EmptyParameterLists {
       body: (boolean_literal))))
 
 ========================================
+Trailing commas in parameter lists
+========================================
+
+module TrailingParameterCommas {
+  def identity(x,) = x
+  action check(flag: bool,): bool = flag
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (name_reference
+        name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (name_reference
+        name: (identifier)))))
+
+========================================
 Stateful operator definition
 ========================================
 
