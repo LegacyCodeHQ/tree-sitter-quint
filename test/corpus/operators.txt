@@ -69,6 +69,27 @@ module Timers {
         right: (name_reference
           name: (identifier))))))
 
+========================================
+Inferred parameter with return annotation
+========================================
+
+module Flexible {
+  def inferred(x): int = x
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      return_type: (primitive_type)
+      body: (name_reference
+        name: (identifier)))))
+
 ======================================
 Parameterless pure operator definition
 ======================================
