@@ -72,6 +72,41 @@ module Actions {
       body: (boolean_literal))))
 
 ========================================
+Qualified operator parameters
+========================================
+
+module Parameters {
+  pure def identity(Scope::x: int): int = Scope::x
+  pure def inferred(Scope::x) = Scope::x
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (namespace_access_expression
+        namespace: (identifier)
+        member: (identifier)))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier)))
+      body: (namespace_access_expression
+        namespace: (identifier)
+        member: (identifier)))))
+
+========================================
 Explicit empty operator parameter list
 ========================================
 

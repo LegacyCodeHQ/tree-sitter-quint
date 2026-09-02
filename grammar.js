@@ -359,10 +359,10 @@ export default grammar({
         ),
     ),
 
-    parameter: $ => field("name", $.identifier),
+    parameter: $ => field("name", choice($.identifier, $.qualified_identifier)),
 
     annotated_parameter: $ => seq(
-      field("name", $.identifier),
+      field("name", choice($.identifier, $.qualified_identifier)),
       ":",
       field("type", $._type),
     ),
