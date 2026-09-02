@@ -139,10 +139,21 @@ export default grammar({
       $.integer_literal,
       $.boolean_literal,
       $.string_literal,
+      $.call_expression,
       $.name_reference,
       $.parenthesized_expression,
       $.unary_expression,
       $.binary_expression,
+    ),
+
+    call_expression: $ => seq(
+      field("function", $.name_reference),
+      "(",
+      optional(seq(
+        field("argument", $._expression),
+        repeat(seq(",", field("argument", $._expression))),
+      )),
+      ")",
     ),
 
     parenthesized_expression: $ => seq(
