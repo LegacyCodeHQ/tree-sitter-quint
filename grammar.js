@@ -53,6 +53,7 @@ export default grammar({
       $.value_definition,
       $.operator_definition,
       $.assumption_declaration,
+      $.instance_declaration,
       $.type_alias_declaration,
       $.uninterpreted_type_declaration,
     ),
@@ -254,6 +255,27 @@ export default grammar({
       field("name", $.identifier),
       "=",
       field("condition", $._expression),
+    ),
+
+    instance_declaration: $ => seq(
+      "import",
+      field("module", $.identifier),
+      "(",
+      optional(seq(
+        $.instance_override,
+        repeat(seq(",", $.instance_override)),
+      )),
+      ")",
+      optional(seq(
+        "as",
+        field("alias", $.identifier),
+      )),
+    ),
+
+    instance_override: $ => seq(
+      field("name", $.identifier),
+      "=",
+      field("value", $._expression),
     ),
 
     type_alias_declaration: $ => seq(

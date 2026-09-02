@@ -1,0 +1,37 @@
+========================================
+Module import with substitution and alias
+========================================
+
+module Voting {
+  const Value: Set[int]
+  val Count = 1
+}
+
+module Imports {
+  import Voting(Value = Set(0, 1)) as V
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (set_type
+        element: (primitive_type)))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal)))
+  (module_definition
+    name: (identifier)
+    (instance_declaration
+      module: (identifier)
+      (instance_override
+        name: (identifier)
+        value: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (integer_literal)
+          argument: (integer_literal)))
+      alias: (identifier))))
