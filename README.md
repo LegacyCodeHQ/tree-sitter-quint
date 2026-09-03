@@ -125,9 +125,9 @@ Tree-sitter's version command, commit the result, and create a matching `v*`
 tag. Pushing the tag runs the npm release workflow:
 
 ```sh
-bunx tree-sitter version 0.1.0
-git tag v0.1.0
-git push origin v0.1.0
+bunx tree-sitter version 0.32.0
+git tag v0.32.0
+git push origin v0.32.0
 ```
 
 The workflow verifies the tag and manifest versions, runs the complete release
@@ -135,6 +135,10 @@ gate, and publishes `@legacycodehq/tree-sitter-quint` with npm provenance. The
 npm package must designate `.github/workflows/release.yml` in
 `LegacyCodeHQ/tree-sitter-quint` as a trusted publisher before the tag is
 pushed.
+
+The grammar version tracks the supported Quint compiler release exactly. The
+npm development dependency pins that compiler version, and the release check
+requires every binding manifest and release tag to match it.
 
 ## License
 

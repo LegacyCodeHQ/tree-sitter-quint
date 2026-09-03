@@ -13,5 +13,26 @@ const expected = tag.slice(1);
 
 assert.equal(packageManifest.version, expected, `package.json version must match ${tag}`);
 assert.equal(treeSitterManifest.metadata.version, expected, `tree-sitter.json version must match ${tag}`);
+assert.equal(
+  packageManifest.devDependencies["@informalsystems/quint"],
+  expected,
+  `the pinned Quint compiler version must match ${tag}`,
+);
+
+const versionPatterns = new Map([
+  ["Cargo.toml", /^version = "([^"]+)"/m],
+  ["pyproject.toml", /^version = "([^"]+)"/m],
+  ["CMakeLists.txt", /^\s*VERSION "([^"]+)"/m],
+  ["Makefile", /^VERSION := (\S+)/m],
+  ["pom.xml", /^\s*<version>([^<]+)<\/version>/m],
+  ["build.zig.zon", /^\s*\.version = "([^"]+)",/m],
+]);
+
+for (const [filename, pattern] of versionPatterns) {
+  const contents = readFileSync(resolve(projectRoot, filename), "utf8");
+  const match = contents.match(pattern);
+  assert(match, `could not find the version in ${filename}`);
+  assert.equal(match[1], expected, `${filename} version must match ${tag}`);
+}
 
 console.log(`release version verified: ${expected}`);
