@@ -28,7 +28,7 @@
       }
     ],
     "links": {
-      "repository": "https://github.com/LegacyCodeLabs/quint-tree-sitter",
+      "repository": "https://github.com/LegacyCodeHQ/tree-sitter-quint",
       "funding": ""
     }
   },

@@ -1,4 +1,4 @@
-module github.com/LegacyCodeLabs/quint-tree-sitter
+module github.com/LegacyCodeHQ/tree-sitter-quint
 
 go 1.22
 

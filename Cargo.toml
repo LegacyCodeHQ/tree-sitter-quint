@@ -8,7 +8,7 @@ keywords = [ "incremental", "parsing", "tree-sitter", "quint" ]
 license = "Apache-2.0"
 name = "tree-sitter-quint"
 readme = "README.md"
-repository = "https://github.com/LegacyCodeLabs/quint-tree-sitter"
+repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
 version = "0.1.0"
 
 build = "bindings/rust/build.rs"
