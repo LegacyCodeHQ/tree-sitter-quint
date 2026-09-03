@@ -98,6 +98,9 @@
 (boolean_literal) @boolean
 (string_literal) @string
 
+(name_reference
+  name: (identifier) @variable)
+
 (documentation_comment) @comment.documentation
 (comment) @comment
 

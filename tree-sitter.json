@@ -12,6 +12,7 @@
       ],
       "injection-regex": "^quint$",
       "highlights": "queries/highlights.scm",
+      "locals": "queries/locals.scm",
       "class-name": "TreeSitterQuint"
     }
   ],
