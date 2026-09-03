@@ -36,6 +36,27 @@ Parse a file from this checkout with:
 bunx tree-sitter parse path/to/spec.qnt
 ```
 
+## Node.js usage
+
+Install the Tree-sitter runtime and Quint grammar:
+
+```sh
+npm install tree-sitter @legacycodehq/tree-sitter-quint
+```
+
+Parse Quint source with the grammar:
+
+```js
+import Parser from "tree-sitter";
+import Quint from "@legacycodehq/tree-sitter-quint";
+
+const parser = new Parser();
+parser.setLanguage(Quint);
+
+const tree = parser.parse("module Example {}");
+console.log(tree.rootNode.toString());
+```
+
 ## Syntax highlighting
 
 Generic Tree-sitter highlighting lives in `queries/highlights.scm`. Local
@@ -96,6 +117,24 @@ bun run check:generated
 
 The detailed red/green grammar-development workflow is documented in
 `AGENTS.md`.
+
+## Releasing
+
+Keep the version synchronized across the generated language manifests with
+Tree-sitter's version command, commit the result, and create a matching `v*`
+tag. Pushing the tag runs the npm release workflow:
+
+```sh
+bunx tree-sitter version 0.1.0
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+The workflow verifies the tag and manifest versions, runs the complete release
+gate, and publishes `@legacycodehq/tree-sitter-quint` with npm provenance. The
+npm package must designate `.github/workflows/release.yml` in
+`LegacyCodeHQ/tree-sitter-quint` as a trusted publisher before the tag is
+pushed.
 
 ## License
 

@@ -1,14 +1,48 @@
 {
-  "name": "tree-sitter-quint",
+  "name": "@legacycodehq/tree-sitter-quint",
   "version": "0.1.0",
+  "description": "Tree-sitter grammar for the Quint specification language",
   "license": "Apache-2.0",
-  "private": true,
+  "author": {
+    "name": "Ragunath Jawahar",
+    "email": "ragunath@legacycode.com"
+  },
+  "homepage": "https://github.com/LegacyCodeHQ/tree-sitter-quint",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LegacyCodeHQ/tree-sitter-quint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LegacyCodeHQ/tree-sitter-quint/issues"
+  },
+  "keywords": [
+    "incremental",
+    "parsing",
+    "tree-sitter",
+    "quint"
+  ],
+  "main": "bindings/node/index.js",
+  "types": "bindings/node/index.d.ts",
+  "files": [
+    "bindings/node/*",
+    "prebuilds/**",
+    "queries/*",
+    "src/**",
+    "binding.gyp",
+    "grammar.js",
+    "tree-sitter.json",
+    "NOTICE"
+  ],
   "type": "module",
   "scripts": {
+    "check:release": "bun run test && bun run check:generated && bun run test:package",
     "check:generated": "tree-sitter generate && git diff --exit-code -- src",
     "generate": "tree-sitter generate",
     "install": "node-gyp-build",
-    "test": "tree-sitter test && bun run test:tokens && bun run test:syntax && bun run test:structure",
+    "prepublishOnly": "bun run check:release",
+    "test": "tree-sitter test && bun run test:tokens && bun run test:syntax && bun run test:structure && bun run test:node",
+    "test:node": "node --test bindings/node/binding_test.js",
+    "test:package": "node scripts/check-npm-package.mjs",
     "test:structure": "node scripts/check-parse-structure-parity.mjs test/fixtures",
     "test:syntax": "node scripts/check-syntax-acceptance-parity.mjs test/fixtures",
     "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures"
@@ -22,5 +56,16 @@
     "@informalsystems/quint": "0.32.0",
     "tree-sitter": "^0.25.1",
     "tree-sitter-cli": "0.27.0"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.25.0"
+  },
+  "peerDependenciesMeta": {
+    "tree-sitter": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

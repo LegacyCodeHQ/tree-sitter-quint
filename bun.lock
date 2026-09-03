@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "tree-sitter-quint",
+      "name": "@legacycodehq/tree-sitter-quint",
       "dependencies": {
         "node-addon-api": "^8.3.1",
         "node-gyp-build": "^4.8.4",

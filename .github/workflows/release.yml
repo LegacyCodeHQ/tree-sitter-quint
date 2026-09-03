@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  publish-npm:
+    name: Publish npm package
+    if: github.repository == 'LegacyCodeHQ/tree-sitter-quint'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.0'
+
+      - name: Install dependencies
+        run: bun ci
+
+      - name: Verify release version
+        run: node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
+
+      - name: Publish to npm
+        # npm runs prepublishOnly, which executes the complete release gate.
+        run: npm publish --access public --provenance
