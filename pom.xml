@@ -7,7 +7,7 @@
   <groupId>io.github.tree-sitter</groupId>
   <artifactId>jtreesitter-quint</artifactId>
   <name>JTreeSitter Quint</name>
-  <version>0.32.0-rc.2</version>
+  <version>0.32.0</version>
   <description>Tree-sitter grammar for Quint</description>
   <url>https://github.com/LegacyCodeHQ/tree-sitter-quint</url>
   <licenses>
