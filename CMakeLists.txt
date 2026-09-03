@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-quint
-        VERSION "0.32.0"
+        VERSION "0.32.0-rc.1"
         DESCRIPTION "Tree-sitter grammar for Quint"
         HOMEPAGE_URL "https://github.com/LegacyCodeHQ/tree-sitter-quint"
         LANGUAGES C)
