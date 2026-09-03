@@ -99,5 +99,7 @@ The detailed red/green grammar-development workflow is documented in
 
 ## License
 
-This project is licensed under the Apache License, Version 2.0. See
-[`LICENSE`](LICENSE).
+This project is licensed under the [Apache License, Version 2.0](LICENSE).
+
+Copyright (c) 2026-present, Legacy Code Headquarters (OPC) Private Limited. All
+rights reserved.

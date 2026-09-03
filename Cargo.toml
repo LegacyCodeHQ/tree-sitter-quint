@@ -12,7 +12,7 @@ repository = "https://github.com/LegacyCodeLabs/quint-tree-sitter"
 version = "0.1.0"
 
 build = "bindings/rust/build.rs"
-include = [ "bindings/rust/*", "grammar.js", "queries/*", "src/*", "tree-sitter.json", "/LICENSE" ]
+include = [ "bindings/rust/*", "grammar.js", "queries/*", "src/*", "tree-sitter.json", "/LICENSE", "/NOTICE" ]
 
 [lib]
 path = "bindings/rust/lib.rs"
