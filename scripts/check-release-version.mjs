@@ -14,9 +14,14 @@ const expected = tag.slice(1);
 assert.equal(packageManifest.version, expected, `package.json version must match ${tag}`);
 assert.equal(treeSitterManifest.metadata.version, expected, `tree-sitter.json version must match ${tag}`);
 assert.equal(
+  expected.split("-", 1)[0],
+  packageManifest.quintVersion,
+  `the release version must be based on Quint ${packageManifest.quintVersion}`,
+);
+assert.equal(
   packageManifest.devDependencies["@informalsystems/quint"],
-  expected,
-  `the pinned Quint compiler version must match ${tag}`,
+  packageManifest.quintVersion,
+  "the pinned Quint compiler version must match package.json quintVersion",
 );
 
 const versionPatterns = new Map([
@@ -35,4 +40,4 @@ for (const [filename, pattern] of versionPatterns) {
   assert.equal(match[1], expected, `${filename} version must match ${tag}`);
 }
 
-console.log(`release version verified: ${expected}`);
+console.log(`release version verified: ${expected} (Quint ${packageManifest.quintVersion})`);

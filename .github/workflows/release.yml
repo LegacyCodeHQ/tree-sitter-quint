@@ -38,6 +38,16 @@ jobs:
       - name: Verify release version
         run: node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
 
+      - name: Select npm distribution tag
+        id: npm-dist-tag
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_NAME#v}" == *-* ]]; then
+            echo "tag=next" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish to npm
         # npm runs prepublishOnly, which executes the complete release gate.
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance --tag "${{ steps.npm-dist-tag.outputs.tag }}"

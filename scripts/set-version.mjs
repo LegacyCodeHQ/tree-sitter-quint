@@ -4,10 +4,15 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const version = process.argv[2];
-assert(version, "usage: bun run version:set <quint-version>");
+const quintVersion = process.argv[3] ?? version?.split("-", 1)[0];
+assert(version, "usage: bun run version:set <package-version> [quint-version]");
 assert(
   /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/.test(version),
   `invalid semantic version: ${version}`,
+);
+assert(
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/.test(quintVersion),
+  `invalid Quint version: ${quintVersion}`,
 );
 
 const projectRoot = resolve(import.meta.dirname, "..");
@@ -37,19 +42,31 @@ function replaceExactlyOnce(filename, pattern, replacement) {
 
 run(`tree-sitter${executableSuffix}`, ["version", version]);
 
+replaceExactlyOnce("package.json", /(^\s*\"version\":\s*)\"[^\"]+\"/m, `$1"${version}"`);
+replaceExactlyOnce("tree-sitter.json", /(\"version\":\s*)\"[^\"]+\"/, `$1"${version}"`);
+replaceExactlyOnce("Cargo.toml", /(^version = )\"[^\"]+\"/m, `$1"${version}"`);
+replaceExactlyOnce("pyproject.toml", /(^version = )\"[^\"]+\"/m, `$1"${version}"`);
+replaceExactlyOnce("CMakeLists.txt", /(^\s*VERSION )\"[^\"]+\"/m, `$1"${version}"`);
+replaceExactlyOnce("Makefile", /(^VERSION := )\S+/m, `$1${version}`);
 replaceExactlyOnce(
   "pom.xml",
   /(<artifactId>jtreesitter-quint<\/artifactId>\s*<name>[^<]+<\/name>\s*)<version>[^<]+<\/version>/,
   `$1<version>${version}</version>`,
 );
+replaceExactlyOnce("build.zig.zon", /(^\s*\.version = )\"[^\"]+\"/m, `$1"${version}"`);
 replaceExactlyOnce(
   "package.json",
   /(\"@informalsystems\/quint\":\s*)\"[^\"]+\"/,
-  `$1"${version}"`,
+  `$1"${quintVersion}"`,
+);
+replaceExactlyOnce(
+  "package.json",
+  /(\"quintVersion\":\s*)\"[^\"]+\"/,
+  `$1"${quintVersion}"`,
 );
 
 run(`bun${executableSuffix}`, ["install"]);
 run(`tree-sitter${executableSuffix}`, ["generate"]);
 run(process.execPath, ["scripts/check-release-version.mjs", `v${version}`]);
 
-console.log(`synchronized grammar and Quint compiler versions at ${version}`);
+console.log(`set package version to ${version} for Quint ${quintVersion}`);
