@@ -12,7 +12,7 @@ classifiers = [
 ]
 description = "Tree-sitter grammar for Quint"
 keywords = [ "incremental", "parsing", "tree-sitter", "quint" ]
-license.text = "MIT"
+license.text = "Apache-2.0"
 name = "tree-sitter-quint"
 readme = "README.md"
 requires-python = ">=3.10"

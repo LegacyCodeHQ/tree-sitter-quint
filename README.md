@@ -96,3 +96,8 @@ bun run check:generated
 
 The detailed red/green grammar-development workflow is documented in
 `AGENTS.md`.
+
+## License
+
+This project is licensed under the Apache License, Version 2.0. See
+[`LICENSE`](LICENSE).
