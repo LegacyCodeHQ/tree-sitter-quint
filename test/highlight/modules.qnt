@@ -1,0 +1,3 @@
+module Bank {}
+// <- keyword
+//     ^^^^ module
