@@ -39,29 +39,28 @@ try {
   ]);
   const [packed] = JSON.parse(packOutput);
   const packagedFiles = new Set(packed.files.map(({ path }) => path));
-
-  for (const required of [
+  const expectedFiles = new Set([
     "LICENSE",
     "NOTICE",
     "README.md",
     "binding.gyp",
+    "bindings/node/binding.cc",
     "bindings/node/index.js",
     "bindings/node/index.d.ts",
+    "package.json",
     "queries/highlights.scm",
+    "queries/locals.scm",
     "src/node-types.json",
     "src/parser.c",
     "src/scanner.c",
-    "tree-sitter.json",
-  ]) {
-    assert(packagedFiles.has(required), `npm package is missing ${required}`);
-  }
+    "src/tree_sitter/parser.h",
+  ]);
 
-  for (const excludedPrefix of ["test/", "scripts/", "bindings/java/", "bindings/zig/"]) {
-    assert(
-      ![...packagedFiles].some(path => path.startsWith(excludedPrefix)),
-      `npm package unexpectedly contains ${excludedPrefix}`,
-    );
-  }
+  assert.deepEqual(
+    [...packagedFiles].sort(),
+    [...expectedFiles].sort(),
+    "npm package contents differ from the audited allowlist",
+  );
 
   const tarball = join(scratch, packed.filename);
   writeFileSync(
