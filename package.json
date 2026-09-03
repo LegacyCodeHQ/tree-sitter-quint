@@ -47,7 +47,8 @@
     "test:package": "node scripts/check-npm-package.mjs",
     "test:structure": "node scripts/check-parse-structure-parity.mjs test/fixtures",
     "test:syntax": "node scripts/check-syntax-acceptance-parity.mjs test/fixtures",
-    "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures"
+    "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures",
+    "version:set": "node scripts/set-version.mjs"
   },
   "packageManager": "bun@1.4.0",
   "dependencies": {

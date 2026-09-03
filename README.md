@@ -120,15 +120,20 @@ The detailed red/green grammar-development workflow is documented in
 
 ## Releasing
 
-Keep the version synchronized across the generated language manifests with
-Tree-sitter's version command, commit the result, and create a matching `v*`
-tag. Pushing the tag runs the npm release workflow:
+Set the Quint-compatible version with the repository's synchronization command,
+commit the result, and create a matching `v*` tag. Pushing the tag runs the npm
+release workflow:
 
 ```sh
-bunx tree-sitter version 0.32.0
+bun run version:set 0.32.0
 git tag v0.32.0
 git push origin v0.32.0
 ```
+
+`version:set` updates every binding manifest, pins the matching Quint compiler,
+refreshes the Bun lockfile, regenerates the parser's embedded version metadata,
+and verifies that all versions agree. The equivalent npm invocation is
+`npm run version:set -- 0.32.0`.
 
 The workflow verifies the tag and manifest versions, runs the complete release
 gate, and publishes `@legacycodehq/tree-sitter-quint` with npm provenance. The
