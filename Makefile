@@ -1,6 +1,6 @@
 LANGUAGE_NAME := tree-sitter-quint
 HOMEPAGE_URL := https://github.com/LegacyCodeHQ/tree-sitter-quint
-VERSION := 0.32.0
+VERSION := 0.32.0-rc.3
 DESCRIPTION := Tree-sitter grammar for Quint
 
 # repository

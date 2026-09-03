@@ -9,7 +9,7 @@ license = "Apache-2.0"
 name = "tree-sitter-quint"
 readme = "README.md"
 repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
-version = "0.32.0"
+version = "0.32.0-rc.3"
 
 build = "bindings/rust/build.rs"
 include = [ "bindings/rust/*", "grammar.js", "queries/*", "src/*", "tree-sitter.json", "/LICENSE", "/NOTICE" ]

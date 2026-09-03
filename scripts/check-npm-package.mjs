@@ -7,6 +7,7 @@ import { join, resolve } from "node:path";
 const projectRoot = resolve(import.meta.dirname, "..");
 const scratch = mkdtempSync(join(tmpdir(), "tree-sitter-quint-package-"));
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
+const bun = process.platform === "win32" ? "bun.exe" : "bun";
 const npmEnvironment = {
   ...process.env,
   npm_config_cache: join(scratch, "npm-cache"),
@@ -94,6 +95,7 @@ if (tree.rootNode.hasError) {
 `,
   );
   run(process.execPath, [join(scratch, "smoke.mjs")], scratch);
+  run(bun, [join(scratch, "smoke.mjs")], scratch);
 
   const manifest = JSON.parse(readFileSync(join(projectRoot, "package.json"), "utf8"));
   console.log(`npm package smoke test passed: ${manifest.name}@${manifest.version}`);

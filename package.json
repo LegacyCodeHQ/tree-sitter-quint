@@ -1,6 +1,6 @@
 {
   "name": "@legacycodehq/tree-sitter-quint",
-  "version": "0.32.0",
+  "version": "0.32.0-rc.3",
   "quintVersion": "0.32.0",
   "description": "Tree-sitter grammar for the Quint specification language",
   "license": "Apache-2.0",

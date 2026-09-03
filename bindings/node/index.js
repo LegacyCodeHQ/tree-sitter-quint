@@ -1,9 +1,10 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
+const bunPrebuild = `${root}/prebuilds/${process.platform}-${process.arch}/tree-sitter-quint.node`;
 
-const binding = typeof process.versions.bun === "string"
+const binding = typeof process.versions.bun === "string" && existsSync(bunPrebuild)
   // Support `bun build --compile` by being statically analyzable enough to find the .node file at build-time
   ? await import(`${root}/prebuilds/${process.platform}-${process.arch}/tree-sitter-quint.node`)
   : (await import("node-gyp-build")).default(root);
