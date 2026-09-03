@@ -136,10 +136,12 @@ and verifies that all versions agree. The equivalent npm invocation is
 `npm run version:set -- 0.32.0`.
 
 The workflow verifies the tag and manifest versions, runs the complete release
-gate, and publishes `@legacycodehq/tree-sitter-quint` with npm provenance. The
-npm package must designate `.github/workflows/release.yml` in
-`LegacyCodeHQ/tree-sitter-quint` as a trusted publisher before the tag is
-pushed.
+gate, publishes `@legacycodehq/tree-sitter-quint` with npm provenance, and
+creates a GitHub Release with generated notes. Versions containing a prerelease
+suffix are published under npm's `next` tag and marked as GitHub prereleases;
+stable versions use npm's `latest` tag. The npm package must designate
+`.github/workflows/release.yml` in `LegacyCodeHQ/tree-sitter-quint` as a trusted
+publisher before the tag is pushed.
 
 The grammar version tracks the supported Quint compiler release exactly. The
 npm development dependency pins that compiler version, and the release check

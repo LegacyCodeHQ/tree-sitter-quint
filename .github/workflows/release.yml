@@ -14,7 +14,7 @@ jobs:
     if: github.repository == 'LegacyCodeHQ/tree-sitter-quint'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
@@ -51,3 +51,14 @@ jobs:
       - name: Publish to npm
         # npm runs prepublishOnly, which executes the complete release gate.
         run: npm publish --access public --provenance --tag "${{ steps.npm-dist-tag.outputs.tag }}"
+
+      - name: Create GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release_flags=(--verify-tag --generate-notes)
+          if [[ "${GITHUB_REF_NAME#v}" == *-* ]]; then
+            release_flags+=(--prerelease)
+          fi
+          gh release create "$GITHUB_REF_NAME" "${release_flags[@]}"
