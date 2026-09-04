@@ -16,8 +16,8 @@ function read(relativePath) {
 
 test("Zed extension registers Quint and pins the grammar", () => {
   const manifest = read("editors/zed/extension.toml");
-  assert.match(manifest, /^id = "quint"$/m);
-  assert.match(manifest, /^name = "Quint"$/m);
+  assert.match(manifest, /^id = "quint-language-support"$/m);
+  assert.match(manifest, /^name = "Quint Language Support"$/m);
   assert.match(manifest, /^version = "0\.1\.0"$/m);
   assert.match(manifest, /^schema_version = 1$/m);
   assert.match(manifest, /^\[grammars\.quint\]$/m);

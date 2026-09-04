@@ -1,9 +1,9 @@
-id = "quint"
-name = "Quint"
+id = "quint-language-support"
+name = "Quint Language Support"
 version = "0.1.0"
 schema_version = 1
 authors = ["Legacy Code Headquarters (OPC) Private Limited"]
-description = "Quint language support."
+description = "Language support for Quint, including syntax highlighting, indentation, bracket matching, and symbol outlines."
 repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
 
 [grammars.quint]
