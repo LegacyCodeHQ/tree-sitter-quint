@@ -8,7 +8,7 @@ import Quint from "../../bindings/node/index.js";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
-function queryCaptures(queryName, fixtureName) {
+function queryCaptureRecords(queryName, fixtureName) {
   const source = readFileSync(
     join(projectRoot, "test/query", fixtureName),
     "utf8",
@@ -22,9 +22,18 @@ function queryCaptures(queryName, fixtureName) {
     Quint,
     readFileSync(join(projectRoot, "queries", queryName)),
   );
-  return query
-    .captures(tree.rootNode)
-    .map(({ name, node }) => [name, node.text]);
+  return query.captures(tree.rootNode).map(({ name, node }) => ({
+    name,
+    nodeType: node.type,
+    text: node.text,
+  }));
+}
+
+function queryCaptures(queryName, fixtureName) {
+  return queryCaptureRecords(queryName, fixtureName).map(({ name, text }) => [
+    name,
+    text,
+  ]);
 }
 
 test("bracket query pairs Quint delimiters", () => {
@@ -38,4 +47,31 @@ test("bracket query pairs Quint delimiters", () => {
     ["close", "}"],
     ["close", "}"],
   ]);
+});
+
+test("indent query captures structural containers and closing delimiters", () => {
+  const captures = queryCaptureRecords("indents.scm", "indents.qnt");
+  const indentedTypes = new Set(
+    captures
+      .filter(({ name }) => name === "indent")
+      .map(({ nodeType }) => nodeType),
+  );
+
+  for (const nodeType of [
+    "module_definition",
+    "block_expression",
+    "all_expression",
+    "match_expression",
+    "match_arm",
+    "call_expression",
+    "list_literal",
+    "tuple_literal",
+    "record_literal",
+    "tuple_type",
+    "record_type",
+    "list_type",
+  ]) {
+    assert.ok(indentedTypes.has(nodeType), `missing @indent for ${nodeType}`);
+  }
+  assert.ok(captures.some(({ name }) => name === "outdent"));
 });

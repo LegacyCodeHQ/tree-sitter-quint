@@ -51,6 +51,7 @@ try {
     "package.json",
     "queries/brackets.scm",
     "queries/highlights.scm",
+    "queries/indents.scm",
     "queries/locals.scm",
     "src/node-types.json",
     "src/parser.c",

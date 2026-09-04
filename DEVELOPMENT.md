@@ -71,8 +71,9 @@ bunx tree-sitter parse path/to/spec.qnt
 ## Syntax highlighting
 
 Reusable editor queries live under `queries/`. Highlighting rules are in
-`highlights.scm`, local definitions and references are in `locals.scm`, and
-matching delimiter pairs are in `brackets.scm`. Preview highlighting with:
+`highlights.scm`, local definitions and references are in `locals.scm`,
+matching delimiter pairs are in `brackets.scm`, and syntax-driven indentation
+rules are in `indents.scm`. Preview highlighting with:
 
 ```sh
 bunx tree-sitter highlight \
