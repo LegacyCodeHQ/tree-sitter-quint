@@ -49,6 +49,7 @@ try {
     "bindings/node/index.js",
     "bindings/node/index.d.ts",
     "package.json",
+    "queries/brackets.scm",
     "queries/highlights.scm",
     "queries/locals.scm",
     "src/node-types.json",
