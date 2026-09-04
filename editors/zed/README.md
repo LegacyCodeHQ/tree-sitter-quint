@@ -1,4 +1,4 @@
-# Quint for Zed
+# Quint Language Support
 
 Language support for [Quint](https://quint-lang.org/) powered by
 [`tree-sitter-quint`](https://github.com/LegacyCodeHQ/tree-sitter-quint).
