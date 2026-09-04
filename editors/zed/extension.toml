@@ -1,0 +1,11 @@
+id = "quint"
+name = "Quint"
+version = "0.1.0"
+schema_version = 1
+authors = ["Legacy Code Headquarters (OPC) Private Limited"]
+description = "Quint language support."
+repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
+
+[grammars.quint]
+repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
+commit = "1c57759f0b8acc8465c7ef3caf63c6276720f470"

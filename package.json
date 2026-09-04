@@ -44,7 +44,7 @@
     "install": "node-gyp-build",
     "prepublishOnly": "bun run check:release",
     "test": "tree-sitter test && bun run test:tokens && bun run test:syntax && bun run test:structure && bun run test:node",
-    "test:node": "node --test bindings/node/binding_test.js test/query/query_test.js",
+    "test:node": "node --test bindings/node/binding_test.js test/query/query_test.js test/zed_extension_test.js",
     "test:package": "node scripts/check-npm-package.mjs",
     "test:structure": "node scripts/check-parse-structure-parity.mjs test/fixtures",
     "test:syntax": "node scripts/check-syntax-acceptance-parity.mjs test/fixtures",
