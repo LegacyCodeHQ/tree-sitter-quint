@@ -53,6 +53,7 @@ try {
     "queries/highlights.scm",
     "queries/indents.scm",
     "queries/locals.scm",
+    "queries/outline.scm",
     "src/node-types.json",
     "src/parser.c",
     "src/scanner.c",

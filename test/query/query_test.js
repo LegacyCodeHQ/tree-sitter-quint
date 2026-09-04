@@ -75,3 +75,40 @@ test("indent query captures structural containers and closing delimiters", () =>
   }
   assert.ok(captures.some(({ name }) => name === "outdent"));
 });
+
+test("outline query exposes Quint modules and declarations", () => {
+  const captures = queryCaptureRecords("outline.scm", "outline.qnt");
+  const names = captures
+    .filter(({ name }) => name === "name")
+    .map(({ text }) => text);
+  const itemTypes = new Set(
+    captures
+      .filter(({ name }) => name === "item")
+      .map(({ nodeType }) => nodeType),
+  );
+
+  assert.deepEqual(names, [
+    "Outline",
+    "LIMIT",
+    "count",
+    "Positive",
+    "Choice",
+    "MEMBER",
+    "initial",
+    "increment",
+    "C",
+  ]);
+  for (const nodeType of [
+    "module_definition",
+    "constant_declaration",
+    "variable_declaration",
+    "assumption_declaration",
+    "type_alias_declaration",
+    "uninterpreted_type_declaration",
+    "value_definition",
+    "operator_definition",
+    "instance_declaration",
+  ]) {
+    assert.ok(itemTypes.has(nodeType), `missing @item for ${nodeType}`);
+  }
+});
