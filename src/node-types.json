@@ -156,6 +156,10 @@
         "named": true
       },
       {
+        "type": "pair_expression",
+        "named": true
+      },
+      {
         "type": "parenthesized_expression",
         "named": true
       },
@@ -457,10 +461,6 @@
           },
           {
             "type": "-",
-            "named": false
-          },
-          {
-            "type": "->",
             "named": false
           },
           {
@@ -1424,6 +1424,32 @@
     "fields": {
       "disjunct": {
         "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "pair_expression",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
         "required": true,
         "types": [
           {

@@ -601,7 +601,7 @@ module OperatorForms {
           name: (identifier))))
     (value_definition
       name: (identifier)
-      body: (binary_expression
+      body: (pair_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -610,7 +610,7 @@ module OperatorForms {
           right: (integer_literal))))
     (value_definition
       name: (identifier)
-      body: (binary_expression
+      body: (pair_expression
         left: (name_reference
           name: (identifier))
         right: (name_reference

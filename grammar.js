@@ -793,6 +793,7 @@ export default grammar({
       $.name_reference,
       $.parenthesized_expression,
       $.unary_expression,
+      $.pair_expression,
       $.binary_expression,
     ),
 
@@ -1102,12 +1103,13 @@ export default grammar({
       field("operand", $._expression),
     )),
 
+    pair_expression: $ => prec.left(PREC.PAIR, seq(
+      field("left", $._expression),
+      "->",
+      field("right", $._expression),
+    )),
+
     binary_expression: $ => choice(
-      prec.left(PREC.PAIR, seq(
-        field("left", $._expression),
-        field("operator", "->"),
-        field("right", $._expression),
-      )),
       prec.left(PREC.IMPLICATION, seq(
         field("left", $._expression),
         field("operator", "implies"),

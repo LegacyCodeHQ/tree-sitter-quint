@@ -835,7 +835,7 @@ module Pairs {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (binary_expression
+      body: (pair_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -844,8 +844,8 @@ module Pairs {
           right: (integer_literal))))
     (value_definition
       name: (identifier)
-      body: (binary_expression
-        left: (binary_expression
+      body: (pair_expression
+        left: (pair_expression
           left: (integer_literal)
           right: (integer_literal))
         right: (integer_literal)))))
