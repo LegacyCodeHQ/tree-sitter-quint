@@ -59,6 +59,12 @@
     (reserved_operator)
   ] @function)
 
+(ufcs_call_expression
+  method: [
+    (identifier)
+    (qualified_identifier)
+  ] @function)
+
 (parameter
   name: [
     (identifier)

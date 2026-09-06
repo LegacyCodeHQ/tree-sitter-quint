@@ -42,5 +42,8 @@ module Highlights {
   //          ^ number
   //             ^ number
   //           ^ punctuation.delimiter
+
+  val selected = pair.oneOf()
+  //               ^^^^ function
 }
 // <- punctuation.bracket
