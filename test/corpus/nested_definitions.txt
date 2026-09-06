@@ -50,7 +50,7 @@ module Nested {
       body: (nested_definition_expression
         definition: (value_definition
           name: (identifier)
-          body: (binary_expression
+          value: (binary_expression
             left: (name_reference
               name: (identifier))
             right: (name_reference
@@ -223,7 +223,7 @@ module CallBoundary {
         expression: (nested_definition_expression
           definition: (value_definition
             name: (identifier)
-            body: (binary_expression
+            value: (binary_expression
               left: (name_reference
                 name: (identifier))
               right: (if_expression
@@ -268,7 +268,7 @@ module LetBoundary {
         expression: (nested_definition_expression
           definition: (value_definition
             name: (identifier)
-            body: (name_reference
+            value: (name_reference
               name: (identifier)))
           body: (and_block_expression
             conjunct: (name_reference
@@ -283,7 +283,7 @@ module LetBoundary {
         expression: (nested_definition_expression
           definition: (value_definition
             name: (identifier)
-            body: (name_reference
+            value: (name_reference
               name: (identifier)))
           body: (binary_expression
             left: (unary_expression
@@ -306,11 +306,11 @@ module SameLineLocalDefinition {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (parenthesized_expression
+      value: (parenthesized_expression
         expression: (nested_definition_expression
           definition: (value_definition
             name: (identifier)
-            body: (integer_literal))
+            value: (integer_literal))
           body: (binary_expression
             left: (name_reference
               name: (identifier))
@@ -334,7 +334,7 @@ module LocalHeaders {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (block_expression
+      value: (block_expression
         expression: (nested_definition_expression
           definition: (operator_definition
             name: (identifier)
@@ -367,14 +367,14 @@ module LocalValueHeaders {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (block_expression
+      value: (block_expression
         expression: (nested_definition_expression
           definition: (value_definition
             name: (identifier))
           body: (integer_literal))))
     (value_definition
       name: (identifier)
-      body: (block_expression
+      value: (block_expression
         expression: (nested_definition_expression
           definition: (value_definition
             name: (identifier))

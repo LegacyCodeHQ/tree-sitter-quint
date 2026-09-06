@@ -13,10 +13,10 @@ module Numbers {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (integer_literal))))
+      value: (integer_literal))))
 
 ========================================
-Definition expressions share the body field
+Value and operator definitions expose semantic fields
 ========================================
 
 module DefinitionBodyField {
@@ -31,7 +31,7 @@ module DefinitionBodyField {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (integer_literal))
+      value: (integer_literal))
     (operator_definition
       name: (identifier)
       parameter: (parameter
@@ -56,7 +56,7 @@ module UppercaseHex {
       name: (identifier)
       (ERROR
         (integer_literal))
-      body: (name_reference
+      value: (name_reference
         name: (identifier)))))
 
 ========================================
@@ -76,7 +76,7 @@ module LeadingZero {
       name: (identifier)
       (ERROR
         (integer_literal))
-      body: (integer_literal))))
+      value: (integer_literal))))
 
 ========================================
 Zero-prefixed separator is rejected
@@ -95,7 +95,7 @@ module ZeroSeparator {
       name: (identifier)
       (ERROR
         (integer_literal))
-      body: (name_reference
+      value: (name_reference
         name: (identifier)))))
 
 ========================================
@@ -120,12 +120,12 @@ module Patterns {
         element: (qualified_identifier
           namespace: (identifier)
           name: (identifier)))
-      body: (tuple_literal
+      value: (tuple_literal
         element: (integer_literal)
         element: (integer_literal)))
     (value_definition
       name: (identifier)
-      body: (lambda_expression
+      value: (lambda_expression
         parameter: (tuple_pattern
           element: (qualified_identifier
             namespace: (identifier)
@@ -155,14 +155,14 @@ module ValDestructuring {
       name: (tuple_pattern
         element: (identifier)
         element: (hole))
-      body: (tuple_literal
+      value: (tuple_literal
         element: (integer_literal)
         element: (integer_literal)))
     (value_definition
       name: (record_pattern
         field: (identifier)
         field: (identifier))
-      body: (record_literal
+      value: (record_literal
         (record_literal_field
           name: (identifier)
           value: (integer_literal))
@@ -187,13 +187,13 @@ module Hexadecimal {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (integer_literal))
+      value: (integer_literal))
     (value_definition
       name: (identifier)
-      body: (integer_literal))
+      value: (integer_literal))
     (value_definition
       name: (identifier)
-      body: (integer_literal))))
+      value: (integer_literal))))
 
 =========================
 Boolean value definitions
@@ -211,10 +211,10 @@ module Flags {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (boolean_literal))
+      value: (boolean_literal))
     (value_definition
       name: (identifier)
-      body: (boolean_literal))))
+      value: (boolean_literal))))
 
 =======================
 String value definition
@@ -231,7 +231,7 @@ module Messages {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (string_literal))))
+      value: (string_literal))))
 
 ========================================
 Backslashes in raw strings
@@ -248,7 +248,7 @@ module BackslashStrings {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (string_literal))))
+      value: (string_literal))))
 
 ========================================
 Multiline raw strings
@@ -266,7 +266,7 @@ second"
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (string_literal))))
+      value: (string_literal))))
 
 =========================
 Value definition reference
@@ -284,10 +284,10 @@ module Example {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (integer_literal))
+      value: (integer_literal))
     (value_definition
       name: (identifier)
-      body: (name_reference
+      value: (name_reference
         name: (identifier)))))
 
 ========================================
@@ -305,7 +305,7 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (call_expression
+      value: (call_expression
         function: (name_reference
           name: (identifier))
         argument: (string_literal)
@@ -330,14 +330,14 @@ module Values {
       name: (identifier)
       type: (set_type
         element: (primitive_type))
-      body: (ufcs_call_expression
+      value: (ufcs_call_expression
         receiver: (integer_literal)
         method: (identifier)
         argument: (integer_literal)))
     (value_definition
       name: (identifier)
       type: (primitive_type)
-      body: (integer_literal))))
+      value: (integer_literal))))
 
 ========================================
 Decimal literal with separators
@@ -354,4 +354,4 @@ module Numbers {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (integer_literal))))
+      value: (integer_literal))))

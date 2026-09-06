@@ -2044,16 +2044,6 @@
     "type": "value_definition",
     "named": true,
     "fields": {
-      "body": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "_expression",
-            "named": true
-          }
-        ]
-      },
       "name": {
         "multiple": false,
         "required": true,
@@ -2096,6 +2086,16 @@
         "types": [
           {
             "type": "_type",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "_expression",
             "named": true
           }
         ]

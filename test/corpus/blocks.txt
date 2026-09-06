@@ -67,7 +67,7 @@ module BooleanBlocks {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (and_block_expression
+      value: (and_block_expression
         conjunct: (boolean_literal)
         conjunct: (boolean_literal)))))
 
@@ -89,7 +89,7 @@ module BooleanBlocks {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (or_block_expression
+      value: (or_block_expression
         disjunct: (boolean_literal)
         disjunct: (boolean_literal)))))
 

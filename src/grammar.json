@@ -308,7 +308,7 @@
                         },
                         {
                           "type": "FIELD",
-                          "name": "body",
+                          "name": "value",
                           "content": {
                             "type": "SYMBOL",
                             "name": "_expression"
@@ -374,7 +374,7 @@
                 },
                 {
                   "type": "FIELD",
-                  "name": "body",
+                  "name": "value",
                   "content": {
                     "type": "SYMBOL",
                     "name": "_expression"
@@ -4940,7 +4940,7 @@
         },
         {
           "type": "FIELD",
-          "name": "body",
+          "name": "value",
           "content": {
             "type": "SYMBOL",
             "name": "_expression"
@@ -5036,7 +5036,7 @@
         },
         {
           "type": "FIELD",
-          "name": "body",
+          "name": "value",
           "content": {
             "type": "SYMBOL",
             "name": "_expression"

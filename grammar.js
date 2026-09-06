@@ -202,7 +202,7 @@ export default grammar({
           )),
           optional(seq(
             "=",
-            field("body", $._expression),
+            field("value", $._expression),
           )),
         ),
         seq(
@@ -212,7 +212,7 @@ export default grammar({
             field("type", $._type),
           )),
           "=",
-          field("body", $._expression),
+          field("value", $._expression),
         ),
       ),
       optional(";"),
@@ -990,7 +990,7 @@ export default grammar({
         field("type", $._type),
       )),
       "=",
-      field("body", $._expression),
+      field("value", $._expression),
       choice(";", $._newline),
     ),
 
@@ -1007,7 +1007,7 @@ export default grammar({
         field("type", $._type),
       )),
       "=",
-      field("body", $._expression),
+      field("value", $._expression),
     ),
 
     lambda_expression: $ => prec.right(seq(

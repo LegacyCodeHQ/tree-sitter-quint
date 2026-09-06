@@ -22,7 +22,7 @@ module Imports {
         element: (primitive_type)))
     (value_definition
       name: (identifier)
-      body: (integer_literal)))
+      value: (integer_literal)))
   (module_definition
     name: (identifier)
     (instance_declaration
@@ -87,7 +87,7 @@ module Use {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (integer_literal)))
+      value: (integer_literal)))
   (module_definition
     name: (identifier)
     (module_export_declaration
@@ -139,7 +139,7 @@ module Consumer {
       alias: (identifier))
     (value_definition
       name: (identifier)
-      body: (namespace_access_expression
+      value: (namespace_access_expression
         namespace: (identifier)
         member: (identifier)))))
 
@@ -209,7 +209,7 @@ module Use {
       name: (qualified_identifier
         namespace: (identifier)
         name: (identifier))
-      body: (integer_literal)))
+      value: (integer_literal)))
   (module_definition
     name: (identifier)
     (named_import_declaration
@@ -239,12 +239,12 @@ module Use {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (integer_literal))
+      value: (integer_literal))
     (value_definition
       name: (qualified_identifier
         namespace: (identifier)
         name: (identifier))
-      body: (integer_literal)))
+      value: (integer_literal)))
   (module_definition
     name: (identifier)
     (named_export_declaration
@@ -344,7 +344,7 @@ module C {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (string_literal)))
+      value: (string_literal)))
   (module_definition
     name: (identifier)
     (wildcard_import_declaration
