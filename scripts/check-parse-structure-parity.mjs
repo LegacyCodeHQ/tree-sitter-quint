@@ -96,7 +96,7 @@ const expressionKinds = {
   OperAppContext: "call_expression",
   OrContext: "binary_expression",
   OrExprContext: "or_block_expression",
-  PairContext: "binary_expression",
+  PairContext: "pair_expression",
   ParenContext: "parenthesized_expression",
   PlusMinusContext: "binary_expression",
   PowContext: "binary_expression",
@@ -181,7 +181,7 @@ function antlrSignatures(source, reference) {
     } else if (ruleName === "expr") {
       let kind = expressionKinds[contextName];
       if (contextName === "DotCallContext") {
-        kind = node.LPAREN?.() ? "call_expression" : "field_access_expression";
+        kind = node.LPAREN?.() ? "ufcs_call_expression" : "field_access_expression";
       } else if (contextName === "LetInContext") {
         const definition = node.operDef?.();
         const definitionText = definition
@@ -235,10 +235,10 @@ for (const kind of new Set([
   "index_expression", "integer_literal", "lambda_expression", "list_literal", "list_type",
   "match_expression", "module_definition", "name_reference", "named_type",
   "namespace_access_expression", "nested_definition_expression", "nondet_binding", "operator_definition",
-  "operator_type", "or_block_expression", "parenthesized_expression", "parenthesized_type",
+  "operator_type", "or_block_expression", "pair_expression", "parenthesized_expression", "parenthesized_type",
   "primitive_type", "record_literal", "record_type", "set_type", "string_literal",
   "tuple_literal", "tuple_type", "type_application", "type_variable", "unary_expression",
-  "unit_literal", "unit_type", "value_definition", "variable_declaration",
+  "ufcs_call_expression", "unit_literal", "unit_type", "value_definition", "variable_declaration",
 ])) {
   treeKinds.set(kind, kind);
 }
