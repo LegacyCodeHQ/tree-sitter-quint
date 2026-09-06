@@ -86,14 +86,35 @@ try {
 
   writeFileSync(
     join(scratch, "smoke.mjs"),
-    `import Parser from "tree-sitter";
+    `import { readFileSync } from "node:fs";
+import Parser from "tree-sitter";
 import Quint from "@legacycodehq/tree-sitter-quint";
 
 const parser = new Parser();
 parser.setLanguage(Quint);
-const tree = parser.parse("module Smoke {}");
+const tree = parser.parse("module Smoke {\\n  val pair = 1 -> 2\\n  val chained = 1.to(2).oneOf()\\n}");
 if (tree.rootNode.hasError) {
   throw new Error(tree.rootNode.toString());
+}
+
+for (const nodeType of ["pair_expression", "ufcs_call_expression"]) {
+  if (tree.rootNode.descendantsOfType(nodeType).length === 0) {
+    throw new Error("packaged grammar did not produce " + nodeType);
+  }
+}
+
+for (const queryName of [
+  "brackets.scm",
+  "highlights.scm",
+  "indents.scm",
+  "locals.scm",
+  "outline.scm",
+]) {
+  const queryUrl = new URL(
+    "./node_modules/@legacycodehq/tree-sitter-quint/queries/" + queryName,
+    import.meta.url,
+  );
+  new Parser.Query(Quint, readFileSync(queryUrl, "utf8"));
 }
 `,
   );
