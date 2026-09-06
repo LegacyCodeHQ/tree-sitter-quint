@@ -115,6 +115,13 @@ export default grammar({
 
   word: $ => $.identifier,
 
+  supertypes: $ => [
+    $._declaration,
+    $._expression,
+    $._type,
+    $._block_combinator_expression,
+  ],
+
   externals: $ => [
     $._newline,
   ],
@@ -773,10 +780,7 @@ export default grammar({
       $.unit_literal,
       $.record_literal,
       $.block_expression,
-      $.any_expression,
-      $.all_expression,
-      $.and_block_expression,
-      $.or_block_expression,
+      $._block_combinator_expression,
       $.assignment_expression,
       $.if_expression,
       $.match_expression,
@@ -790,6 +794,13 @@ export default grammar({
       $.parenthesized_expression,
       $.unary_expression,
       $.binary_expression,
+    ),
+
+    _block_combinator_expression: $ => choice(
+      $.all_expression,
+      $.and_block_expression,
+      $.any_expression,
+      $.or_block_expression,
     ),
 
     list_literal: $ => seq(
