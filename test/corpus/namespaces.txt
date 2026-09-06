@@ -269,9 +269,8 @@ module QualifiedUfcs {
       alias: (identifier))
     (value_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (integer_literal)
-          field: (qualified_identifier
-            namespace: (identifier)
-            name: (identifier)))))))
+      body: (ufcs_call_expression
+        receiver: (integer_literal)
+        method: (qualified_identifier
+          namespace: (identifier)
+          name: (identifier))))))

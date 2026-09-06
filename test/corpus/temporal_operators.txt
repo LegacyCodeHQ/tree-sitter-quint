@@ -109,20 +109,18 @@ module ActionConversion {
           right: (integer_literal))))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)
         argument: (name_reference
           name: (identifier))))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)
         argument: (name_reference
           name: (identifier))))))
 
@@ -156,19 +154,17 @@ module Fairness {
           right: (integer_literal))))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)
         argument: (name_reference
           name: (identifier))))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)
         argument: (name_reference
           name: (identifier))))))

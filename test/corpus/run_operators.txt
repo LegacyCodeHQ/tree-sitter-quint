@@ -47,10 +47,9 @@ module RepeatedRun {
           right: (integer_literal))))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (integer_literal)
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (integer_literal)
+        method: (identifier)
         argument: (lambda_expression
           parameter: (hole)
           body: (name_reference
@@ -75,11 +74,10 @@ module FailedRun {
       body: (boolean_literal))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))))))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)))))
 
 ========================================
 Run expectation
@@ -107,11 +105,10 @@ module ExpectedRun {
         value: (integer_literal)))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)
         argument: (binary_expression
           left: (name_reference
             name: (identifier))

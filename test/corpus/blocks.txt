@@ -114,14 +114,13 @@ module Choices {
       body: (block_expression
         binding: (nondet_binding
           name: (identifier)
-          value: (call_expression
-            function: (field_access_expression
-              object: (call_expression
-                function: (name_reference
-                  name: (identifier))
-                argument: (integer_literal)
-                argument: (integer_literal))
-              field: (identifier))))
+          value: (ufcs_call_expression
+            receiver: (call_expression
+              function: (name_reference
+                name: (identifier))
+              argument: (integer_literal)
+              argument: (integer_literal))
+            method: (identifier)))
         expression: (binary_expression
           left: (name_reference
             name: (identifier))
@@ -150,13 +149,12 @@ module Choices {
           name: (qualified_identifier
             namespace: (identifier)
             name: (identifier))
-          value: (call_expression
-            function: (field_access_expression
-              object: (call_expression
-                function: (name_reference
-                  name: (identifier))
-                argument: (integer_literal))
-              field: (identifier))))
+          value: (ufcs_call_expression
+            receiver: (call_expression
+              function: (name_reference
+                name: (identifier))
+              argument: (integer_literal))
+            method: (identifier)))
         expression: (binary_expression
           left: (namespace_access_expression
             namespace: (identifier)

@@ -710,10 +710,9 @@ module OperatorCalls {
         argument: (boolean_literal)))
     (value_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (boolean_literal)
-          field: (reserved_operator))
+      body: (ufcs_call_expression
+        receiver: (boolean_literal)
+        method: (reserved_operator)
         argument: (boolean_literal)))))
 
 ====================================
@@ -872,11 +871,10 @@ module TupleLambda {
           element: (integer_literal))))
     (value_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)
         argument: (lambda_expression
           parameter: (tuple_pattern
             element: (identifier)
@@ -893,6 +891,7 @@ Chained method calls
 
 module Ranges {
   val selected = 1.to(100).oneOf()
+  val selectedField = { value: 1 }.value
 }
 
 ---
@@ -902,14 +901,20 @@ module Ranges {
     name: (identifier)
     (value_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (call_expression
-            function: (field_access_expression
-              object: (integer_literal)
-              field: (identifier))
-            argument: (integer_literal))
-          field: (identifier))))))
+      body: (ufcs_call_expression
+        receiver: (ufcs_call_expression
+          receiver: (integer_literal)
+          method: (identifier)
+          argument: (integer_literal))
+        method: (identifier)))
+    (value_definition
+      name: (identifier)
+      body: (field_access_expression
+        object: (record_literal
+          (record_literal_field
+            name: (identifier)
+            value: (integer_literal)))
+        field: (identifier)))))
 
 ======================
 Multi-parameter lambda

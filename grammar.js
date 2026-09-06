@@ -787,6 +787,7 @@ export default grammar({
       $.nested_definition_expression,
       $.lambda_expression,
       $.call_expression,
+      $.ufcs_call_expression,
       $.field_access_expression,
       $.index_expression,
       $.namespace_access_expression,
@@ -1065,7 +1066,23 @@ export default grammar({
       field("function", choice(
         $.name_reference,
         $.namespace_access_expression,
-        $.field_access_expression,
+        $.reserved_operator,
+      )),
+      "(",
+      optional(seq(
+        field("argument", $._expression),
+        repeat(seq(",", field("argument", $._expression))),
+        optional(","),
+      )),
+      ")",
+    )),
+
+    ufcs_call_expression: $ => prec.left(PREC.POSTFIX + 1, seq(
+      field("receiver", $._expression),
+      ".",
+      field("method", choice(
+        $.identifier,
+        $.qualified_identifier,
         $.reserved_operator,
       )),
       "(",

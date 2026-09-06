@@ -171,10 +171,9 @@ module NestedAction {
           body: (call_expression
             function: (name_reference
               name: (identifier))
-            argument: (call_expression
-              function: (field_access_expression
-                object: (integer_literal)
-                field: (identifier))
+            argument: (ufcs_call_expression
+              receiver: (integer_literal)
+              method: (identifier)
               argument: (integer_literal))))
         body: (nested_definition_expression
           definition: (operator_definition

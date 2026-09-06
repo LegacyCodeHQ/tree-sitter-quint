@@ -68,11 +68,10 @@ module bank {
         expression: (assignment_expression
           target: (primed_identifier
             name: (identifier))
-          value: (call_expression
-            function: (field_access_expression
-              object: (name_reference
-                name: (identifier))
-              field: (identifier))
+          value: (ufcs_call_expression
+            receiver: (name_reference
+              name: (identifier))
+            method: (identifier)
             argument: (name_reference
               name: (identifier))
             argument: (lambda_expression
@@ -93,11 +92,10 @@ module bank {
         expression: (assignment_expression
           target: (primed_identifier
             name: (identifier))
-          value: (call_expression
-            function: (field_access_expression
-              object: (name_reference
-                name: (identifier))
-              field: (identifier))
+          value: (ufcs_call_expression
+            receiver: (name_reference
+              name: (identifier))
+            method: (identifier)
             argument: (name_reference
               name: (identifier))
             argument: (lambda_expression
@@ -114,11 +112,10 @@ module bank {
         expression: (assignment_expression
           target: (primed_identifier
             name: (identifier))
-          value: (call_expression
-            function: (field_access_expression
-              object: (name_reference
-                name: (identifier))
-              field: (identifier))
+          value: (ufcs_call_expression
+            receiver: (name_reference
+              name: (identifier))
+            method: (identifier)
             argument: (lambda_expression
               parameter: (hole)
               body: (integer_literal))))))
@@ -128,21 +125,18 @@ module bank {
         (comment)
         binding: (nondet_binding
           name: (identifier)
-          value: (call_expression
-            function: (field_access_expression
-              object: (name_reference
-                name: (identifier))
-              field: (identifier))))
+          value: (ufcs_call_expression
+            receiver: (name_reference
+              name: (identifier))
+            method: (identifier)))
         binding: (nondet_binding
           name: (identifier)
-          value: (call_expression
-            function: (field_access_expression
-              object: (call_expression
-                function: (field_access_expression
-                  object: (integer_literal)
-                  field: (identifier))
-                argument: (integer_literal))
-              field: (identifier))))
+          value: (ufcs_call_expression
+            receiver: (ufcs_call_expression
+              receiver: (integer_literal)
+              method: (identifier)
+              argument: (integer_literal))
+            method: (identifier)))
         (comment)
         expression: (any_expression
           choice: (call_expression
@@ -162,19 +156,17 @@ module bank {
     (documentation_comment)
     (value_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)
         argument: (lambda_expression
           parameter: (identifier)
           body: (binary_expression
-            left: (call_expression
-              function: (field_access_expression
-                object: (name_reference
-                  name: (identifier))
-                field: (identifier))
+            left: (ufcs_call_expression
+              receiver: (name_reference
+                name: (identifier))
+              method: (identifier)
               argument: (name_reference
                 name: (identifier)))
             right: (integer_literal)))))))
@@ -288,87 +280,75 @@ module counters {
           name: (identifier))))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (call_expression
-            function: (field_access_expression
-              object: (call_expression
-                function: (field_access_expression
-                  object: (call_expression
-                    function: (field_access_expression
-                      object: (parenthesized_expression
-                        expression: (assignment_expression
-                          target: (primed_identifier
-                            name: (identifier))
-                          value: (integer_literal)))
-                      field: (identifier))
-                    argument: (assignment_expression
-                      target: (primed_identifier
-                        name: (identifier))
-                      value: (integer_literal)))
-                  field: (identifier))
-                argument: (assignment_expression
+      body: (ufcs_call_expression
+        receiver: (ufcs_call_expression
+          receiver: (ufcs_call_expression
+            receiver: (ufcs_call_expression
+              receiver: (parenthesized_expression
+                expression: (assignment_expression
                   target: (primed_identifier
                     name: (identifier))
                   value: (integer_literal)))
-              field: (identifier))
+              method: (identifier)
+              argument: (assignment_expression
+                target: (primed_identifier
+                  name: (identifier))
+                value: (integer_literal)))
+            method: (identifier)
             argument: (assignment_expression
               target: (primed_identifier
                 name: (identifier))
               value: (integer_literal)))
-          field: (identifier))
+          method: (identifier)
+          argument: (assignment_expression
+            target: (primed_identifier
+              name: (identifier))
+            value: (integer_literal)))
+        method: (identifier)
         argument: (assignment_expression
           target: (primed_identifier
             name: (identifier))
           value: (integer_literal))))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (call_expression
-            function: (field_access_expression
-              object: (call_expression
-                function: (field_access_expression
-                  object: (call_expression
-                    function: (field_access_expression
-                      object: (parenthesized_expression
-                        expression: (name_reference
-                          name: (identifier)))
-                      field: (identifier))
-                    argument: (name_reference
-                      name: (identifier)))
-                  field: (identifier))
-                argument: (name_reference
+      body: (ufcs_call_expression
+        receiver: (ufcs_call_expression
+          receiver: (ufcs_call_expression
+            receiver: (ufcs_call_expression
+              receiver: (parenthesized_expression
+                expression: (name_reference
                   name: (identifier)))
-              field: (identifier))
+              method: (identifier)
+              argument: (name_reference
+                name: (identifier)))
+            method: (identifier)
             argument: (name_reference
               name: (identifier)))
-          field: (identifier))
+          method: (identifier)
+          argument: (name_reference
+            name: (identifier)))
+        method: (identifier)
         argument: (name_reference
           name: (identifier))))
     (operator_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (call_expression
-            function: (field_access_expression
-              object: (call_expression
-                function: (field_access_expression
-                  object: (call_expression
-                    function: (field_access_expression
-                      object: (parenthesized_expression
-                        expression: (name_reference
-                          name: (identifier)))
-                      field: (identifier))
-                    argument: (name_reference
-                      name: (identifier)))
-                  field: (identifier))
-                argument: (name_reference
+      body: (ufcs_call_expression
+        receiver: (ufcs_call_expression
+          receiver: (ufcs_call_expression
+            receiver: (ufcs_call_expression
+              receiver: (parenthesized_expression
+                expression: (name_reference
                   name: (identifier)))
-              field: (identifier))
+              method: (identifier)
+              argument: (name_reference
+                name: (identifier)))
+            method: (identifier)
             argument: (name_reference
               name: (identifier)))
-          field: (identifier))
+          method: (identifier)
+          argument: (name_reference
+            name: (identifier)))
+        method: (identifier)
         argument: (name_reference
           name: (identifier))))))
 
@@ -539,11 +519,10 @@ module Consumer {
           element: (integer_literal))))
     (value_definition
       name: (identifier)
-      body: (call_expression
-        function: (field_access_expression
-          object: (name_reference
-            name: (identifier))
-          field: (identifier))
+      body: (ufcs_call_expression
+        receiver: (name_reference
+          name: (identifier))
+        method: (identifier)
         argument: (lambda_expression
           parameter: (tuple_pattern
             element: (identifier)
