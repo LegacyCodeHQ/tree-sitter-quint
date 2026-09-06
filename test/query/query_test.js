@@ -64,6 +64,7 @@ test("indent query captures structural containers and closing delimiters", () =>
     "match_expression",
     "match_arm",
     "call_expression",
+    "ufcs_call_expression",
     "list_literal",
     "tuple_literal",
     "record_literal",

@@ -8,6 +8,7 @@
   (match_expression)
   (match_arm)
   (call_expression)
+  (ufcs_call_expression)
   (parenthesized_expression)
   (list_literal)
   (tuple_literal)
