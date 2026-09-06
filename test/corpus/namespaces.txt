@@ -20,14 +20,14 @@ module Top {
       name: (qualified_identifier
         namespace: (identifier)
         name: (identifier))
-      value: (binary_expression
+      body: (binary_expression
         left: (name_reference
           name: (identifier))
         right: (name_reference
           name: (identifier))))
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (namespace_access_expression
             namespace: (identifier)
@@ -54,7 +54,7 @@ module A::Impl {
       name: (identifier))
     (value_definition
       name: (identifier)
-      value: (integer_literal))))
+      body: (integer_literal))))
 
 ========================================
 Qualified identifiers throughout declarations
@@ -141,7 +141,7 @@ module NamespaceChain {
       module: (identifier))
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (namespace_access_expression
           namespace: (identifier)
           member: (identifier)
@@ -269,7 +269,7 @@ module QualifiedUfcs {
       alias: (identifier))
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (field_access_expression
           object: (integer_literal)
           field: (qualified_identifier

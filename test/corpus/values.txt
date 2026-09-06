@@ -13,7 +13,31 @@ module Numbers {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (integer_literal))))
+      body: (integer_literal))))
+
+========================================
+Definition expressions share the body field
+========================================
+
+module DefinitionBodyField {
+  val answer = 42
+  def identity(x) = x
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      body: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      parameter: (parameter
+        name: (identifier))
+      body: (name_reference
+        name: (identifier)))))
 
 ========================================
 Uppercase hexadecimal prefix is rejected
@@ -32,7 +56,7 @@ module UppercaseHex {
       name: (identifier)
       (ERROR
         (integer_literal))
-      value: (name_reference
+      body: (name_reference
         name: (identifier)))))
 
 ========================================
@@ -52,7 +76,7 @@ module LeadingZero {
       name: (identifier)
       (ERROR
         (integer_literal))
-      value: (integer_literal))))
+      body: (integer_literal))))
 
 ========================================
 Zero-prefixed separator is rejected
@@ -71,7 +95,7 @@ module ZeroSeparator {
       name: (identifier)
       (ERROR
         (integer_literal))
-      value: (name_reference
+      body: (name_reference
         name: (identifier)))))
 
 ========================================
@@ -96,12 +120,12 @@ module Patterns {
         element: (qualified_identifier
           namespace: (identifier)
           name: (identifier)))
-      value: (tuple_literal
+      body: (tuple_literal
         element: (integer_literal)
         element: (integer_literal)))
     (value_definition
       name: (identifier)
-      value: (lambda_expression
+      body: (lambda_expression
         parameter: (tuple_pattern
           element: (qualified_identifier
             namespace: (identifier)
@@ -131,14 +155,14 @@ module ValDestructuring {
       name: (tuple_pattern
         element: (identifier)
         element: (hole))
-      value: (tuple_literal
+      body: (tuple_literal
         element: (integer_literal)
         element: (integer_literal)))
     (value_definition
       name: (record_pattern
         field: (identifier)
         field: (identifier))
-      value: (record_literal
+      body: (record_literal
         (record_literal_field
           name: (identifier)
           value: (integer_literal))
@@ -163,13 +187,13 @@ module Hexadecimal {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (integer_literal))
+      body: (integer_literal))
     (value_definition
       name: (identifier)
-      value: (integer_literal))
+      body: (integer_literal))
     (value_definition
       name: (identifier)
-      value: (integer_literal))))
+      body: (integer_literal))))
 
 =========================
 Boolean value definitions
@@ -187,10 +211,10 @@ module Flags {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (boolean_literal))
+      body: (boolean_literal))
     (value_definition
       name: (identifier)
-      value: (boolean_literal))))
+      body: (boolean_literal))))
 
 =======================
 String value definition
@@ -207,7 +231,7 @@ module Messages {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (string_literal))))
+      body: (string_literal))))
 
 ========================================
 Backslashes in raw strings
@@ -224,7 +248,7 @@ module BackslashStrings {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (string_literal))))
+      body: (string_literal))))
 
 ========================================
 Multiline raw strings
@@ -242,7 +266,7 @@ second"
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (string_literal))))
+      body: (string_literal))))
 
 =========================
 Value definition reference
@@ -260,10 +284,10 @@ module Example {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (integer_literal))
+      body: (integer_literal))
     (value_definition
       name: (identifier)
-      value: (name_reference
+      body: (name_reference
         name: (identifier)))))
 
 ========================================
@@ -281,7 +305,7 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (name_reference
           name: (identifier))
         argument: (string_literal)
@@ -306,7 +330,7 @@ module Values {
       name: (identifier)
       type: (set_type
         element: (primitive_type))
-      value: (call_expression
+      body: (call_expression
         function: (field_access_expression
           object: (integer_literal)
           field: (identifier))
@@ -314,7 +338,7 @@ module Values {
     (value_definition
       name: (identifier)
       type: (primitive_type)
-      value: (integer_literal))))
+      body: (integer_literal))))
 
 ========================================
 Decimal literal with separators
@@ -331,4 +355,4 @@ module Numbers {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (integer_literal))))
+      body: (integer_literal))))

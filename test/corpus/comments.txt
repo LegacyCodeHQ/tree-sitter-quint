@@ -22,7 +22,7 @@ module Comments {
     (comment)
     (value_definition
       name: (identifier)
-      value: (integer_literal))))
+      body: (integer_literal))))
 
 ========================================
 Block comments
@@ -43,7 +43,7 @@ module BlockComment {
     (comment)
     (value_definition
       name: (identifier)
-      value: (integer_literal))))
+      body: (integer_literal))))
 
 ========================================
 Documentation comment nodes
@@ -64,4 +64,4 @@ module Documented {
     (documentation_comment)
     (value_definition
       name: (identifier)
-      value: (integer_literal))))
+      body: (integer_literal))))

@@ -329,7 +329,7 @@ module Terminators {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (integer_literal))
+      body: (integer_literal))
     (operator_definition
       name: (identifier)
       parameter: (annotated_parameter

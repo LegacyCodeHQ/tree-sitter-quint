@@ -51,7 +51,7 @@ module bank {
         result: (primitive_type)))
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (name_reference
           name: (identifier))
         argument: (string_literal)
@@ -162,7 +162,7 @@ module bank {
     (documentation_comment)
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (field_access_expression
           object: (name_reference
             name: (identifier))
@@ -448,7 +448,7 @@ module Consumer {
       alias: (identifier))
     (value_definition
       name: (identifier)
-      value: (namespace_access_expression
+      body: (namespace_access_expression
         namespace: (identifier)
         member: (identifier)))))
 
@@ -492,7 +492,7 @@ module Consumer {
       name: (identifier))
     (value_definition
       name: (identifier)
-      value: (integer_literal)))
+      body: (integer_literal)))
   (module_definition
     name: (identifier)
     (wildcard_import_declaration
@@ -501,7 +501,7 @@ module Consumer {
         name: (identifier)))
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))
@@ -509,7 +509,7 @@ module Consumer {
       name: (qualified_identifier
         namespace: (identifier)
         name: (identifier))
-      value: (integer_literal)))
+      body: (integer_literal)))
   (module_definition
     name: (identifier)
     (wildcard_import_declaration
@@ -523,7 +523,7 @@ module Consumer {
       name: (identifier))
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (name_reference
           name: (identifier))
         right: (integer_literal))))
@@ -533,13 +533,13 @@ module Consumer {
       module: (identifier))
     (value_definition
       name: (identifier)
-      value: (list_literal
+      body: (list_literal
         element: (tuple_literal
           element: (integer_literal)
           element: (integer_literal))))
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (field_access_expression
           object: (name_reference
             name: (identifier))
@@ -555,7 +555,7 @@ module Consumer {
               name: (identifier))))))
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (name_reference
           name: (identifier))
         right: (integer_literal)))))
@@ -586,7 +586,7 @@ module OperatorForms {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (and_block_expression
+      body: (and_block_expression
         conjunct: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -595,13 +595,13 @@ module OperatorForms {
           right: (integer_literal))))
     (value_definition
       name: (identifier)
-      value: (or_block_expression
+      body: (or_block_expression
         disjunct: (boolean_literal)
         disjunct: (name_reference
           name: (identifier))))
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -610,7 +610,7 @@ module OperatorForms {
           right: (integer_literal))))
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (name_reference
           name: (identifier))
         right: (name_reference
@@ -653,14 +653,14 @@ module DataFeatures {
       body: (nested_definition_expression
         definition: (value_definition
           name: (identifier)
-          value: (record_literal
+          body: (record_literal
             (record_literal_field
               name: (identifier)
               value: (string_literal))))
         body: (nested_definition_expression
           definition: (value_definition
             name: (identifier)
-            value: (record_literal
+            body: (record_literal
               (record_literal_field
                 name: (identifier)
                 value: (string_literal))

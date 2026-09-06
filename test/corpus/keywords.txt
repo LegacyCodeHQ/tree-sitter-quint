@@ -15,13 +15,13 @@ module KeywordExceptions {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (integer_literal))
+      body: (integer_literal))
     (value_definition
       name: (identifier)
-      value: (integer_literal))
+      body: (integer_literal))
     (value_definition
       name: (identifier)
-      value: (record_literal
+      body: (record_literal
         (record_literal_field
           name: (identifier)
           value: (integer_literal))
@@ -68,7 +68,7 @@ module InvalidStructuralKeyword {
       name: (identifier)
       (ERROR
         (identifier))
-      value: (integer_literal))))
+      body: (integer_literal))))
 
 ========================================
 Underscore is tokenized as a hole
@@ -100,7 +100,7 @@ module HoleContexts {
       body: (integer_literal))
     (value_definition
       name: (identifier)
-      value: (lambda_expression
+      body: (lambda_expression
         parameter: (tuple_pattern
           element: (hole)
           element: (identifier))
@@ -114,7 +114,7 @@ module HoleContexts {
           payload: (primitive_type))))
     (value_definition
       name: (identifier)
-      value: (match_expression
+      body: (match_expression
         value: (call_expression
           function: (name_reference
             name: (identifier))
@@ -127,7 +127,7 @@ module HoleContexts {
       name: (tuple_pattern
         element: (hole)
         element: (identifier))
-      value: (tuple_literal
+      body: (tuple_literal
         element: (integer_literal)
         element: (integer_literal)))))
 
@@ -181,4 +181,4 @@ module InvalidTypeKeyword {
       name: (identifier)
       (ERROR
         (identifier))
-      value: (integer_literal))))
+      body: (integer_literal))))

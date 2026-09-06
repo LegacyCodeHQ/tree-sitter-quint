@@ -13,7 +13,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (integer_literal)
         right: (integer_literal)))))
 
@@ -32,7 +32,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (integer_literal)
         right: (binary_expression
           left: (integer_literal)
@@ -53,7 +53,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (parenthesized_expression
           expression: (binary_expression
             left: (integer_literal)
@@ -75,7 +75,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -96,7 +96,7 @@ module Comparisons {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -117,7 +117,7 @@ module Comparisons {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -138,7 +138,7 @@ module Comparisons {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -159,7 +159,7 @@ module Comparisons {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -180,7 +180,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (unary_expression
           operand: (integer_literal))
         right: (integer_literal)))))
@@ -200,7 +200,7 @@ module Comparisons {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -221,7 +221,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -242,7 +242,7 @@ module Comparisons {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -263,7 +263,7 @@ module Logic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (boolean_literal)
         right: (binary_expression
           left: (integer_literal)
@@ -284,7 +284,7 @@ module Logic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (boolean_literal)
         right: (binary_expression
           left: (boolean_literal)
@@ -305,7 +305,7 @@ module Logic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (call_expression
           function: (name_reference
             name: (identifier))
@@ -327,7 +327,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -348,7 +348,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -369,7 +369,7 @@ module Arithmetic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (integer_literal)
         right: (binary_expression
           left: (integer_literal)
@@ -390,7 +390,7 @@ module Logic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (boolean_literal)
         right: (binary_expression
           left: (boolean_literal)
@@ -411,7 +411,7 @@ module Logic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (boolean_literal)
         right: (binary_expression
           left: (boolean_literal)
@@ -432,7 +432,7 @@ module Logic {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (boolean_literal)
         right: (binary_expression
           left: (boolean_literal)
@@ -453,7 +453,7 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (list_literal
+      body: (list_literal
         element: (integer_literal)
         element: (integer_literal)
         element: (integer_literal)))))
@@ -473,7 +473,7 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (list_literal))))
+      body: (list_literal))))
 
 =================
 Two-element tuple
@@ -490,7 +490,7 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (tuple_literal
+      body: (tuple_literal
         element: (string_literal)
         element: (integer_literal)))))
 
@@ -509,7 +509,7 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (unit_literal))))
+      body: (unit_literal))))
 
 ========================
 Non-empty record literal
@@ -526,7 +526,7 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (record_literal
+      body: (record_literal
         (record_literal_field
           name: (identifier)
           value: (string_literal))
@@ -550,13 +550,13 @@ module Records {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (record_literal
+      body: (record_literal
         (record_literal_field
           name: (identifier)
           value: (integer_literal))))
     (value_definition
       name: (identifier)
-      value: (record_literal
+      body: (record_literal
         (record_literal_field
           name: (identifier)
           value: (integer_literal))
@@ -580,7 +580,7 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (record_literal
+      body: (record_literal
         (record_literal_field
           name: (identifier)
           value: (string_literal))
@@ -589,7 +589,7 @@ module Collections {
           value: (integer_literal))))
     (value_definition
       name: (identifier)
-      value: (field_access_expression
+      body: (field_access_expression
         object: (name_reference
           name: (identifier))
         field: (identifier)))))
@@ -610,13 +610,13 @@ module Collections {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (list_literal
+      body: (list_literal
         element: (integer_literal)
         element: (integer_literal)
         element: (integer_literal)))
     (value_definition
       name: (identifier)
-      value: (index_expression
+      body: (index_expression
         collection: (name_reference
           name: (identifier))
         index: (integer_literal)))))
@@ -636,7 +636,7 @@ module Control {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (if_expression
+      body: (if_expression
         condition: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -658,7 +658,7 @@ module Functions {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (lambda_expression
+      body: (lambda_expression
         parameter: (identifier)
         body: (binary_expression
           left: (name_reference
@@ -680,7 +680,7 @@ module Lambdas {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (lambda_expression
+      body: (lambda_expression
         parameter: (qualified_identifier
           namespace: (identifier)
           name: (identifier))
@@ -704,13 +704,13 @@ module OperatorCalls {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (reserved_operator)
         argument: (boolean_literal)
         argument: (boolean_literal)))
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (field_access_expression
           object: (boolean_literal)
           field: (reserved_operator))
@@ -760,17 +760,17 @@ module TrailingDelimiters {
           name: (identifier))))
     (value_definition
       name: (identifier)
-      value: (list_literal
+      body: (list_literal
         element: (integer_literal)
         element: (integer_literal)))
     (value_definition
       name: (identifier)
-      value: (tuple_literal
+      body: (tuple_literal
         element: (integer_literal)
         element: (integer_literal)))
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (name_reference
           name: (identifier))
         argument: (integer_literal)
@@ -802,7 +802,7 @@ module RecordElements {
           type: (primitive_type))))
     (value_definition
       name: (identifier)
-      value: (record_literal
+      body: (record_literal
         (record_literal_field
           name: (identifier)
           value: (integer_literal))
@@ -811,7 +811,7 @@ module RecordElements {
           value: (integer_literal))))
     (value_definition
       name: (identifier)
-      value: (record_literal
+      body: (record_literal
         (record_spread
           value: (name_reference
             name: (identifier)))
@@ -835,7 +835,7 @@ module Pairs {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -844,7 +844,7 @@ module Pairs {
           right: (integer_literal))))
     (value_definition
       name: (identifier)
-      value: (binary_expression
+      body: (binary_expression
         left: (binary_expression
           left: (integer_literal)
           right: (integer_literal))
@@ -866,13 +866,13 @@ module TupleLambda {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (list_literal
+      body: (list_literal
         element: (tuple_literal
           element: (integer_literal)
           element: (integer_literal))))
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (field_access_expression
           object: (name_reference
             name: (identifier))
@@ -902,7 +902,7 @@ module Ranges {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (call_expression
+      body: (call_expression
         function: (field_access_expression
           object: (call_expression
             function: (field_access_expression
@@ -926,7 +926,7 @@ module Functions {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (lambda_expression
+      body: (lambda_expression
         parameter: (identifier)
         parameter: (identifier)
         body: (binary_expression
@@ -950,7 +950,7 @@ module Functions {
     name: (identifier)
     (value_definition
       name: (identifier)
-      value: (lambda_expression
+      body: (lambda_expression
         parameter: (identifier)
         body: (binary_expression
           left: (name_reference

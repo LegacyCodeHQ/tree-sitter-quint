@@ -26,13 +26,13 @@ module Matches {
       name: (identifier)
       type: (named_type
         name: (identifier))
-      value: (call_expression
+      body: (call_expression
         function: (name_reference
           name: (identifier))
         argument: (integer_literal)))
     (value_definition
       name: (identifier)
-      value: (match_expression
+      body: (match_expression
         value: (name_reference
           name: (identifier))
         arm: (match_arm
