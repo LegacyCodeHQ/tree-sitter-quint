@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# Rust build output (this is a library crate; Cargo.lock isn't committed)
+/target/
+Cargo.lock
+
 # Build and test output
 build/
 coverage/
