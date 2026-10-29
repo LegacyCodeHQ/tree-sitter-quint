@@ -3474,7 +3474,7 @@
     },
     "_parenthesized_operator_type": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "PREC_RIGHT",
         "value": 3,
@@ -5039,7 +5039,7 @@
     },
     "_local_operator_header_declaration": {
       "type": "PREC_DYNAMIC",
-      "value": -4,
+      "value": -8,
       "content": {
         "type": "SYMBOL",
         "name": "_operator_header_declaration"
@@ -5047,7 +5047,7 @@
     },
     "_local_bare_operator_header": {
       "type": "PREC_DYNAMIC",
-      "value": -4,
+      "value": -8,
       "content": {
         "type": "PREC",
         "value": "local_value",
@@ -5151,7 +5151,7 @@
     },
     "_local_bare_value_header": {
       "type": "PREC_DYNAMIC",
-      "value": -4,
+      "value": -8,
       "content": {
         "type": "PREC",
         "value": "local_value",
@@ -7090,7 +7090,7 @@
     },
     "_init_assignment_rhs_relation_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 4,
+      "value": 8,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7166,7 +7166,7 @@
     },
     "_init_assignment_rhs_add_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 4,
+      "value": 8,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7226,7 +7226,7 @@
     },
     "_init_assignment_rhs_mul_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 4,
+      "value": 8,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7295,7 +7295,7 @@
     },
     "_init_assignment_rhs_closed_relation_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 4,
+      "value": 8,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7371,7 +7371,7 @@
     },
     "_init_assignment_rhs_closed_add_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 4,
+      "value": 8,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7431,7 +7431,7 @@
     },
     "_init_assignment_rhs_closed_mul_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 4,
+      "value": 8,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7660,7 +7660,7 @@
     },
     "_init_pair_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7689,7 +7689,7 @@
     },
     "_init_implication_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7722,7 +7722,7 @@
     },
     "_init_leads_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7755,7 +7755,7 @@
     },
     "_init_iff_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7788,7 +7788,7 @@
     },
     "_init_or_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7821,7 +7821,7 @@
     },
     "_init_and_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7854,7 +7854,7 @@
     },
     "_init_relation_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -7915,7 +7915,7 @@
       "members": [
         {
           "type": "PREC_DYNAMIC",
-          "value": 2,
+          "value": 4,
           "content": {
             "type": "SEQ",
             "members": [
@@ -7957,7 +7957,7 @@
         },
         {
           "type": "PREC_DYNAMIC",
-          "value": 6,
+          "value": 12,
           "content": {
             "type": "SEQ",
             "members": [
@@ -8029,7 +8029,7 @@
           },
           {
             "type": "PREC_DYNAMIC",
-            "value": 14,
+            "value": 28,
             "content": {
               "type": "SEQ",
               "members": [
@@ -8062,7 +8062,7 @@
     },
     "_init_mul_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8159,7 +8159,7 @@
     },
     "_init_power_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8192,7 +8192,7 @@
     },
     "_init_call_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 6,
+      "value": 12,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8283,7 +8283,7 @@
     },
     "_init_index_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 4,
+      "value": 12,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8316,7 +8316,7 @@
     },
     "_init_ufcs_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 8,
+      "value": 17,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8407,7 +8407,7 @@
     },
     "_init_field_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8467,7 +8467,7 @@
     },
     "_init_closed_pair_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8514,7 +8514,7 @@
     },
     "_init_closed_implication_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8565,7 +8565,7 @@
     },
     "_init_closed_leads_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8616,7 +8616,7 @@
     },
     "_init_closed_iff_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8667,7 +8667,7 @@
     },
     "_init_closed_or_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8718,7 +8718,7 @@
     },
     "_init_closed_and_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8769,7 +8769,7 @@
     },
     "_init_closed_relation_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8845,7 +8845,7 @@
     },
     "_init_closed_add_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -8905,7 +8905,7 @@
     },
     "_init_closed_mul_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -9094,7 +9094,7 @@
     },
     "_init_closed_power_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -9145,7 +9145,7 @@
     },
     "_init_assigned_relation_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -9221,7 +9221,7 @@
     },
     "_init_assigned_add_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -9281,7 +9281,7 @@
     },
     "_init_assigned_mul_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -9394,7 +9394,7 @@
     },
     "_init_assigned_power_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -9677,7 +9677,7 @@
         },
         {
           "type": "PREC_DYNAMIC",
-          "value": 12,
+          "value": 24,
           "content": {
             "type": "SEQ",
             "members": [
@@ -9721,7 +9721,7 @@
         },
         {
           "type": "PREC_DYNAMIC",
-          "value": 6,
+          "value": 12,
           "content": {
             "type": "SEQ",
             "members": [
@@ -9751,7 +9751,7 @@
         },
         {
           "type": "PREC_DYNAMIC",
-          "value": 6,
+          "value": 12,
           "content": {
             "type": "SEQ",
             "members": [
@@ -9781,7 +9781,7 @@
         },
         {
           "type": "PREC_DYNAMIC",
-          "value": 5,
+          "value": 10,
           "content": {
             "type": "SEQ",
             "members": [
@@ -9884,7 +9884,7 @@
     },
     "_local_delimited_binary": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "CHOICE",
         "members": [
@@ -10395,7 +10395,7 @@
     },
     "_local_delimited_field": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 4,
       "content": {
         "type": "PREC_LEFT",
         "value": 14,
@@ -10441,7 +10441,7 @@
     },
     "_local_delimited_index": {
       "type": "PREC_DYNAMIC",
-      "value": 4,
+      "value": 12,
       "content": {
         "type": "PREC_LEFT",
         "value": 14,
@@ -10478,7 +10478,7 @@
     },
     "_local_delimited_ufcs": {
       "type": "PREC_DYNAMIC",
-      "value": 8,
+      "value": 17,
       "content": {
         "type": "PREC_LEFT",
         "value": 15,
@@ -10831,7 +10831,7 @@
     },
     "_local_delimited_operator_definition": {
       "type": "PREC_DYNAMIC",
-      "value": 12,
+      "value": 24,
       "content": {
         "type": "PREC",
         "value": "local_value",
