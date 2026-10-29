@@ -1021,3 +1021,35 @@ module NestedUfcsBoundary {
               value: (ufcs_call_expression receiver: (integer_literal) method: (identifier)))
             body: (unary_expression operand: (integer_literal))))
         body: (name_reference name: (identifier))))))
+
+=======================================
+Nested subtraction initializer and unit body
+=======================================
+
+module NestedSubtractionBody {
+  pure val seed = 1
+  pure def result = val outer = val inner = seed
+    -seed
+    ()
+    outer
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition name: (identifier) value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (nested_definition_expression
+        definition: (value_definition
+          name: (identifier)
+          value: (nested_definition_expression
+            definition: (value_definition
+              name: (identifier)
+              value: (binary_expression
+                left: (name_reference name: (identifier))
+                right: (name_reference name: (identifier))))
+            body: (unit_literal)))
+        body: (name_reference name: (identifier))))))

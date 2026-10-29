@@ -1709,18 +1709,36 @@ export default grammar({
       field("alternative", $._initializer_expression),
     ),
 
-    _init_nested_expression: $ => seq(
-      field("definition", choice(
-        alias($._local_value_header, $.value_definition),
-        alias($._local_value_definition_unterminated, $.value_definition),
-        alias($._local_value_definition, $.value_definition),
-        alias($._local_operator_definition, $.operator_definition),
-        alias($._local_operator_definition_unterminated, $.operator_definition),
-        alias($._local_operator_header_declaration, $.operator_definition),
-        alias($._local_bare_operator_header, $.operator_definition),
+    _init_nested_expression: $ => choice(
+      seq(
+        field("definition", choice(
+          alias($._local_value_header, $.value_definition),
+          alias($._local_value_definition_unterminated, $.value_definition),
+          alias($._local_value_definition, $.value_definition),
+          alias($._local_operator_definition, $.operator_definition),
+          alias($._local_operator_definition_unterminated, $.operator_definition),
+          alias($._local_operator_header_declaration, $.operator_definition),
+          alias($._local_bare_operator_header, $.operator_definition),
+        )),
+        field("body", $._initializer_expression),
+      ),
+      // A subtraction initializer followed by a unit body must not become
+      // a unary-minus body calling the initializer's final operand.
+      prec.dynamic(2, seq(
+        field("definition", alias($._local_unit_value_definition, $.value_definition)),
+        field("body", $.unit_literal),
       )),
-      field("body", $._initializer_expression),
     ),
+
+    _local_unit_value_definition: $ => prec("local_value", seq(
+      optional(field("qualifier", "pure")),
+      "val",
+      field("name", $._normal_call_name),
+      optional(seq("(", ")")),
+      optional(seq(":", field("type", $._type))),
+      "=",
+      field("value", alias($._init_closed_add_expression, $.binary_expression)),
+    )),
 
     _init_lambda_expression: $ => seq(
       choice(
