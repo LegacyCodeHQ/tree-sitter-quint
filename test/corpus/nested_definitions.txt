@@ -1997,3 +1997,20 @@ module NestedParameterizedHeader {
 ---
 
 (source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (list_literal element: (integer_literal)))) body: (unit_literal))) body: (name_reference name: (identifier)))))))
+
+======================================
+Assignment arithmetic retains local value operands
+======================================
+
+module AssignedLocalValueOperand {
+  var state: int
+  pure val seed = 1
+  def result = {
+    val saved = state' = seed -val pending = seed()
+    seed
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (variable_declaration name: (identifier) type: (primitive_type)) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (assignment_expression target: (primed_identifier name: (identifier)) value: (binary_expression left: (name_reference name: (identifier)) right: (nested_definition_expression definition: (value_definition name: (identifier) value: (name_reference name: (identifier))) body: (unit_literal))))) body: (name_reference name: (identifier)))))))

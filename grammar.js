@@ -1340,11 +1340,18 @@ export default grammar({
       alias($._init_assignment_rhs_add_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_add_expression: $ => prec.dynamic(8, seq(
-      field("left", $._init_assignment_rhs_closed_add),
-      field("operator", choice("+", "-")),
-      field("right", $._init_assignment_rhs_mul),
-    )),
+    _init_assignment_rhs_add_expression: $ => choice(
+      prec.dynamic(8, seq(
+        field("left", $._init_assignment_rhs_closed_add),
+        field("operator", choice("+", "-")),
+        field("right", $._init_assignment_rhs_mul),
+      )),
+      prec.dynamic(12, seq(
+        field("left", $._init_assignment_rhs_closed_add),
+        field("operator", "-"),
+        field("right", alias($._init_subtraction_header_expression, $.nested_definition_expression)),
+      )),
+    ),
 
     _init_assignment_rhs_mul: $ => choice(
       $._init_unary,
