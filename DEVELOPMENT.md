@@ -86,33 +86,30 @@ and source-spanned tree checks on generated expressions and local definitions.
 The pinned development compiler and package versions still target 0.32.0;
 use `QUINT_CLI` to repeat the checks with a 0.33.0 installation.
 
-There are seven known differences on malformed input, retained under
+The grammar represents ANTLR diagnostics with named nodes. In particular,
+`invalid_identifier` preserves QNT008 for reserved words in expressions, and
+`invalid_map_type` marks the legacy two-argument Map type. These nodes can occur
+in a tree whose `hasError` is false: consumers checking language acceptance must
+check these diagnostic nodes as well as Tree-sitter's `ERROR` and missing nodes.
+The syntax parity checker does this, and reserved identifier diagnostics receive
+error highlighting. The greedy-call reserved-word regressions are part of the
+normal fixture and corpus suites, including the semicolon-disambiguated form.
+
+There are six remaining differences on malformed input, retained under
 [`test/known-reference-differences/`](test/known-reference-differences/).
 ANTLR greedily continues an initializer as a call and then diagnoses an
-unexpected `=` or a reserved word used as an identifier. Tree-sitter can find
-an earlier binding boundary that produces a syntax tree without an error.
-For example, Quint rejects this with QNT008, while Tree-sitter parses it:
-
-```quint
-module DiagnosticDifference {
-  pure def x = true
-  pure def result = {
-    def local = x
-    () or -1
-  }
-}
-```
-
-These cases remain compatibility limits, rather than supported Quint examples.
-They are outside `test/fixtures/`, whose parity checks must pass. Reproduce the
-known failing comparison explicitly with:
+unexpected `=` (QNT006). Tree-sitter can find an earlier binding boundary that
+produces a syntax tree without an error. These cases are outstanding
+compatibility bugs, rather than supported Quint examples. They are outside
+`test/fixtures/`, whose parity checks must pass. Reproduce the known failing
+comparison explicitly with:
 
 ```sh
 QUINT_CLI=/path/to/quint-0.33.0 \
   node scripts/check-syntax-acceptance-parity.mjs test/known-reference-differences
 ```
 
-This command currently reports seven disagreements and exits unsuccessfully.
+This command currently reports six disagreements and exits unsuccessfully.
 Use the Quint compiler to determine validity; an error-free editor tree alone
 does not establish that a program is accepted by Quint.
 

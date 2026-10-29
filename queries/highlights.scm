@@ -103,6 +103,7 @@
 (integer_literal) @number
 (boolean_literal) @boolean
 (string_literal) @string
+(invalid_identifier) @error
 
 (name_reference
   name: (identifier) @variable)

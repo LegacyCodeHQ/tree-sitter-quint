@@ -917,6 +917,7 @@ export default grammar({
       $.index_expression,
       $.namespace_access_expression,
       $.name_reference,
+      $.invalid_identifier,
       $.parenthesized_expression,
       $.unary_expression,
       $.pair_expression,
@@ -1227,7 +1228,7 @@ export default grammar({
       $.list_literal, $.tuple_literal, $.unit_literal, $.record_literal,
       $.block_expression, $._block_combinator_expression,
       $.match_expression,
-      $.namespace_access_expression, $.name_reference,
+      $.namespace_access_expression, $.name_reference, $.invalid_identifier,
       $.parenthesized_expression,
     ),
 
@@ -1675,6 +1676,13 @@ export default grammar({
         seq(/[^/\n]/, /[^\n]*/, optional("\n")),
       )),
       seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"),
+    )),
+
+    // ANTLR's identifier rule consumes these tokens and reports QNT008. Keep
+    // that diagnostic path so a greedy local call does not silently backtrack
+    // into a different, apparently valid initializer/body boundary.
+    invalid_identifier: _ => prec(-1, choice(
+      "and", "or", "iff", "implies", "leadsTo", "match", "import", "export",
     )),
 
     name_reference: $ => field("name", $.identifier),

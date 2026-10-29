@@ -3842,6 +3842,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "invalid_identifier"
+        },
+        {
+          "type": "SYMBOL",
           "name": "parenthesized_expression"
         },
         {
@@ -5485,6 +5489,10 @@
         {
           "type": "SYMBOL",
           "name": "name_reference"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "invalid_identifier"
         },
         {
           "type": "SYMBOL",
@@ -8636,6 +8644,47 @@
                 "value": "/"
               }
             ]
+          }
+        ]
+      }
+    },
+    "invalid_identifier": {
+      "type": "PREC",
+      "value": -1,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "and"
+          },
+          {
+            "type": "STRING",
+            "value": "or"
+          },
+          {
+            "type": "STRING",
+            "value": "iff"
+          },
+          {
+            "type": "STRING",
+            "value": "implies"
+          },
+          {
+            "type": "STRING",
+            "value": "leadsTo"
+          },
+          {
+            "type": "STRING",
+            "value": "match"
+          },
+          {
+            "type": "STRING",
+            "value": "import"
+          },
+          {
+            "type": "STRING",
+            "value": "export"
           }
         ]
       }

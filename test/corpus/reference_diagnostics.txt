@@ -1,0 +1,36 @@
+========================================
+Greedy local call retains reserved identifier diagnostic
+========================================
+
+module GreedyReserved {
+  pure def identity(b: bool): bool = b
+  pure def result = {
+    def local = identity
+    (true) or -1 < 0
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter name: (identifier) type: (primitive_type))
+      return_type: (primitive_type)
+      body: (name_reference name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (call_expression
+              function: (name_reference name: (identifier))
+              argument: (boolean_literal)))
+          body: (binary_expression
+            left: (binary_expression
+              left: (invalid_identifier)
+              right: (integer_literal))
+            right: (integer_literal)))))))

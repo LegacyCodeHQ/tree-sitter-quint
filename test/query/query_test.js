@@ -36,6 +36,11 @@ function queryCaptures(queryName, fixtureName) {
   ]);
 }
 
+test("greedy reserved-identifier diagnostics receive error highlighting", () => {
+  const captures = queryCaptures("highlights.scm", "../fixtures/syntax-greedy-reserved-boundary.qnt");
+  assert.deepEqual(captures.filter(([name]) => name === "error"), [["error", "or"]]);
+});
+
 test("bracket query pairs Quint delimiters", () => {
   assert.deepEqual(queryCaptures("brackets.scm", "brackets.qnt"), [
     ["open", "{"],

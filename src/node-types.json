@@ -132,6 +132,10 @@
         "named": true
       },
       {
+        "type": "invalid_identifier",
+        "named": true
+      },
+      {
         "type": "lambda_expression",
         "named": true
       },
@@ -923,6 +927,11 @@
     }
   },
   {
+    "type": "invalid_identifier",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "invalid_map_type",
     "named": true,
     "fields": {
@@ -1434,6 +1443,10 @@
           },
           {
             "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "invalid_identifier",
             "named": true
           },
           {
