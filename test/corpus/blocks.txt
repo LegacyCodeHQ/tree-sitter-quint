@@ -252,12 +252,25 @@ module NondetSemicolon {
 ---
 
 (source_file
-  (module_definition name: (identifier)
-    (variable_declaration name: (identifier) type: (primitive_type))
-    (operator_definition name: (identifier)
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
       body: (block_expression
-        binding: (nondet_binding name: (identifier)
+        binding: (nondet_binding
+          name: (identifier)
           value: (ufcs_call_expression
-            receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal))
+            receiver: (call_expression
+              function: (name_reference
+                name: (identifier))
+              argument: (integer_literal)
+              argument: (integer_literal))
             method: (identifier)))
-        expression: (assignment_expression target: (primed_identifier name: (identifier)) value: (name_reference name: (identifier)))))))
+        expression: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (name_reference
+            name: (identifier)))))))

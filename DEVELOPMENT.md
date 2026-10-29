@@ -64,6 +64,10 @@ requires at least one module and a terminating newline for those line tokens.
 These existing editing allowances are separate from support for valid compiler
 input. Semantic constraints such as bound type variables remain compiler checks.
 
+Documentation comments belong before modules or declarations, rather than inside
+expressions. Like the ANTLR lexer, line comments, documentation comments, and
+hashbangs run through carriage returns until LF or the retained EOF allowance.
+
 After changing `grammar.js`, regenerate the committed parser sources and verify
 that they are current:
 

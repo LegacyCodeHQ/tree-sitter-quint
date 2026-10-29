@@ -51,4 +51,7 @@ module Visible {}
 
 ---
 
-(source_file (hashbang) (module_definition name: (identifier)))
+(source_file
+  (hashbang)
+  (module_definition
+    name: (identifier)))

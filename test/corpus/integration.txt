@@ -984,3 +984,90 @@ module SecondPassIntegration {
           function: (name_reference
             name: (identifier))
           argument: (boolean_literal))))))
+
+========================================
+ANTLR third pass multiline and comment integration
+========================================
+
+#!/usr/bin/env quint typecheck
+/// Integration of comment tokens and multiline local bindings.
+module ThirdPassIntegration {
+  var x: int
+
+  /// A continued initializer followed by a separate body.
+  pure def computed(): int = {
+    val values = List(1, 2)
+      /* the chain continues across this comment */
+      .append(3)
+      [0]
+    val half = values
+      / 1
+    half
+  }
+
+  /// A semicolon ends the nondeterministic binding.
+  action step = {
+    nondet n = Set(1, 2).oneOf();
+    x' = n + computed
+  }
+}
+
+---
+
+(source_file
+  (hashbang)
+  (documentation_comment)
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (documentation_comment)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (index_expression
+              collection: (ufcs_call_expression
+                receiver: (call_expression
+                  function: (name_reference
+                    name: (identifier))
+                  argument: (integer_literal)
+                  argument: (integer_literal))
+                (comment)
+                method: (identifier)
+                argument: (integer_literal))
+              index: (integer_literal)))
+          body: (nested_definition_expression
+            definition: (value_definition
+              name: (identifier)
+              value: (binary_expression
+                left: (name_reference
+                  name: (identifier))
+                right: (integer_literal)))
+            body: (name_reference
+              name: (identifier))))))
+    (documentation_comment)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        binding: (nondet_binding
+          name: (identifier)
+          value: (ufcs_call_expression
+            receiver: (call_expression
+              function: (name_reference
+                name: (identifier))
+              argument: (integer_literal)
+              argument: (integer_literal))
+            method: (identifier)))
+        expression: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (binary_expression
+            left: (name_reference
+              name: (identifier))
+            right: (name_reference
+              name: (identifier))))))))

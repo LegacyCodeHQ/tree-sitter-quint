@@ -130,9 +130,12 @@ module CarriageReturnComment {
 ---
 
 (source_file
-  (module_definition name: (identifier)
+  (module_definition
+    name: (identifier)
     (comment)
-    (value_definition name: (identifier) value: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))))
 
 ========================================
 Division and comment prefixes stay distinct
@@ -150,4 +153,35 @@ module DivisionComments {
 
 ---
 
-(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (integer_literal))) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) (comment) right: (integer_literal))) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) (comment) right: (integer_literal))) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) (comment) right: (integer_literal))) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) (comment) right: (integer_literal)))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        right: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        (comment)
+        right: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        (comment)
+        right: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        (comment)
+        right: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        (comment)
+        right: (integer_literal)))))
