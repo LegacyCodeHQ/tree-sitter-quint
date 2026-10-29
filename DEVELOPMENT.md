@@ -172,3 +172,42 @@ npm's `next` tag and are marked as GitHub prereleases; stable releases use
 Before releasing, npm must designate `.github/workflows/release.yml` in
 `LegacyCodeHQ/tree-sitter-quint` as a GitHub Actions trusted publisher with
 `npm publish` permission.
+
+## Reproducing the Quint 0.33 audit
+
+Install the reference separately so the released package's version contract can
+remain unchanged until its next release:
+
+```sh
+bun ci
+bun ci --cwd test/reference-quint033
+bun run test:audit
+QUINT_CLI="$PWD/test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js" bun run test
+```
+
+The private reference package pins Quint **0.33.0** with its own frozen lockfile.
+The audit refuses another compiler version, including the root package's current
+0.32 reference. CI uses the 0.33 reference for both the ordinary suite and audit.
+No global Quint installation is required.
+
+`scripts/quint-033-cases.mjs` generates 3,857 deterministic programs covering
+headers, local-definition boundaries, comments and line endings, nested types,
+match and lambda forms, nested calls, and assignment/subtraction chains. The
+runner asserts both the case count and a SHA-256 fingerprint. Deliberate matrix
+changes require reviewing coverage and updating that fingerprint.
+
+Every generated case is checked for syntax acceptance against Quint's ANTLR
+phase-one parser; accepted cases are also checked for parse structure and token
+parity. Rejected cases exercise diagnostics without treating ANTLR recovery trees
+as valid structure. These checks compare syntax, not semantic validity or full
+typechecking, and are bounded evidence rather than a proof of grammar equivalence.
+The ordinary suite additionally retains the curated regression fixtures.
+
+On failure the audit retains generated `.qnt` files, a family/count manifest,
+and per-checker logs, and prints the directory and a reproduction command.
+Set `QUINT_AUDIT_ARTIFACTS=/path/to/directory` to choose its parent directory.
+Successful runs remove only their own temporary subdirectory. CI uploads failed
+audit artifacts for seven days. To reproduce a structural or token mismatch,
+use `scripts/check-parse-structure-parity.mjs` or
+`scripts/check-tokenization-parity.mjs` with the reported case and the same
+`QUINT_CLI` environment setting.
