@@ -208,14 +208,17 @@ runner asserts both the case count and a SHA-256 fingerprint. Deliberate matrix
 changes require reviewing coverage and updating that fingerprint.
 
 The separate `test:audit:deep` matrix uses
-`scripts/quint-033-deep-cases.mjs` to generate another 26,000 expressions at
+`scripts/quint-033-deep-cases.mjs` to generate 46,000 expressions at
 depths two through five, from fixed xorshift32 seeds `0x3311001`, `0x3311002`,
-and `0x3311003`. It combines all local-definition qualifiers with arithmetic,
+`0x3311003`, `0x33ab001`, and `0x33ab002`. It combines all local-definition qualifiers with arithmetic,
 Boolean and temporal operators, assignments, destructuring, matches, lambdas,
 postfix operations, spreads, qualified names, Unicode, and NUL strings. The two
-matrices contain **34,259 programs** in total. The deep audit includes every
+matrices contain **54,907 programs** in total, including 648 ordered operator
+pairs through local-header and parenthesized local bodies. The deep audit includes every
 generated source, including rejected inputs that agreed during discovery.
-It has its own case-count and SHA-256 fingerprint checks.
+The 20,000 cases from the last two seeds were an independent holdout before
+being added to the permanent audit. It has its own case-count and SHA-256
+fingerprint checks.
 
 Every generated case is checked for syntax acceptance against Quint's ANTLR
 phase-one parser; accepted cases are also checked for parse structure and token

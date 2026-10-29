@@ -1,6 +1,7 @@
 // Deeper expression combinations discovered during the Quint 0.33 audit.
 // Fixed xorshift32 seeds keep failures reproducible across machines and runs.
-export function generateDeepCases(batches = [[0x3311001, 6000], [0x3311002, 10000], [0x3311003, 10000]]) {
+export function generateDeepCases(batches = [[0x3311001, 6000], [0x3311002, 10000], [0x3311003, 10000],
+  [0x33ab001, 10000], [0x33ab002, 10000]]) {
   const cases = [];
   for (const [seed, count] of batches) {
     let state = seed;

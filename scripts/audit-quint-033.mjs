@@ -7,6 +7,7 @@ import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { generateCases } from './quint-033-cases.mjs';
 import { generateDeepCases } from './quint-033-deep-cases.mjs';
+import { generateLocalBodyCases } from './quint-033-body-cases.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const cli = realpathSync(process.env.QUINT_CLI ?? join(root,
@@ -17,9 +18,9 @@ const require = createRequire(cli);
 const { parsePhase1fromText } = require(join(dirname(cli), 'parsing/quintParserFrontend.js'));
 const { newIdGenerator } = require(join(dirname(cli), 'idGenerator.js'));
 const matrix = process.argv.includes('--deep') ? 'deep' : 'boundary';
-const cases = matrix === 'deep' ? generateDeepCases() : generateCases();
+const cases = matrix === 'deep' ? [...generateDeepCases(), ...generateLocalBodyCases()] : generateCases();
 const expected = matrix === 'deep'
-  ? { count: 26000, sha256: '755f5d4e223a8cdb89565ddf70f301bc0a7ed4cf85cfe66ed5e67e8e2a3f2360' }
+  ? { count: 46648, sha256: '5e2c841462d203422d23555abdd5b0979c4431d8d4e3d304b08426746c0ea831' }
   : { count: 8259, sha256: '53f86c51ef5bce612df1bd5bbd7e7baf9a09d945144b74312d6b19b341271447' };
 const digest = createHash('sha256').update(JSON.stringify(cases)).digest('hex');
 assert.equal(cases.length, expected.count, 'Unexpected audit matrix size');

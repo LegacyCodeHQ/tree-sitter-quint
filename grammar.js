@@ -2001,13 +2001,15 @@ export default grammar({
       alias($._local_delimited_binary, $.binary_expression),
       alias($._local_delimited_field, $.field_access_expression),
     ),
-    _local_delimited_binary: $ => prec.dynamic(13, choice(
+    // These alternatives already have static operator precedence. Awarding
+    // a bonus per body binary can prefer (a or b) and c over a or (b and c).
+    _local_delimited_binary: $ => choice(
       localBodyBinaryExpression($, $._local_delimited_postfix),
       localBodyBinaryExpression($, choice(
         alias($._local_delimited_binary, $.binary_expression),
         alias($._body_unary_expression, $.unary_expression),
       ), false),
-    )),
+    ),
     _local_delimited_field: $ => prec.dynamic(4, fieldAccessExpression($, $._local_delimited_postfix)),
     _local_delimited_postfix: $ => choice(
       $.name_reference, $.namespace_access_expression,
