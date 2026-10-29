@@ -1,10 +1,9 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
-import Parser from "tree-sitter";
-import Quint from "../bindings/node/index.js";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const zedRoot = join(projectRoot, "editors/zed");
@@ -57,20 +56,9 @@ test("Zed highlighting is the documented adaptation of the reusable query", () =
   assert.equal(read("editors/zed/languages/quint/highlights.scm"), expected);
 });
 
-test("all Zed Tree-sitter queries compile", () => {
-  for (const queryName of [
-    "brackets.scm",
-    "highlights.scm",
-    "indents.scm",
-    "outline.scm",
-  ]) {
-    assert.doesNotThrow(
-      () =>
-        new Parser.Query(
-          Quint,
-          readFileSync(join(zedLanguageRoot, queryName), "utf8"),
-        ),
-      queryName,
-    );
-  }
+test("Zed queries compile and highlight diagnostics against the pinned grammar", () => {
+  execFileSync(process.execPath, [join(projectRoot, "scripts/check-zed-grammar.mjs")], {
+    cwd: projectRoot,
+    stdio: "pipe", encoding: "utf8",
+  });
 });
