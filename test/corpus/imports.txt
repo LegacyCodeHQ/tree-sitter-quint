@@ -485,3 +485,47 @@ module AnonymousInstance {
           namespace: (identifier)
           name: (identifier))
         value: (integer_literal)))))
+
+========================================
+Invalid empty-named module instance is rejected
+:error
+========================================
+
+module InvalidInstance { import A() as B }
+
+---
+
+(source_file)
+
+========================================
+Invalid empty-anonymous module instance is rejected
+:error
+========================================
+
+module InvalidInstance { import A().* }
+
+---
+
+(source_file)
+
+========================================
+Invalid empty-bare module instance is rejected
+:error
+========================================
+
+module InvalidInstance { import A() }
+
+---
+
+(source_file)
+
+========================================
+Invalid missing-selector module instance is rejected
+:error
+========================================
+
+module InvalidInstance { import A(x = 1) }
+
+---
+
+(source_file)
