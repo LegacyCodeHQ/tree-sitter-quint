@@ -177,8 +177,5 @@ module InvalidTypeKeyword {
 (source_file
   (module_definition
     name: (identifier)
-    (value_definition
-      name: (identifier)
-      (ERROR
-        (identifier))
-      value: (integer_literal))))
+    (ERROR
+      (integer_literal))))

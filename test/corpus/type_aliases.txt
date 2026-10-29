@@ -338,3 +338,27 @@ module MixedTypePrecedence {
       type: (operator_type
         parameter: (function_type parameter: (primitive_type) result: (primitive_type))
         result: (primitive_type)))))
+
+========================================
+Reserved declaration keywords cannot be types
+:error
+========================================
+
+module InvalidTypeKeyword {
+  const f: module
+}
+
+---
+
+(source_file)
+
+========================================
+Reserved declaration keywords cannot qualify types
+:error
+========================================
+
+module InvalidQualifiedTypeKeyword { const f: module::Name }
+
+---
+
+(source_file)

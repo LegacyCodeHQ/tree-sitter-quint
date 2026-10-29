@@ -59,7 +59,7 @@ const RESERVED_IDENTIFIERS = [
 const IDENTIFIER_TAIL_CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
 
-function identifierPatternWithout(reservedWords) {
+function identifierPatternWithout(reservedWords, includeUppercase = true) {
   const root = { terminal: false, children: new Map() };
 
   for (const word of reservedWords) {
@@ -73,7 +73,9 @@ function identifierPatternWithout(reservedWords) {
     node.terminal = true;
   }
 
-  const alternatives = ["[A-Z][A-Za-z0-9_]*", "_[A-Za-z0-9_]+"];
+  const alternatives = includeUppercase
+    ? ["[A-Z][A-Za-z0-9_]*", "_[A-Za-z0-9_]+"]
+    : ["_[A-Za-z0-9_]+"];
 
   function addAlternatives(node, prefix) {
     if (prefix && !node.terminal) {
@@ -104,6 +106,12 @@ function identifierPatternWithout(reservedWords) {
 }
 
 const IDENTIFIER_PATTERN = identifierPatternWithout(RESERVED_IDENTIFIERS);
+// Type variables correspond to ANTLR's LOW_ID, excluding every keyword token.
+// `as` and `from` remain available as named types through `identifier`.
+const TYPE_VARIABLE_PATTERN = identifierPatternWithout(
+  [...RESERVED_IDENTIFIERS, "as", "from"],
+  false,
+);
 const identifierOrHole = $ => choice(
   $.identifier,
   $.qualified_identifier,
@@ -656,7 +664,7 @@ export default grammar({
 
     primitive_type: _ => choice("int", "bool", "str"),
 
-    type_variable: _ => /(?:[a-z][A-Za-z0-9_]*|_[A-Za-z0-9_]+)/,
+    type_variable: _ => TYPE_VARIABLE_PATTERN,
 
     named_type: $ => field("name", choice(
       $.identifier,
