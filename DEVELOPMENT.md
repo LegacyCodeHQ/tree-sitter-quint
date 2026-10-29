@@ -7,6 +7,8 @@ dependencies:
 
 ```sh
 bun install
+bun ci --cwd test/reference-quint033
+export QUINT_CLI="$PWD/test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js"
 ```
 
 Generate the parser and run the complete test suite:
@@ -16,9 +18,11 @@ bun run generate
 bun run test
 ```
 
-The pinned `@informalsystems/quint` dependency provides the reference ANTLR
-lexer and phase-one parser used by the parity checks. Set `QUINT_CLI` only when
-deliberately comparing against another Quint installation.
+The separate locked 0.33.0 package provides the reference ANTLR lexer and
+phase-one parser. Keep `QUINT_CLI` set to it while working on 0.33 compatibility;
+the root dependency and release metadata remain on the previous release until
+release preparation. Both CI and the release gate install and select this
+reference explicitly.
 
 The detailed red/green workflow for grammar changes is documented in
 [AGENTS.md](AGENTS.md).
@@ -316,10 +320,35 @@ for correct boundaries: edits currently recompute recognition for the whole file
 The recognizer uses an explicit work stack rather than recursive C calls, and
 scanner serialization does not impose a fixed definition-nesting depth.
 
-When raw syntax recognition fails, the grammar selects its original recovery
+When raw syntax recognition fails, the grammar selects its unguarded recovery
 rules. Those rules are derived from the same rule functions, with aliases
 preserving public node names and shared lexical tokens preserving error leaves.
 Incomplete editor buffers therefore retain Tree-sitter recovery instead of
 requiring a complete compiler-valid file. Raw ANTLR diagnostic productions such
 as unexpected equality remain on the guarded path so their greedy boundary
 choices and diagnostic nodes are preserved.
+
+
+## Grammar layout
+
+`grammar.js` defines the language productions. Operator headers share parameter
+and return-annotation tails across qualifiers, and every expression context uses
+the same expression rules, including local initializers and local bodies.
+Definition-boundary markers provide the required lookahead without duplicating
+operator precedence or adding continuation scores for each local context.
+
+`grammar/definition-boundaries.js` applies the hidden markers and derives the
+unguarded recovery rules from those same productions. Keep these transforms
+separate from the language rules. Changes to either file require regeneration;
+the Make and CMake targets track both inputs, and Cargo includes the helper in
+its source package. Existing corpus trees and source-spanned parity checks guard
+the public nodes and fields during refactoring.
+
+For an independent depth holdout, call
+`generateDeepCases([[0x33ac001, 10000]], 3)` and write the returned sources into
+a temporary directory for the three parity checkers. This produces depths three
+through six; its source-array fingerprint is
+`3cbb2ba5b1d2971dac8a82d620087287b22329abb34b45098126fdfdad0899cb`.
+The refactor was also checked against this separate 10,000-case holdout, with
+zero syntax, structure, or tokenization disagreements. It is additional evidence,
+separate from the fixed CI matrices.

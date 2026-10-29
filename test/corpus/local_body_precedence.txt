@@ -29,4 +29,3 @@ module LocalRelationPrecedence {
 ---
 
 (source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (boolean_literal)) (value_definition name: (identifier) value: (record_literal (record_literal_field name: (identifier) value: (integer_literal)))) (operator_definition name: (identifier) body: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (field_access_expression object: (name_reference name: (identifier)) field: (identifier))) body: (binary_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (binary_expression left: (integer_literal) right: (integer_literal))))) body: (name_reference name: (identifier))))))
-

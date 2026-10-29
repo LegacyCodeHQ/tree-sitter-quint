@@ -1,7 +1,10 @@
 // Deeper expression combinations discovered during the Quint 0.33 audit.
 // Fixed xorshift32 seeds keep failures reproducible across machines and runs.
 export function generateDeepCases(batches = [[0x3311001, 6000], [0x3311002, 10000], [0x3311003, 10000],
-  [0x33ab001, 10000], [0x33ab002, 10000]]) {
+  [0x33ab001, 10000], [0x33ab002, 10000]], minimumDepth = 2) {
+  if (!Number.isInteger(minimumDepth) || minimumDepth < 0) {
+    throw new RangeError("minimumDepth must be a nonnegative integer");
+  }
   const cases = [];
   for (const [seed, count] of batches) {
     let state = seed;
@@ -40,7 +43,7 @@ export function generateDeepCases(batches = [[0x3311001, 6000], [0x3311002, 1000
       cases.push({
         family: 'deep-expression',
         name: `deep-${seed.toString(16)}-${String(i).padStart(5, '0')}.qnt`,
-        source: `module Probe { pure def result = ${expression(2 + i % 4)} }\n`,
+        source: `module Probe { pure def result = ${expression(minimumDepth + i % 4)} }\n`,
       });
     }
   }

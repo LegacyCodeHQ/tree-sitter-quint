@@ -13,6 +13,8 @@ jobs:
     name: Publish npm package
     if: github.repository == 'LegacyCodeHQ/tree-sitter-quint'
     runs-on: ubuntu-latest
+    env:
+      QUINT_CLI: ${{ github.workspace }}/test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js
     permissions:
       contents: write
       id-token: write
@@ -36,6 +38,9 @@ jobs:
 
       - name: Install dependencies
         run: bun ci
+
+      - name: Install locked Quint 0.33 reference
+        run: bun ci --cwd test/reference-quint033
 
       - name: Verify release version
         run: node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
