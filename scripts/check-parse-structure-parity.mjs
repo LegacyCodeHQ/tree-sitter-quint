@@ -146,8 +146,16 @@ function declarationKind(node, source) {
   if (contextName === "ExportDefContext") return "export_declaration";
   if (contextName === "TypeDefsContext") return "type_declaration";
   if (contextName === "OperContext") {
-    const text = source.slice(node.start.startIndex, node.stop.stopIndex + 1);
-    return /^(?:pure\s+)?val\b/.test(text) ? "value_definition" : "operator_definition";
+    const definition = node.operDef();
+    const qualifier = definition.qualifier?.().text;
+    const isValue = qualifier === "val" || qualifier === "pureval"
+      || ["ValDestructuringContext", "PureValDestructuringContext"].includes(
+        definition.constructor.name,
+      );
+    const parameterCount = (definition.parameter?.().length ?? 0)
+      + (definition.annotatedParameter?.().length ?? 0);
+    // The grammar intentionally represents parameterized val syntax as an operator.
+    return isValue && parameterCount === 0 ? "value_definition" : "operator_definition";
   }
   return undefined;
 }
