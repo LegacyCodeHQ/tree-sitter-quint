@@ -236,8 +236,9 @@ function pairExpression($, expression) {
 }
 
 
-// Prefix and compound initializers can end before a parenthesized/list body.
-// Keep their node kinds while allowing that boundary through the final operand.
+// A prefix ending at a bare operand must not gain a compound-boundary bonus.
+// Preserve open boundaries only after a compound right edge; this keeps an
+// earlier lambda/unary continuation ahead of calls in a later local body.
 function delimitedInitializer($) {
   return choice(
     alias($._init_pair_expression, $.pair_expression),
@@ -251,10 +252,14 @@ function delimitedInitializer($) {
     alias($._init_mul_expression, $.binary_expression),
     alias($._init_power_expression, $.binary_expression),
     alias($._init_assignment_expression, $.assignment_expression),
-    alias($._init_unary_expression, $.unary_expression),
-    alias($._init_if_expression, $.if_expression),
-    alias($._init_lambda_expression, $.lambda_expression),
+    alias($._local_compound_unary_initializer, $.unary_expression),
+    alias($._local_compound_if_initializer, $.if_expression),
+    alias($._local_compound_lambda_initializer, $.lambda_expression),
     alias($._init_nested_expression, $.nested_definition_expression),
+    alias($._init_call_expression, $.call_expression),
+    alias($._init_index_expression, $.index_expression),
+    alias($._init_ufcs_expression, $.ufcs_call_expression),
+    alias($._init_field_expression, $.field_access_expression),
   );
 }
 
@@ -522,11 +527,20 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._init_unary, $._local_compound_unary_initializer],
+    [$._init_power, $._local_compound_unary_initializer],
+    [$._init_postfix, $._local_compound_unary_initializer],
+    ...["_init_pair", "_init_implication", "_init_leads", "_init_iff", "_init_or",
+      "_init_and", "_init_relation", "_init_add", "_init_mul", "_init_power", "_init_unary", "_init_postfix",
+    ].flatMap(name => [
+      [$[name], $._local_compound_if_initializer],
+      [$[name], $._local_compound_lambda_initializer],
+    ]),
     // Preserve a compound initializer's end alongside its continuation until
     // the following delimited body resolves the enclosing local definition.
     ...[
       "_init_pair", "_init_implication", "_init_leads", "_init_iff", "_init_or",
-      "_init_and", "_init_relation", "_init_add", "_init_mul", "_init_power", "_init_unary",
+      "_init_and", "_init_relation", "_init_add", "_init_mul", "_init_power", "_init_unary", "_init_postfix",
     ].flatMap(name => [
       [$[name], $._local_delimited_value_definition],
       [$[name], $._local_delimited_operator_definition],
@@ -537,6 +551,7 @@ export default grammar({
     [$._init_assignment_rhs_closed_mul, $._init_closed_mul],
     [$._operator_definition_head, $._local_bare_operator_header],
     [$._init_power, $._init_closed_power],
+    [$._local_compound_lambda_initializer, $._init_lambda_expression, $.name_reference],
     [$._init_lambda_expression, $.name_reference],
     [$._init_ufcs_expression, $._init_field_expression],
     [$._init_atom, $._init_call_expression],
@@ -1853,12 +1868,55 @@ export default grammar({
     _local_delimited_body: $ => choice(
       $.nested_definition_expression,
       $.unary_expression,
+      $.name_reference, $.namespace_access_expression,
       $.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal,
       alias($._local_delimited_binary, $.binary_expression),
       alias($._local_delimited_field, $.field_access_expression),
     ),
     _local_delimited_binary: $ => prec.dynamic(4, binaryExpression($, choice($.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal), $._expression)),
     _local_delimited_field: $ => prec.dynamic(4, fieldAccessExpression($, $._local_delimited_body)),
+    _local_compound_unary_initializer: $ => seq(
+      field("operator", "-"),
+      field("operand", choice(
+        alias($._local_compound_unary_initializer, $.unary_expression),
+        alias($._local_compound_if_initializer, $.if_expression),
+        alias($._local_compound_lambda_initializer, $.lambda_expression),
+        alias($._init_nested_expression, $.nested_definition_expression),
+        alias($._init_assignment_expression, $.assignment_expression),
+        alias($._init_power_expression, $.binary_expression),
+        alias($._init_call_expression, $.call_expression),
+        alias($._init_index_expression, $.index_expression),
+        alias($._init_ufcs_expression, $.ufcs_call_expression),
+        alias($._init_field_expression, $.field_access_expression),
+      )),
+    ),
+
+    _local_compound_lambda_initializer: $ => seq(
+      choice(
+        field("parameter", identifierOrHole($)),
+        seq(
+          "(",
+          field("parameter", identifierOrHole($)),
+          repeat(seq(",", field("parameter", identifierOrHole($)))),
+          ")",
+        ),
+        seq(
+          "(",
+          field("parameter", $.tuple_pattern),
+          ")",
+        ),
+      ),
+      "=>",
+      field("body", delimitedInitializer($)),
+    ),
+    _local_compound_if_initializer: $ => seq(
+      "if", "(",
+      field("condition", $._expression),
+      ")",
+      field("consequence", $._expression),
+      "else",
+      field("alternative", delimitedInitializer($)),
+    ),
     _local_delimited_value_definition: $ => prec("local_value", seq(
       optional(field("qualifier", "pure")),
       "val",

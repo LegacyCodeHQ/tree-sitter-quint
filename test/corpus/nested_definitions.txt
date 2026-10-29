@@ -2014,3 +2014,28 @@ module AssignedLocalValueOperand {
 ---
 
 (source_file (module_definition name: (identifier) (variable_declaration name: (identifier) type: (primitive_type)) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (assignment_expression target: (primed_identifier name: (identifier)) value: (binary_expression left: (name_reference name: (identifier)) right: (nested_definition_expression definition: (value_definition name: (identifier) value: (name_reference name: (identifier))) body: (unit_literal))))) body: (name_reference name: (identifier)))))))
+
+======================================
+Prefix initializers finish compound right edges before local bodies
+======================================
+
+module CompoundPrefixEdge {
+  pure val seed = 1
+  pure val values = List(1)
+  pure def number(n: int): int = n
+  pure def lambdaCase = {
+    val saved = def inner = p => seed
+    -seed
+    seed()
+  }
+  pure def terminatedCall = {
+    val saved = def inner = -number
+    (0);
+    val last = values[0]
+    values
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (value_definition name: (identifier) value: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal))) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (primitive_type) body: (name_reference name: (identifier))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (lambda_expression parameter: (identifier) body: (binary_expression left: (name_reference name: (identifier)) right: (name_reference name: (identifier))))) body: (name_reference name: (identifier)))) body: (unit_literal)))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (unary_expression operand: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal)))) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (name_reference name: (identifier))) body: (list_literal element: (integer_literal))))) body: (name_reference name: (identifier)))))))
