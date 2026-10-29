@@ -236,6 +236,240 @@ function pairExpression($, expression) {
 }
 
 
+// Share the full header syntax with the local form that requires a parameter
+// list, so all qualifiers, annotated parameters, and trailing commas stay aligned.
+function operatorDefinitionHead($, parametersRequired = false) {
+  const headerTail = (...alternatives) => parametersRequired
+    ? choice(...alternatives.slice(0, -1))
+    : optional(choice(...alternatives));
+  // The final tail alternative is the legacy annotation without parameters.
+  return prec.right(1, choice(
+    seq(
+      field("qualifier", "pure"),
+      "val",
+      field("name", $._normal_call_name),
+      choice(
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          optional(","),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          optional(","),
+          ")",
+          optional($._return_type_annotation),
+        ),
+      ),
+    ),
+    seq(
+      "val",
+      field("name", $._normal_call_name),
+      choice(
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          optional(","),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          optional(","),
+          ")",
+          optional($._return_type_annotation),
+        ),
+      ),
+    ),
+    seq(
+      field("qualifier", "pure"),
+      "def",
+      field("name", $._normal_call_name),
+      headerTail(
+        seq("(", ")", optional($._return_type_annotation)),
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          optional(","),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          optional(","),
+          ")",
+          optional($._return_type_annotation),
+        ),
+        seq(
+          ":",
+          field("return_type", $._type),
+        ),
+      ),
+    ),
+    seq(
+      "def",
+      field("name", $._normal_call_name),
+      headerTail(
+        seq("(", ")", optional($._return_type_annotation)),
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          optional(","),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          optional(","),
+          ")",
+          optional($._return_type_annotation),
+        ),
+        seq(
+          ":",
+          field("return_type", $._type),
+        ),
+      ),
+    ),
+    seq(
+      field("qualifier", "action"),
+      field("name", $._normal_call_name),
+      headerTail(
+        seq(
+          "(",
+          ")",
+          optional(seq(
+            ":",
+            field("return_type", $._type),
+          )),
+        ),
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          optional(","),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          optional(","),
+          ")",
+          optional($._return_type_annotation),
+        ),
+        seq(
+          ":",
+          field("return_type", $._type),
+        ),
+      ),
+    ),
+    seq(
+      field("qualifier", "nondet"),
+      field("name", $._normal_call_name),
+      headerTail(
+        seq("(", ")", optional($._return_type_annotation)),
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          optional(","),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          optional(","),
+          ")",
+          optional($._return_type_annotation),
+        ),
+        seq(
+          ":",
+          field("return_type", $._type),
+        ),
+      ),
+    ),
+    seq(
+      field("qualifier", "temporal"),
+      field("name", $._normal_call_name),
+      headerTail(
+        seq("(", ")", optional($._return_type_annotation)),
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          optional(","),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          optional(","),
+          ")",
+          optional($._return_type_annotation),
+        ),
+        seq(
+          ":",
+          field("return_type", $._type),
+        ),
+      ),
+    ),
+    seq(
+      field("qualifier", "run"),
+      field("name", $._normal_call_name),
+      headerTail(
+        seq("(", ")", optional($._return_type_annotation)),
+        seq(
+          "(",
+          field("parameter", $.annotated_parameter),
+          repeat(seq(",", field("parameter", $.annotated_parameter))),
+          optional(","),
+          ")",
+          ":",
+          field("return_type", $._type),
+        ),
+        seq(
+          "(",
+          field("parameter", $.parameter),
+          repeat(seq(",", field("parameter", $.parameter))),
+          optional(","),
+          ")",
+          optional($._return_type_annotation),
+        ),
+        seq(
+          ":",
+          field("return_type", $._type),
+        ),
+      ),
+    ),
+  ));
+}
+
 export default grammar({
   name: "quint",
 
@@ -266,6 +500,8 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._operator_definition_head, $._local_parameterized_operator_header],
+    [$._operator_definition_head, $._local_bare_operator_header, $._local_parameterized_operator_header],
     [$._normal_call_name, $._local_bare_value_header],
     [$._init_unary, $._local_delimited_value_definition],
     [$._init_assignment_rhs_closed_mul, $._init_closed_mul],
@@ -377,231 +613,7 @@ export default grammar({
       optional(";"),
     ),
 
-    _operator_definition_head: $ => prec.right(1, choice(
-        seq(
-          field("qualifier", "pure"),
-          "val",
-          field("name", $._normal_call_name),
-          choice(
-            seq(
-              "(",
-              field("parameter", $.annotated_parameter),
-              repeat(seq(",", field("parameter", $.annotated_parameter))),
-              optional(","),
-              ")",
-              ":",
-              field("return_type", $._type),
-            ),
-            seq(
-              "(",
-              field("parameter", $.parameter),
-              repeat(seq(",", field("parameter", $.parameter))),
-              optional(","),
-              ")",
-              optional($._return_type_annotation),
-            ),
-          ),
-        ),
-        seq(
-          "val",
-          field("name", $._normal_call_name),
-          choice(
-            seq(
-              "(",
-              field("parameter", $.annotated_parameter),
-              repeat(seq(",", field("parameter", $.annotated_parameter))),
-              optional(","),
-              ")",
-              ":",
-              field("return_type", $._type),
-            ),
-            seq(
-              "(",
-              field("parameter", $.parameter),
-              repeat(seq(",", field("parameter", $.parameter))),
-              optional(","),
-              ")",
-              optional($._return_type_annotation),
-            ),
-          ),
-        ),
-        seq(
-          field("qualifier", "pure"),
-          "def",
-          field("name", $._normal_call_name),
-          optional(choice(
-            seq("(", ")", optional($._return_type_annotation)),
-            seq(
-              "(",
-              field("parameter", $.annotated_parameter),
-              repeat(seq(",", field("parameter", $.annotated_parameter))),
-              optional(","),
-              ")",
-              ":",
-              field("return_type", $._type),
-            ),
-            seq(
-              "(",
-              field("parameter", $.parameter),
-              repeat(seq(",", field("parameter", $.parameter))),
-              optional(","),
-              ")",
-              optional($._return_type_annotation),
-            ),
-            seq(
-              ":",
-              field("return_type", $._type),
-            ),
-          )),
-        ),
-        seq(
-          "def",
-          field("name", $._normal_call_name),
-          optional(choice(
-            seq("(", ")", optional($._return_type_annotation)),
-            seq(
-              "(",
-              field("parameter", $.annotated_parameter),
-              repeat(seq(",", field("parameter", $.annotated_parameter))),
-              optional(","),
-              ")",
-              ":",
-              field("return_type", $._type),
-            ),
-            seq(
-              "(",
-              field("parameter", $.parameter),
-              repeat(seq(",", field("parameter", $.parameter))),
-              optional(","),
-              ")",
-              optional($._return_type_annotation),
-            ),
-            seq(
-              ":",
-              field("return_type", $._type),
-            ),
-          )),
-        ),
-        seq(
-          field("qualifier", "action"),
-          field("name", $._normal_call_name),
-          optional(choice(
-            seq(
-              "(",
-              ")",
-              optional(seq(
-                ":",
-                field("return_type", $._type),
-              )),
-            ),
-            seq(
-              "(",
-              field("parameter", $.annotated_parameter),
-              repeat(seq(",", field("parameter", $.annotated_parameter))),
-              optional(","),
-              ")",
-              ":",
-              field("return_type", $._type),
-            ),
-            seq(
-              "(",
-              field("parameter", $.parameter),
-              repeat(seq(",", field("parameter", $.parameter))),
-              optional(","),
-              ")",
-              optional($._return_type_annotation),
-            ),
-            seq(
-              ":",
-              field("return_type", $._type),
-            ),
-          )),
-        ),
-        seq(
-          field("qualifier", "nondet"),
-          field("name", $._normal_call_name),
-          optional(choice(
-            seq("(", ")", optional($._return_type_annotation)),
-            seq(
-              "(",
-              field("parameter", $.annotated_parameter),
-              repeat(seq(",", field("parameter", $.annotated_parameter))),
-              optional(","),
-              ")",
-              ":",
-              field("return_type", $._type),
-            ),
-            seq(
-              "(",
-              field("parameter", $.parameter),
-              repeat(seq(",", field("parameter", $.parameter))),
-              optional(","),
-              ")",
-              optional($._return_type_annotation),
-            ),
-            seq(
-              ":",
-              field("return_type", $._type),
-            ),
-          )),
-        ),
-        seq(
-          field("qualifier", "temporal"),
-          field("name", $._normal_call_name),
-          optional(choice(
-            seq("(", ")", optional($._return_type_annotation)),
-            seq(
-              "(",
-              field("parameter", $.annotated_parameter),
-              repeat(seq(",", field("parameter", $.annotated_parameter))),
-              optional(","),
-              ")",
-              ":",
-              field("return_type", $._type),
-            ),
-            seq(
-              "(",
-              field("parameter", $.parameter),
-              repeat(seq(",", field("parameter", $.parameter))),
-              optional(","),
-              ")",
-              optional($._return_type_annotation),
-            ),
-            seq(
-              ":",
-              field("return_type", $._type),
-            ),
-          )),
-        ),
-        seq(
-          field("qualifier", "run"),
-          field("name", $._normal_call_name),
-          optional(choice(
-            seq("(", ")", optional($._return_type_annotation)),
-            seq(
-              "(",
-              field("parameter", $.annotated_parameter),
-              repeat(seq(",", field("parameter", $.annotated_parameter))),
-              optional(","),
-              ")",
-              ":",
-              field("return_type", $._type),
-            ),
-            seq(
-              "(",
-              field("parameter", $.parameter),
-              repeat(seq(",", field("parameter", $.parameter))),
-              optional(","),
-              ")",
-              optional($._return_type_annotation),
-            ),
-            seq(
-              ":",
-              field("return_type", $._type),
-            ),
-          )),
-        ),
-    )),
+    _operator_definition_head: $ => operatorDefinitionHead($),
 
     _normal_call_name: $ => choice(
       $.identifier,
@@ -1176,6 +1188,11 @@ export default grammar({
       field("name", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
     ))),
 
+    _local_parameterized_operator_header: $ => prec(1, seq(
+      operatorDefinitionHead($, true),
+      optional(";"),
+    )),
+
     _local_value_header: $ => seq(
       optional(field("qualifier", "pure")),
       "val",
@@ -1745,6 +1762,12 @@ export default grammar({
           alias($._local_operator_definition, $.operator_definition),
           alias($._local_operator_definition_unterminated, $.operator_definition),
         )),
+        field("body", $._initializer_expression),
+      )),
+      // Consuming an explicit empty parameter list wins over treating it as
+      // a unit expression at the start of a header's body.
+      prec.dynamic(3, seq(
+        field("definition", alias($._local_parameterized_operator_header, $.operator_definition)),
         field("body", $._initializer_expression),
       )),
       // A complete implementation-free header consumes its parameter list;
