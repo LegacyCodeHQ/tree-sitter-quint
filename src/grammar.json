@@ -4365,7 +4365,7 @@
     },
     "assignment_expression": {
       "type": "PREC_RIGHT",
-      "value": 1,
+      "value": 7,
       "content": {
         "type": "SEQ",
         "members": [
@@ -5947,7 +5947,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 7,
+          "value": 8,
           "content": {
             "type": "SEQ",
             "members": [
