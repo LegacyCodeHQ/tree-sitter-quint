@@ -937,12 +937,17 @@ export default grammar({
     )),
 
     match_arm: $ => seq(
-      field("variant", choice($.identifier, $.hole)),
-      optional(seq(
-        "(",
-        field("parameter", choice($.identifier, $.hole)),
-        ")",
-      )),
+      choice(
+        seq(
+          field("variant", $.identifier),
+          optional(seq(
+            "(",
+            field("parameter", choice($.identifier, $.hole)),
+            ")",
+          )),
+        ),
+        field("variant", $.hole),
+      ),
       "=>",
       field("body", $._expression),
     ),
