@@ -777,3 +777,30 @@ module LocalOperators {
           body: (unary_expression
             operand: (name_reference
               name: (identifier))))))))
+
+========================================
+Local initializers ending in conditional lambda and nested bodies
+========================================
+
+module PrefixBoundaries {
+  pure def conditionalTuple(x: int): (int, int) = {
+    val value = if (x > 0) x else -x
+    (value, x)
+  }
+  pure def lambdaList(x: int): List[int] = {
+    def f = y => y + x
+    [f(1)]
+  }
+  pure def nestedUnary(x: int): int = {
+    val value = val inner = x inner + 1
+    -value
+  }
+  pure def operatorConditional(x: int): (int, int) = {
+    def f = if (x > 0) x else -x
+    (f, x)
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (tuple_type element: (primitive_type) element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (if_expression condition: (binary_expression left: (name_reference name: (identifier)) right: (integer_literal)) consequence: (name_reference name: (identifier)) alternative: (unary_expression operand: (name_reference name: (identifier))))) body: (tuple_literal element: (name_reference name: (identifier)) element: (name_reference name: (identifier)))))) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (list_type element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) body: (lambda_expression parameter: (identifier) body: (binary_expression left: (name_reference name: (identifier)) right: (name_reference name: (identifier))))) body: (list_literal element: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal)))))) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (value_definition name: (identifier) value: (name_reference name: (identifier))) body: (binary_expression left: (name_reference name: (identifier)) right: (integer_literal)))) body: (unary_expression operand: (name_reference name: (identifier)))))) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (tuple_type element: (primitive_type) element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) body: (if_expression condition: (binary_expression left: (name_reference name: (identifier)) right: (integer_literal)) consequence: (name_reference name: (identifier)) alternative: (unary_expression operand: (name_reference name: (identifier))))) body: (tuple_literal element: (name_reference name: (identifier)) element: (name_reference name: (identifier))))))))
