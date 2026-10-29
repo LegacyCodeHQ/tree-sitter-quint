@@ -1815,9 +1815,30 @@ export default grammar({
           alias($._local_delimited_value_definition, $.value_definition),
           alias($._local_delimited_operator_definition, $.operator_definition),
         )),
-        field("body", choice($.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal)),
+        field("body", $._local_delimited_body),
       )),
     ),
+
+    // A body beginning at a delimiter may continue through postfix operators.
+    _local_delimited_body: $ => choice(
+      $.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal,
+      alias($._local_delimited_field, $.field_access_expression),
+      alias($._local_delimited_index, $.index_expression),
+      alias($._local_delimited_ufcs, $.ufcs_call_expression),
+    ),
+    _local_delimited_field: $ => prec.dynamic(2, fieldAccessExpression($, $._local_delimited_body)),
+    _local_delimited_index: $ => prec.dynamic(4, prec.left(PREC.POSTFIX, seq(
+      field("collection", $._local_delimited_body),
+      "[", field("index", $._expression), "]",
+    ))),
+    _local_delimited_ufcs: $ => prec.dynamic(8, prec.left(PREC.POSTFIX + 1, seq(
+      field("receiver", $._local_delimited_body), ".",
+      field("method", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
+      "(", optional(seq(
+        field("argument", $._expression),
+        repeat(seq(",", field("argument", $._expression))),
+      )), ")",
+    ))),
 
     _local_delimited_value_definition: $ => prec("local_value", seq(
       optional(field("qualifier", "pure")),
