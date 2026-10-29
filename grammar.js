@@ -120,53 +120,53 @@ const identifierOrHole = $ => choice(
   $.hole,
 );
 
-function binaryExpression($, expression) {
+function binaryExpression($, expression, rightExpression = expression) {
   return choice(
     prec.left(PREC.IMPLICATION, seq(
       field("left", expression),
       field("operator", "implies"),
-      field("right", expression),
+      field("right", rightExpression),
     )),
     prec.left(PREC.LEADS_TO, seq(
       field("left", expression),
       field("operator", "leadsTo"),
-      field("right", expression),
+      field("right", rightExpression),
     )),
     prec.left(PREC.EQUIVALENCE, seq(
       field("left", expression),
       field("operator", "iff"),
-      field("right", expression),
+      field("right", rightExpression),
     )),
     prec.left(PREC.DISJUNCTION, seq(
       field("left", expression),
       field("operator", "or"),
-      field("right", expression),
+      field("right", rightExpression),
     )),
     prec.left(PREC.CONJUNCTION, seq(
       field("left", expression),
       field("operator", "and"),
-      field("right", expression),
+      field("right", rightExpression),
     )),
     // ANTLR's relations alternative gives equality and ordering equal precedence.
     prec.left(PREC.RELATION, seq(
       field("left", expression),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
-      field("right", expression),
+      field("right", rightExpression),
     )),
     prec.left(PREC.ADDITIVE, seq(
       field("left", expression),
       field("operator", choice("+", "-")),
-      field("right", expression),
+      field("right", rightExpression),
     )),
     prec.left(PREC.MULTIPLICATIVE, seq(
       field("left", expression),
       field("operator", choice("*", alias($._division, "/"), "%")),
-      field("right", expression),
+      field("right", rightExpression),
     )),
     prec.right(PREC.POWER, seq(
       field("left", expression),
       field("operator", "^"),
-      field("right", expression),
+      field("right", rightExpression),
     )),
   );
 }
@@ -1480,7 +1480,7 @@ export default grammar({
         field("definition", alias($._local_bare_operator_header, $.operator_definition)),
         field("body", $._initializer_expression),
       ),
-      prec.dynamic(8, seq(
+      prec.dynamic(14, seq(
         field("definition", alias($._local_operator_definition_unterminated, $.operator_definition)),
         field("body", $._initializer_expression),
       )),
@@ -1786,9 +1786,10 @@ export default grammar({
         )),
         field("body", $._initializer_expression),
       ),
-      // Prefer a written implementation when it leaves a complete local body.
+      // Prefer a written implementation when it leaves a complete local body,
+      // ahead of multiple delimiter boundaries on an implementation-free path.
       // Bare-header fallback must not turn its parameter list into errorEq.
-      prec.dynamic(6, seq(
+      prec.dynamic(12, seq(
         field("definition", choice(
           alias($._local_operator_definition, $.operator_definition),
           alias($._local_operator_definition_unterminated, $.operator_definition),
@@ -1820,13 +1821,15 @@ export default grammar({
       )),
     ),
 
-    // A body beginning at a delimiter may continue through postfix operators.
+    // A body beginning at a delimiter may continue through arithmetic or postfix operators.
     _local_delimited_body: $ => choice(
       $.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal,
+      alias($._local_delimited_binary, $.binary_expression),
       alias($._local_delimited_field, $.field_access_expression),
       alias($._local_delimited_index, $.index_expression),
       alias($._local_delimited_ufcs, $.ufcs_call_expression),
     ),
+    _local_delimited_binary: $ => prec.dynamic(2, binaryExpression($, choice($.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal), $._expression)),
     _local_delimited_field: $ => prec.dynamic(2, fieldAccessExpression($, $._local_delimited_body)),
     _local_delimited_index: $ => prec.dynamic(4, prec.left(PREC.POSTFIX, seq(
       field("collection", $._local_delimited_body),
@@ -1856,7 +1859,7 @@ export default grammar({
       field("value", delimitedInitializer($)),
     )),
 
-    _local_delimited_operator_definition: $ => prec.dynamic(6, prec("local_value", seq(
+    _local_delimited_operator_definition: $ => prec.dynamic(12, prec("local_value", seq(
       $._operator_definition_head,
       "=",
       field("body", delimitedInitializer($)),
