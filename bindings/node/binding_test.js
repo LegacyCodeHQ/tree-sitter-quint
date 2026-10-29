@@ -84,6 +84,8 @@ test("incremental edits across local binding continuations match fresh parsing",
     ["structure-operator-arithmetic-body.qnt", "-seed"],
     ["structure-complete-header-parameters.qnt", "def pendingHeader()"],
     ["structure-parameterized-header-bodies.qnt", "def pendingHeader(p)"],
+    ["structure-arithmetic-list-body.qnt", "val inner = seed"],
+    ["structure-arithmetic-list-body.qnt", "def inner() = seed"],
   ]) {
     const before = readFileSync(new URL(`../../test/fixtures/${fixture}`, import.meta.url), "utf8");
     pairs.push([before, before.replaceAll(`${boundary}\n`, `${boundary};\n`)]);

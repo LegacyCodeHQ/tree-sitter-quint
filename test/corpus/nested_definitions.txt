@@ -1565,3 +1565,64 @@ module ParameterizedHeaderBodies {
                   name: (identifier)))))
           body: (name_reference
             name: (identifier)))))))
+
+======================================
+Arithmetic initializers retain following list bodies
+======================================
+
+module ArithmeticListBody {
+  pure val seed = 1
+  pure def valueCase = {
+    val outer = val inner = seed
+    -seed[0]
+    0
+  }
+  pure def operatorCase = {
+    def outer() = def inner() = seed
+    -seed[0]
+    0
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (nested_definition_expression
+              definition: (value_definition
+                name: (identifier)
+                value: (binary_expression
+                  left: (name_reference
+                    name: (identifier))
+                  right: (name_reference
+                    name: (identifier))))
+              body: (list_literal
+                element: (integer_literal))))
+          body: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (nested_definition_expression
+              definition: (operator_definition
+                name: (identifier)
+                body: (binary_expression
+                  left: (name_reference
+                    name: (identifier))
+                  right: (name_reference
+                    name: (identifier))))
+              body: (list_literal
+                element: (integer_literal))))
+          body: (integer_literal))))))

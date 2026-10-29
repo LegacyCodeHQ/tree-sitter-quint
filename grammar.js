@@ -500,6 +500,7 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._init_power, $._init_index_expression, $._init_closed_power],
     [$._operator_definition_head, $._local_parameterized_operator_header],
     [$._operator_definition_head, $._local_bare_operator_header, $._local_parameterized_operator_header],
     [$._normal_call_name, $._local_bare_value_header],
@@ -1776,14 +1777,14 @@ export default grammar({
         field("definition", alias($._local_operator_header_declaration, $.operator_definition)),
         field("body", $._initializer_expression),
       )),
-      // Keep completed arithmetic or nested initializers before a parenthesized body;
-      // those parentheses must not become a call on the initializer's final operand.
+      // Keep completed arithmetic or nested initializers before a delimited body;
+      // body delimiters must not become a postfix continuation on the initializer's final operand.
       prec.dynamic(5, seq(
         field("definition", choice(
           alias($._local_delimited_value_definition, $.value_definition),
           alias($._local_delimited_operator_definition, $.operator_definition),
         )),
-        field("body", choice($.unit_literal, $.parenthesized_expression, $.tuple_literal)),
+        field("body", choice($.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal)),
       )),
     ),
 

@@ -9838,6 +9838,10 @@
                     {
                       "type": "SYMBOL",
                       "name": "tuple_literal"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "list_literal"
                     }
                   ]
                 }
@@ -11475,6 +11479,11 @@
     }
   ],
   "conflicts": [
+    [
+      "_init_power",
+      "_init_index_expression",
+      "_init_closed_power"
+    ],
     [
       "_operator_definition_head",
       "_local_parameterized_operator_header"
