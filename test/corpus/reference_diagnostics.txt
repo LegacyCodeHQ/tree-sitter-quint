@@ -101,3 +101,19 @@ if (x) {a: x} else x' = y }
 ---
 
 (source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (binary_expression left: (block_expression expression: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier)))) right: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (call_expression function: (name_reference name: (identifier))) right: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (lambda_expression parameter: (identifier) body: (integer_literal)))))) body: (if_expression condition: (name_reference name: (identifier)) consequence: (record_literal (record_literal_field name: (identifier) value: (name_reference name: (identifier)))) alternative: (assignment_expression target: (primed_identifier name: (identifier)) value: (name_reference name: (identifier))))))))))
+
+========================================
+Greedy initializer reports unexpected equals through nested definitions
+========================================
+
+module Probe {
+pure def outer = { def z(p) = val z = def z(p) = x
+f(x)
+-(x,y)
+p => A implies def z(p) = [1,2]
+A }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (name_reference name: (identifier))) body: (binary_expression left: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier))) right: (tuple_literal element: (name_reference name: (identifier)) element: (name_reference name: (identifier)))))) body: (lambda_expression parameter: (identifier) body: (binary_expression left: (name_reference name: (identifier)) right: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (list_literal element: (integer_literal) element: (integer_literal)))))))) body: (name_reference name: (identifier)))))))
