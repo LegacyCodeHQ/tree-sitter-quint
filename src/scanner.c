@@ -98,6 +98,7 @@ void tree_sitter_quint_external_scanner_destroy(void *payload) {
   QScanner *scanner = payload;
   q_document_destroy(&scanner->document);
   free(scanner->source);
+  free(scanner->suffixes);
   free(scanner->stacks);
   free(scanner);
 }

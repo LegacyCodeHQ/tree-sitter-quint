@@ -46,7 +46,7 @@
     "generate": "tree-sitter generate",
     "install": "node-gyp-build",
     "prepublishOnly": "bun run check:release",
-    "test": "tree-sitter test && bun run test:tokens && bun run test:syntax && bun run test:structure && bun run test:node",
+    "test": "tree-sitter test && bun run test:scanner && bun run test:tokens && bun run test:syntax && bun run test:structure && bun run test:node",
     "test:node": "node --test bindings/node/binding_test.js test/query/query_test.js test/zed_extension_test.js",
     "test:package": "node scripts/check-npm-package.mjs",
     "test:structure": "node scripts/check-parse-structure-parity.mjs test/fixtures",
@@ -56,7 +56,9 @@
     "test:audit": "node scripts/audit-quint-033.mjs",
     "test:audit:deep": "node scripts/audit-quint-033.mjs --deep",
     "test:coverage": "node scripts/check-reference-coverage.mjs",
-    "generate:reference": "node scripts/generate-reference-atn.mjs"
+    "generate:reference": "node scripts/generate-reference-atn.mjs",
+    "test:scanner": "node scripts/check-scanner-position.mjs",
+    "benchmark:parser": "node scripts/benchmark-parser.mjs"
   },
   "packageManager": "bun@1.4.0",
   "dependencies": {

@@ -352,3 +352,13 @@ through six; its source-array fingerprint is
 The refactor was also checked against this separate 10,000-case holdout, with
 zero syntax, structure, or tokenization disagreements. It is additional evidence,
 separate from the fixed CI matrices.
+
+## Performance tuning
+
+Follow the [boundary-position performance workflow](docs/performance/boundary-position.md):
+freeze an ordinary native baseline, identify repeated work, preserve exact trees
+and editor behavior, then compare alternating process runs and native memory.
+`bun run benchmark:parser --baseline-binding FILE --output FILE` records paired
+measurements; `bun run test:scanner` enforces the deterministic lookup-work
+budget without putting elapsed-time thresholds in CI. Whole-file reference
+recognition still runs after edits.
