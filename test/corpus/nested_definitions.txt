@@ -1893,3 +1893,28 @@ module SubtractedValueHeader {
  definition: (value_definition name: (identifier) value: (binary_expression left: (name_reference name: (identifier))
  right: (nested_definition_expression definition: (value_definition name: (identifier)) body: (unit_literal))))
  body: (name_reference name: (identifier)))))))
+
+======================================
+Postfix local bodies leave following call delimiters
+======================================
+
+module PostfixBodyEnd {
+  pure val seed = 1
+  pure val recordValue = {number: 1}
+  pure def result = {
+    def outer = val saved = seed -seed
+    (recordValue).number()
+  }
+}
+
+---
+
+(source_file
+ (module_definition name: (identifier)
+ (value_definition name: (identifier) value: (integer_literal))
+ (value_definition name: (identifier) value: (record_literal (record_literal_field name: (identifier) value: (integer_literal))))
+ (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression
+ definition: (operator_definition name: (identifier) body: (nested_definition_expression
+ definition: (value_definition name: (identifier) value: (binary_expression left: (name_reference name: (identifier)) right: (name_reference name: (identifier))))
+ body: (field_access_expression object: (parenthesized_expression expression: (name_reference name: (identifier))) field: (identifier))))
+ body: (unit_literal))))))
