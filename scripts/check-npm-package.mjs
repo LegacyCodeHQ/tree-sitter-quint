@@ -57,6 +57,9 @@ try {
     "src/node-types.json",
     "src/parser.c",
     "src/scanner.c",
+    "src/quint_033_atn.h",
+    "src/quint_boundaries.h",
+    "src/quint_scanner_boundary_state.h",
     "src/tree_sitter/parser.h",
   ]);
 

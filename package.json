@@ -32,6 +32,9 @@
     "src/node-types.json",
     "src/parser.c",
     "src/scanner.c",
+    "src/quint_033_atn.h",
+    "src/quint_boundaries.h",
+    "src/quint_scanner_boundary_state.h",
     "src/tree_sitter/parser.h",
     "binding.gyp",
     "NOTICE"
@@ -39,7 +42,7 @@
   "type": "module",
   "scripts": {
     "check:release": "bun run test && bun run check:generated && bun run test:package",
-    "check:generated": "tree-sitter generate && git diff --exit-code -- src",
+    "check:generated": "tree-sitter generate && node scripts/generate-reference-atn.mjs --check && git diff --exit-code -- src",
     "generate": "tree-sitter generate",
     "install": "node-gyp-build",
     "prepublishOnly": "bun run check:release",
@@ -51,7 +54,9 @@
     "test:tokens": "node scripts/check-tokenization-parity.mjs test/fixtures",
     "version:set": "node scripts/set-version.mjs",
     "test:audit": "node scripts/audit-quint-033.mjs",
-    "test:coverage": "node scripts/check-reference-coverage.mjs"
+    "test:audit:deep": "node scripts/audit-quint-033.mjs --deep",
+    "test:coverage": "node scripts/check-reference-coverage.mjs",
+    "generate:reference": "node scripts/generate-reference-atn.mjs"
   },
   "packageManager": "bun@1.4.0",
   "dependencies": {

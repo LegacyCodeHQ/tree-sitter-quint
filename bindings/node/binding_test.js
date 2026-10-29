@@ -96,9 +96,15 @@ test("incremental edits across local binding continuations match fresh parsing",
     ["structure-unary-local-body-precedence.qnt", "    -seed / seed"],
     ["structure-local-body-operand-levels.qnt", "1 - seed"],
     ["structure-power-local-body.qnt", "    -seed ^ 2"],
+    ["structure-header-body-index-continuation.qnt", "    seed()"],
+    ["structure-successive-initializer-calls.qnt", "  val saved = def first = number(0)"],
+    ["syntax-greedy-nondet-header.qnt", "  -seed"],
+    ["syntax-greedy-value-division.qnt", "  (0) / def later() = 1"],
   ]) {
     const before = readFileSync(new URL(`../../test/fixtures/${fixture}`, import.meta.url), "utf8");
-    pairs.push([before, before.replaceAll(`${boundary}\n`, `${boundary};\n`)]);
+    const after = before.replaceAll(`${boundary}\n`, `${boundary};\n`);
+    assert.notEqual(before, after, `Fixture boundary not found in ${fixture}`);
+    pairs.push([before, after]);
   }
 
   for (const [before, after] of pairs.flatMap(([before, after]) => [

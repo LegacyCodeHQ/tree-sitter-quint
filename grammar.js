@@ -539,6 +539,67 @@ function operatorDefinitionHead($, parametersRequired = false) {
   ));
 }
 
+// Preserve the reference parser's definition boundaries through hidden scanner
+// markers. These do not add nodes or fields to the public syntax tree.
+const SHARED_LEXICAL_RULES = new Set([
+  "identifier", "integer_literal", "boolean_literal", "string_literal", "hole",
+  "comment", "documentation_comment", "hashbang", "reserved_operator",
+  "type_variable", "primitive_type", "invalid_identifier",
+  "_division", "_nul_string_literal", "_nul_comment", "_nul_documentation_comment", "_nul_hashbang",
+]);
+const recoverySymbols = $ => new Proxy($, {
+  get: (symbols, name) => symbols[SHARED_LEXICAL_RULES.has(name) ? name : `_recovery_${name}`],
+});
+
+function withDefinitionBoundaries(rules) {
+  const recoveryRules = Object.fromEntries(Object.entries(rules)
+    .filter(([name]) => name !== "source_file" && !SHARED_LEXICAL_RULES.has(name))
+    .map(([name, rule]) => [`_recovery_${name}`, $ => recover(rule(recoverySymbols($)), $)]));
+  function recover(content, $) {
+    if (!content || typeof content !== "object" || content instanceof RegExp) return content;
+    if (content.type === "SYMBOL" && content.name.startsWith("_recovery_")) {
+      const name = content.name.slice(10);
+      if (!name.startsWith("_")) return alias(content, $[name]);
+    }
+    if (Array.isArray(content)) return content.map(value => recover(value, $));
+    return Object.fromEntries(Object.entries(content).map(([key, value]) => [key,
+      key === "value" && content.type === "ALIAS" && typeof value === "string" && value.startsWith("_recovery_")
+        ? value.slice(10) : recover(value, $)]));
+  }
+  const guarded = Object.fromEntries(Object.entries(rules).map(([name, rule]) => [name, $ => {
+    function mark(content) {
+      if (!content || typeof content !== "object" || content instanceof RegExp) return content;
+      if (content.type === "ALIAS" && ["value_definition", "operator_definition"].includes(content.value)) {
+        return seq($._begin_definition, content, $._end_definition);
+      }
+      if (content.type === "SYMBOL" && content.name === "nondet_binding") {
+        return seq($._begin_definition, content, $._end_definition);
+      }
+      if (Array.isArray(content)) return content.map(mark);
+      return Object.fromEntries(Object.entries(content).map(([key, value]) => [key, mark(value)]));
+    }
+    const content = rule($);
+    if (name === "source_file") return choice(
+      seq($._reference_boundaries, content),
+      seq($._recovery_boundaries, recover(rule(recoverySymbols($)), $)),
+    );
+    if (name === "module_definition") {
+      // Only the guarded path has declaration markers.
+      function declarations(node) {
+        if (node?.type === "SYMBOL" && node.name === "_declaration") {
+          return seq($._begin_declaration, node, $._end_declaration);
+        }
+        if (!node || typeof node !== "object" || node instanceof RegExp) return node;
+        if (Array.isArray(node)) return node.map(declarations);
+        return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, declarations(value)]));
+      }
+      return declarations(content);
+    }
+    return name === "_declaration" ? content : mark(content);
+  }]));
+  return {...guarded, ...recoveryRules};
+}
+
 export default grammar({
   name: "quint",
 
@@ -553,6 +614,12 @@ export default grammar({
 
   externals: $ => [
     $._division,
+    $._reference_boundaries,
+    $._recovery_boundaries,
+    $._begin_definition,
+    $._end_definition,
+    $._begin_declaration,
+    $._end_declaration,
     $._nul_string_literal,
     $._nul_comment,
     $._nul_documentation_comment,
@@ -568,11 +635,9 @@ export default grammar({
   // GLR can then distinguish a continued initializer from a following body.
   precedences: _ => [["local_value"]],
 
-  conflicts: $ => [
+  conflicts: $ => {
+    const original = $ => [
     [$._local_delimited_body, $._local_delimited_postfix],
-    [$._body_power, $._body_index_expression],
-    [$._body_ufcs_expression, $._body_field_expression],
-    [$._init_atom, $._body_call_expression],
     [$._local_continued_operator_definition, $._local_delimited_operator_definition],
     [$._init_unary, $._local_compound_unary_initializer],
     [$._init_power, $._local_compound_unary_initializer],
@@ -598,18 +663,12 @@ export default grammar({
       ] : []),
     ]),
     [$._operator_definition_head, $._local_parameterized_operator_header],
-    [$._operator_definition_head, $._local_bare_operator_header, $._local_parameterized_operator_header],
     [$._normal_call_name, $._local_bare_value_header],
     [$._init_assignment_rhs_closed_mul, $._init_closed_mul],
     [$._operator_definition_head, $._local_bare_operator_header],
     [$._init_power, $._init_closed_power],
     [$._local_compound_lambda_initializer, $._init_lambda_expression, $.name_reference],
     [$._init_lambda_expression, $.name_reference],
-    [$._init_ufcs_expression, $._init_field_expression],
-    [$._init_atom, $._init_call_expression],
-    [$._init_atom, $._init_call_expression, $._local_value_definition_unterminated],
-    [$._local_operator_definition_unterminated, $._init_atom, $._init_call_expression],
-    [$._init_power, $._init_index_expression],
     [$._init_atom, $._local_value_definition_unterminated],
     [$._local_operator_definition_unterminated, $._init_atom],
     [$._parenthesized_operator_type, $.tuple_type],
@@ -617,9 +676,22 @@ export default grammar({
     [$.lambda_expression, $.tuple_pattern],
     [$.lambda_expression, $.tuple_pattern, $.name_reference],
     [$.namespace_access_expression, $.qualified_identifier],
-  ],
+    ];
+    const recovery = recoverySymbols($);
+    return [...original($), ...original(recovery),
+      [recovery._body_power, recovery._body_index_expression],
+      [recovery._body_ufcs_expression, recovery._body_field_expression],
+      [recovery._init_atom, recovery._body_call_expression],
+      [recovery._init_atom, recovery._init_call_expression],
+      [recovery._init_atom, recovery._init_call_expression, recovery._local_value_definition_unterminated],
+      [recovery._init_power, recovery._init_index_expression],
+      [recovery._init_ufcs_expression, recovery._init_field_expression],
+      [recovery._local_operator_definition_unterminated, recovery._init_atom, recovery._init_call_expression],
+      [recovery._operator_definition_head, recovery._local_bare_operator_header, recovery._local_parameterized_operator_header],
+    ];
+  },
 
-  rules: {
+  rules: withDefinitionBoundaries({
     source_file: $ => seq(
       optional($.hashbang),
       repeat(choice($.documentation_comment, $.module_definition)),
@@ -1332,7 +1404,8 @@ export default grammar({
     // A local initializer needs to stop even where its last operand could continue
     // as a call, index, or subtraction. Encoding precedence as levels lets GLR keep
     // that boundary open without changing normal expression precedence. Dynamic
-    // weights prefer the longest initializer that still leaves a valid body.
+    // weights resolve expression-level alternatives; scanner markers enforce
+    // the reference boundary without trading it against later definitions.
     _initializer_expression: $ => $._init_pair,
 
     _init_pair: $ => choice(
@@ -2210,5 +2283,5 @@ export default grammar({
     hole: _ => "_",
 
     identifier: _ => IDENTIFIER_PATTERN,
-  },
+  }),
 });

@@ -182,12 +182,13 @@ remain unchanged until its next release:
 bun ci
 bun ci --cwd test/reference-quint033
 bun run test:audit
+bun run test:audit:deep
 QUINT_CLI="$PWD/test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js" bun run test
 ```
 
 The private reference package pins Quint **0.33.0** with its own frozen lockfile.
 The audit refuses another compiler version, including the root package's current
-0.32 reference. CI uses the 0.33 reference for both the ordinary suite and audit.
+0.32 reference. CI uses the 0.33 reference for the ordinary suite and both audits.
 No global Quint installation is required.
 
 The generators `scripts/quint-033-cases.mjs`,
@@ -206,6 +207,16 @@ three contexts, 1,000 recursive expressions from fixed xorshift32 seed
 runner asserts both the case count and a SHA-256 fingerprint. Deliberate matrix
 changes require reviewing coverage and updating that fingerprint.
 
+The separate `test:audit:deep` matrix uses
+`scripts/quint-033-deep-cases.mjs` to generate another 26,000 expressions at
+depths two through five, from fixed xorshift32 seeds `0x3311001`, `0x3311002`,
+and `0x3311003`. It combines all local-definition qualifiers with arithmetic,
+Boolean and temporal operators, assignments, destructuring, matches, lambdas,
+postfix operations, spreads, qualified names, Unicode, and NUL strings. The two
+matrices contain **34,259 programs** in total. The deep audit includes every
+generated source, including rejected inputs that agreed during discovery.
+It has its own case-count and SHA-256 fingerprint checks.
+
 Every generated case is checked for syntax acceptance against Quint's ANTLR
 phase-one parser; accepted cases are also checked for parse structure and token
 parity. Rejected cases exercise diagnostics without treating ANTLR recovery trees
@@ -215,6 +226,9 @@ The ordinary suite additionally retains the curated regression fixtures.
 
 On failure the audit retains generated `.qnt` files, a family/count manifest,
 and per-checker logs, and prints the directory and a reproduction command.
+The manifest records a fingerprint of the generated parser, scanner, recognition
+tables, node schema, and native binding. An audit fails if that implementation
+changes between checker layers, preventing mixed-snapshot results.
 Set `QUINT_AUDIT_ARTIFACTS=/path/to/directory` to choose its parent directory.
 Successful runs remove only their own temporary subdirectory. CI uploads failed
 audit artifacts for seven days. To reproduce a structural or token mismatch,
@@ -261,3 +275,48 @@ failed audit artifacts. `syntax-wrong-type-application.qnt` exercises QNT009;
 and `any` actions. The latter program parses and typechecks with Quint 0.33.
 Production coverage establishes which alternatives were exercised; it does not
 prove equivalence for every combination or replace the structural comparisons.
+
+
+## Reference definition boundaries
+
+ANTLR resolves local definitions with greedy, context-sensitive lookahead. A
+Tree-sitter dynamic-precedence score adds preferences across a whole parse;
+credits from a later local body can outweigh an earlier initializer. Retaining
+more competing grammar productions also runs into Tree-sitter's bounded number
+of live parse versions.
+
+The external scanner records canonical declaration and local-definition
+boundaries before Tree-sitter selects its expression productions. Its C11
+recognizer interprets tables generated from the exact 0.33.0 ANTLR ATN. It keeps
+the first ordered derivation for each possible end position and chooses the
+first complete parse. It constructs no replacement public syntax tree and
+performs no typechecking. The grammar still produces the existing named nodes,
+fields, and diagnostic nodes. The structure checker compares local definition
+and formal-parameter spans in addition to expression and type spans.
+
+Regenerate or verify the reference tables with the locked compiler installed:
+
+```sh
+bun run generate:reference
+node scripts/generate-reference-atn.mjs --check
+```
+
+`check:generated` verifies these tables as well as Tree-sitter's generated files.
+The reference generator rejects any version other than 0.33.0. The scanner
+headers are shipped in the npm, Cargo, and Python source packages; no ANTLR
+runtime is required by consumers.
+
+The scanner's initial zero-width token reads through EOF. An edit anywhere in
+the source invalidates the boundary cache; scanner serialization includes the
+source fingerprint and an interned stack ID. This trades some incremental work
+for correct boundaries: edits currently recompute recognition for the whole file.
+The recognizer uses an explicit work stack rather than recursive C calls, and
+scanner serialization does not impose a fixed definition-nesting depth.
+
+When raw syntax recognition fails, the grammar selects its original recovery
+rules. Those rules are derived from the same rule functions, with aliases
+preserving public node names and shared lexical tokens preserving error leaves.
+Incomplete editor buffers therefore retain Tree-sitter recovery instead of
+requiring a complete compiler-valid file. Raw ANTLR diagnostic productions such
+as unexpected equality remain on the guarded path so their greedy boundary
+choices and diagnostic nodes are preserved.

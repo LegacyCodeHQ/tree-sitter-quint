@@ -48,7 +48,9 @@ jobs:
         id: audit
         env:
           QUINT_AUDIT_ARTIFACTS: ${{ runner.temp }}/quint-033-audit
-        run: bun run test:audit
+        run: |
+          bun run test:audit
+          bun run test:audit:deep
 
       - name: Preserve failed audit sources and logs
         if: failure() && steps.audit.outcome == 'failure'

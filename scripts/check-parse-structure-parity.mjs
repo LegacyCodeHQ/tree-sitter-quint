@@ -142,18 +142,21 @@ function declarationKind(node) {
   if (contextName === "ExportDefContext") return "export_declaration";
   if (contextName === "TypeDefsContext") return "type_declaration";
   if (contextName === "OperContext") {
-    const definition = node.operDef();
-    const qualifier = definition.qualifier?.().text;
-    const isValue = qualifier === "val" || qualifier === "pureval"
-      || ["ValDestructuringContext", "PureValDestructuringContext"].includes(
-        definition.constructor.name,
-      );
-    const parameterCount = (definition.parameter?.().length ?? 0)
-      + (definition.annotatedParameter?.().length ?? 0);
-    // The grammar intentionally represents parameterized val syntax as an operator.
-    return isValue && parameterCount === 0 ? "value_definition" : "operator_definition";
+    return definitionKind(node.operDef());
   }
   return undefined;
+}
+
+function definitionKind(definition) {
+  const qualifier = definition.qualifier?.().text;
+  const isValue = qualifier === "val" || qualifier === "pureval"
+    || ["ValDestructuringContext", "PureValDestructuringContext"].includes(
+      definition.constructor.name,
+    );
+  const parameterCount = (definition.parameter?.().length ?? 0)
+    + (definition.annotatedParameter?.().length ?? 0);
+  // The grammar intentionally represents parameterized val syntax as an operator.
+  return isValue && parameterCount === 0 ? "value_definition" : "operator_definition";
 }
 
 function antlrSignatures(source, reference) {
@@ -196,6 +199,15 @@ function antlrSignatures(source, reference) {
     } else if (ruleName === "declaration") {
       const kind = declarationKind(node);
       if (kind) add(kind, node);
+    } else if (ruleName === "operDef" && parser.ruleNames[node.parent?.ruleIndex] === "expr") {
+      // Compare the definition itself as well as the enclosing let expression:
+      // expression spans alone can miss a different header/initializer split.
+      const kind = definitionKind(node);
+      add(kind === "operator_definition" && node.qualifier?.().text === "nondet"
+        ? "nondet_definition" : kind, node);
+    } else if (["parameter", "annotatedParameter"].includes(ruleName)
+      && parser.ruleNames[node.parent?.ruleIndex] === "operDef") {
+      add(ruleName === "parameter" ? "parameter" : "annotated_parameter", node);
     } else if (ruleName === "expr") {
       let kind = expressionKinds[contextName];
       if (contextName === "DotCallContext") {
@@ -258,6 +270,7 @@ for (const kind of new Set([
   "primitive_type", "record_literal", "record_type", "set_type", "string_literal",
   "tuple_literal", "tuple_type", "type_application", "type_variable", "unary_expression",
   "ufcs_call_expression", "unit_literal", "unit_type", "value_definition", "variable_declaration",
+  "parameter", "annotated_parameter",
 ])) {
   treeKinds.set(kind, kind);
 }
@@ -311,6 +324,10 @@ for (const filePath of files) {
         return !actual.has(
           `nondet_binding:${signature.definitionStart}:${signature.definitionEnd}`,
         ) && !actual.has(`nested_definition_expression:${signature.start}:${signature.end}`);
+      }
+      if (signature.kind === "nondet_definition") {
+        return !actual.has(`nondet_binding:${signature.start}:${signature.end}`)
+          && !actual.has(`operator_definition:${signature.start}:${signature.end}`);
       }
       return !actual.has(`${signature.kind}:${signature.start}:${signature.end}`);
     });

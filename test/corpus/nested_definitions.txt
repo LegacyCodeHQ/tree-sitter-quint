@@ -2133,3 +2133,41 @@ module PowerLocalBody {
 ---
 
 (source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (name_reference name: (identifier)))) body: (unary_expression operand: (binary_expression left: (name_reference name: (identifier)) right: (integer_literal))))) body: (name_reference name: (identifier)))))))
+
+======================================
+Header body indexing precedes later local calls
+======================================
+
+module HeaderBodyIndexContinuation {
+  pure val values = List(1)
+  pure val seed = 1
+  pure def result = {
+    val saved = def first = def second = val pending
+    values[0];
+    seed()
+    seed
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal))) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (value_definition name: (identifier)) body: (index_expression collection: (name_reference name: (identifier)) index: (integer_literal)))) body: (name_reference name: (identifier)))) body: (unit_literal))) body: (name_reference name: (identifier)))))))
+
+======================================
+Earlier initializer calls precede later local arithmetic
+======================================
+
+module SuccessiveInitializerCalls {
+  pure val seed = 1
+  pure def number(n: int): int = n
+  pure def result = {
+    val saved = def first = number(0)
+    val middle = def second = seed
+    -seed;
+    seed()
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (primitive_type) body: (name_reference name: (identifier))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal))) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (name_reference name: (identifier))) body: (unary_expression operand: (name_reference name: (identifier))))) body: (name_reference name: (identifier))))) body: (unit_literal))))))

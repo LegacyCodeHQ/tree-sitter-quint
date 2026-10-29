@@ -13,7 +13,12 @@
       "injection-regex": "^quint$",
       "highlights": "queries/highlights.scm",
       "locals": "queries/locals.scm",
-      "class-name": "TreeSitterQuint"
+      "class-name": "TreeSitterQuint",
+      "external-files": [
+        "src/quint_033_atn.h",
+        "src/quint_boundaries.h",
+        "src/quint_scanner_boundary_state.h"
+      ]
     }
   ],
   "metadata": {

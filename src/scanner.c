@@ -1,9 +1,16 @@
 #include "tree_sitter/parser.h"
 
 #include <stdbool.h>
+#include "quint_scanner_boundary_state.h"
 
 enum TokenType {
   DIVISION,
+  REFERENCE_BOUNDARIES,
+  RECOVERY_BOUNDARIES,
+  BEGIN_DEFINITION,
+  END_DEFINITION,
+  BEGIN_DECLARATION,
+  END_DECLARATION,
   NUL_STRING_LITERAL,
   NUL_COMMENT,
   NUL_DOCUMENTATION_COMMENT,
@@ -13,7 +20,7 @@ enum TokenType {
 // Tree-sitter's generated lexer excludes NUL even from negated character
 // classes. Recognize only tokens containing NUL here; the generated lexer
 // continues to handle ordinary strings and comments, including EOF allowances.
-static bool scan_nul_token(TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_nul_token(TSLexer *lexer, const bool *valid_symbols, unsigned *doc_prefix) {
   enum TokenType symbol;
   bool block = false;
   bool string = false;
@@ -38,6 +45,10 @@ static bool scan_nul_token(TSLexer *lexer, const bool *valid_symbols) {
     } else if (lexer->lookahead == '/') {
       lexer->advance(lexer, false);
       if (lexer->lookahead == '/') {
+        if (doc_prefix && (valid_symbols[END_DEFINITION] || valid_symbols[END_DECLARATION])) {
+          *doc_prefix = 2;
+          return false;
+        }
         if (!valid_symbols[NUL_DOCUMENTATION_COMMENT]) return false;
         symbol = NUL_DOCUMENTATION_COMMENT;
       } else {
@@ -80,17 +91,22 @@ static bool scan_nul_token(TSLexer *lexer, const bool *valid_symbols) {
 }
 
 void *tree_sitter_quint_external_scanner_create(void) {
-  return NULL;
+  return calloc(1, sizeof(QScanner));
 }
 
 void tree_sitter_quint_external_scanner_destroy(void *payload) {
-  (void)payload;
+  QScanner *scanner = payload;
+  q_document_destroy(&scanner->document);
+  free(scanner->source);
+  free(scanner->stacks);
+  free(scanner);
 }
 
 unsigned tree_sitter_quint_external_scanner_serialize(void *payload, char *buffer) {
-  (void)payload;
-  (void)buffer;
-  return 0;
+  QScanner *scanner = payload;
+  memcpy(buffer, &scanner->fingerprint, sizeof(uint64_t));
+  memcpy(buffer + sizeof(uint64_t), &scanner->stack, sizeof(uint32_t));
+  return sizeof(uint64_t) + sizeof(uint32_t);
 }
 
 void tree_sitter_quint_external_scanner_deserialize(
@@ -98,9 +114,15 @@ void tree_sitter_quint_external_scanner_deserialize(
   const char *buffer,
   unsigned length
 ) {
-  (void)payload;
-  (void)buffer;
-  (void)length;
+  QScanner *scanner = payload;
+  scanner->stack = 0;
+  if (length == sizeof(uint64_t) + sizeof(uint32_t)) {
+    uint64_t fingerprint;
+    uint32_t stack;
+    memcpy(&fingerprint, buffer, sizeof(uint64_t));
+    memcpy(&stack, buffer + sizeof(uint64_t), sizeof(uint32_t));
+    if (fingerprint == scanner->fingerprint && stack <= scanner->stack_count) scanner->stack = stack;
+  }
 }
 
 bool tree_sitter_quint_external_scanner_scan(
@@ -108,11 +130,49 @@ bool tree_sitter_quint_external_scanner_scan(
   TSLexer *lexer,
   const bool *valid_symbols
 ) {
-  (void)payload;
+  QScanner *scanner = payload;
+  // Recovery exposes every external token at once. Boundary markers must not
+  // suppress Tree-sitter's normal error recovery in that mode.
+  if (!(valid_symbols[REFERENCE_BOUNDARIES] && valid_symbols[BEGIN_DEFINITION])) {
+    if (valid_symbols[REFERENCE_BOUNDARIES] || valid_symbols[RECOVERY_BOUNDARIES]) {
+      if (!q_scan_document(scanner, lexer)) return false;
+      lexer->result_symbol = scanner->recognized ? REFERENCE_BOUNDARIES : RECOVERY_BOUNDARIES;
+      if (!valid_symbols[lexer->result_symbol]) return false;
+      return true;
+    }
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
+           lexer->lookahead == '\r' || lexer->lookahead == '\n') lexer->advance(lexer, true);
+    unsigned doc_prefix = 0;
+    if (lexer->lookahead == '/') {
+      lexer->mark_end(lexer);
+      bool result = scan_nul_token(lexer, valid_symbols, &doc_prefix);
+      if (!doc_prefix) return result;
+    }
+    if (valid_symbols[END_DEFINITION] || valid_symbols[END_DECLARATION] ||
+        valid_symbols[BEGIN_DEFINITION] || valid_symbols[BEGIN_DECLARATION]) {
+      while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
+             lexer->lookahead == '\r' || lexer->lookahead == '\n') lexer->advance(lexer, true);
+      bool comment = lexer->lookahead == '/';
+      uint32_t position = q_token_position(scanner, lexer, doc_prefix);
+      if (valid_symbols[END_DEFINITION] && q_end_definition(scanner, position, 4)) {
+        lexer->result_symbol = END_DEFINITION; return true;
+      }
+      if (valid_symbols[END_DECLARATION] && q_end_definition(scanner, position, 3)) {
+        lexer->result_symbol = END_DECLARATION; return true;
+      }
+      if (!comment && valid_symbols[BEGIN_DECLARATION] && q_begin_definition(scanner, position, 3)) {
+        lexer->result_symbol = BEGIN_DECLARATION; return true;
+      }
+      if (!comment && valid_symbols[BEGIN_DEFINITION] && q_begin_definition(scanner, position, 4)) {
+        lexer->result_symbol = BEGIN_DEFINITION; return true;
+      }
+      return false;
+    }
+  }
 
   while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
          lexer->lookahead == '\r' || lexer->lookahead == '\n') {
     lexer->advance(lexer, true);
   }
-  return scan_nul_token(lexer, valid_symbols);
+  return scan_nul_token(lexer, valid_symbols, NULL);
 }

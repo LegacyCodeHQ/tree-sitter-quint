@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { generateCases } from './quint-033-cases.mjs';
+import { generateDeepCases } from './quint-033-deep-cases.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const cli = realpathSync(process.env.QUINT_CLI ?? join(root,
@@ -15,14 +16,28 @@ assert.equal(version, '0.33.0', `Audit requires exactly Quint 0.33.0; found ${ve
 const require = createRequire(cli);
 const { parsePhase1fromText } = require(join(dirname(cli), 'parsing/quintParserFrontend.js'));
 const { newIdGenerator } = require(join(dirname(cli), 'idGenerator.js'));
-const cases = generateCases();
+const matrix = process.argv.includes('--deep') ? 'deep' : 'boundary';
+const cases = matrix === 'deep' ? generateDeepCases() : generateCases();
+const expected = matrix === 'deep'
+  ? { count: 26000, sha256: '755f5d4e223a8cdb89565ddf70f301bc0a7ed4cf85cfe66ed5e67e8e2a3f2360' }
+  : { count: 8259, sha256: '53f86c51ef5bce612df1bd5bbd7e7baf9a09d945144b74312d6b19b341271447' };
 const digest = createHash('sha256').update(JSON.stringify(cases)).digest('hex');
-assert.equal(cases.length, 8259, 'Unexpected audit matrix size');
-assert.equal(digest, '53f86c51ef5bce612df1bd5bbd7e7baf9a09d945144b74312d6b19b341271447',
+assert.equal(cases.length, expected.count, 'Unexpected audit matrix size');
+assert.equal(digest, expected.sha256,
   'Audit matrix changed: review coverage and update its fingerprint deliberately');
 const parent = resolve(process.env.QUINT_AUDIT_ARTIFACTS ?? tmpdir());
 mkdirSync(parent, { recursive: true });
-const scratch = mkdtempSync(join(parent, 'quint-033-'));
+const scratch = mkdtempSync(join(parent, `quint-033-${matrix}-`));
+const parserDigest = () => {
+  const hash = createHash('sha256');
+  for (const file of ['src/parser.c', 'src/scanner.c', 'src/quint_033_atn.h',
+    'src/quint_boundaries.h', 'src/quint_scanner_boundary_state.h', 'src/node-types.json',
+    'build/Release/tree_sitter_quint_binding.node']) {
+    hash.update(file).update('\0').update(readFileSync(join(root, file)));
+  }
+  return hash.digest('hex');
+};
+const grammarSha256 = parserDigest();
 const accepted = join(scratch, 'accepted');
 const rejected = join(scratch, 'rejected');
 mkdirSync(accepted);
@@ -42,7 +57,7 @@ try {
     if (valid) acceptedCount++;
     writeFileSync(join(valid ? accepted : rejected, entry.name), entry.source);
   }
-  const summary = { reference: version, cases: cases.length, accepted: acceptedCount,
+  const summary = { reference: version, matrix, grammarSha256, cases: cases.length, accepted: acceptedCount,
     rejected: cases.length - acceptedCount, sha256: digest,
     families: Object.fromEntries([...new Set(cases.map(c => c.family))].map(family =>
       [family, cases.filter(c => c.family === family).length])) };
@@ -54,6 +69,7 @@ try {
     ['tokenization', [accepted]],
     ['reference-coverage', [join(root, 'test/fixtures')]],
   ]) {
+    assert.equal(parserDigest(), grammarSha256, 'Parser changed during the audit; rerun against one grammar snapshot');
     const script = join(root, layer === 'reference-coverage'
       ? 'scripts/check-reference-coverage.mjs' : `scripts/check-${layer}-parity.mjs`);
     const result = spawnSync(process.execPath, [script, '--quiet', ...inputs], {
@@ -65,9 +81,10 @@ try {
     console.log(log.trim());
     if (result.status !== 0 || result.error) failed = true;
   }
+  assert.equal(parserDigest(), grammarSha256, 'Parser changed during the audit; rerun against one grammar snapshot');
   assert(!failed, 'Differential audit failed; see the retained checker logs');
   succeeded = true;
-  console.log(`Quint ${version} audit passed: ${cases.length} cases (${acceptedCount} accepted, ${cases.length - acceptedCount} rejected); sha256 ${digest}`);
+  console.log(`Quint ${version} ${matrix} audit passed: ${cases.length} cases (${acceptedCount} accepted, ${cases.length - acceptedCount} rejected); sha256 ${digest}`);
 } finally {
   if (succeeded) rmSync(scratch, { recursive: true, force: true });
   else console.error(`Audit sources and logs retained at ${scratch}\nReproduce a case with QUINT_CLI=${cli} node scripts/check-syntax-acceptance-parity.mjs <case.qnt>`);
