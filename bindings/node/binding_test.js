@@ -93,6 +93,7 @@ test("incremental edits across local binding continuations match fresh parsing",
     ["structure-indexed-prefix-initializer.qnt", "else values[0]"],
     ["structure-prefix-local-bodies.qnt", "    (0)"],
     ["structure-compound-prefix-edge.qnt", "p => seed"],
+    ["structure-unary-local-body-precedence.qnt", "    -seed / seed"],
   ]) {
     const before = readFileSync(new URL(`../../test/fixtures/${fixture}`, import.meta.url), "utf8");
     pairs.push([before, before.replaceAll(`${boundary}\n`, `${boundary};\n`)]);

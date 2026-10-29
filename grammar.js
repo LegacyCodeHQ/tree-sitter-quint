@@ -548,6 +548,10 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._body_power, $._body_ufcs_expression, $._body_field_expression],
+    [$._body_power, $._body_index_expression],
+    [$._body_ufcs_expression, $._body_field_expression],
+    [$._init_atom, $._body_call_expression],
     [$._local_continued_operator_definition, $._local_delimited_operator_definition],
     [$._init_unary, $._local_compound_unary_initializer],
     [$._init_power, $._local_compound_unary_initializer],
@@ -1899,7 +1903,7 @@ export default grammar({
     // do not outweigh an earlier initializer continuation.
     _local_delimited_body: $ => choice(
       $.nested_definition_expression,
-      $.unary_expression,
+      alias($._body_unary_expression, $.unary_expression),
       $.name_reference, $.namespace_access_expression,
       $.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal,
       alias($._local_delimited_binary, $.binary_expression),
@@ -1907,6 +1911,68 @@ export default grammar({
     ),
     _local_delimited_binary: $ => prec.dynamic(4, binaryExpression($, choice($.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal), $._expression)),
     _local_delimited_field: $ => prec.dynamic(4, fieldAccessExpression($, $._local_delimited_body)),
+    // Unweighted unary bodies retain the same closed operand levels as an
+    // initializer; a relation or multiplication cannot become the unary operand.
+    _body_unary_expression: $ => seq(
+      field("operator", "-"), field("operand", $._body_unary),
+    ),
+    _body_unary: $ => choice(
+      alias($._body_unary_expression, $.unary_expression),
+      $._body_power,
+      $.if_expression, $.nested_definition_expression,
+      $.lambda_expression, $.assignment_expression,
+    ),
+    _body_power: $ => choice(
+      $._body_postfix,
+      alias($._body_power_expression, $.binary_expression),
+    ),
+    _body_power_expression: $ => seq(
+      field("left", $._body_postfix), field("operator", "^"),
+      field("right", $._body_unary),
+    ),
+    _body_postfix: $ => choice(
+      $._init_atom,
+      alias($._body_call_expression, $.call_expression),
+      alias($._body_index_expression, $.index_expression),
+      alias($._body_ufcs_expression, $.ufcs_call_expression),
+      alias($._body_field_expression, $.field_access_expression),
+    ),
+    _body_call_expression: $ => seq(
+      field("function", choice($.name_reference, $.namespace_access_expression, $.reserved_operator)),
+      "(",
+      optional(seq(
+        field("argument", $._expression),
+        repeat(seq(",", field("argument", $._expression))),
+      )),
+      optional(","),
+      ")",
+    ),
+
+    _body_index_expression: $ => seq(
+      field("collection", $._body_postfix),
+      "[",
+      field("index", $._expression),
+      "]",
+    ),
+
+    _body_ufcs_expression: $ => seq(
+      field("receiver", $._body_postfix),
+      ".",
+      field("method", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
+      "(",
+      optional(seq(
+        field("argument", $._expression),
+        repeat(seq(",", field("argument", $._expression))),
+      )),
+      ")",
+    ),
+
+    _body_field_expression: $ => seq(
+      field("object", $._body_postfix),
+      ".",
+      field("field", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
+    ),
+
     _local_compound_unary_initializer: $ => seq(
       field("operator", "-"),
       field("operand", choice(
