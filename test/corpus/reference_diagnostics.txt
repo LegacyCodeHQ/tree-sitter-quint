@@ -595,8 +595,44 @@ module GreedyMinus {
           definition: (value_definition
             name: (identifier)
             value: (binary_expression
-              left: (name_reference name: (identifier))
+              left: (name_reference
+                name: (identifier))
               right: (nested_definition_expression
+                definition: (operator_definition
+                  name: (identifier))
+                body: (invalid_equality_expression
+                  left: (unit_literal)
+                  right: (name_reference
+                    name: (identifier))))))
+          body: (name_reference
+            name: (identifier)))))))
+
+======================================
+Complete local header retains following diagnostic
+======================================
+
+module HeaderContinuation {
+  pure def result = {
+    val saved = def pendingHeader()
+    def laterOp() = seed
+    seed
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (nested_definition_expression
+              definition: (operator_definition name: (identifier))
+              body: (nested_definition_expression
                 definition: (operator_definition name: (identifier))
                 body: (invalid_equality_expression
                   left: (unit_literal)

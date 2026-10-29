@@ -1734,16 +1734,28 @@ export default grammar({
           alias($._local_bare_value_header, $.value_definition),
           alias($._local_value_definition_unterminated, $.value_definition),
           alias($._local_value_definition, $.value_definition),
-          alias($._local_operator_definition, $.operator_definition),
-          alias($._local_operator_definition_unterminated, $.operator_definition),
-          alias($._local_operator_header_declaration, $.operator_definition),
           alias($._local_bare_operator_header, $.operator_definition),
         )),
         field("body", $._initializer_expression),
       ),
+      // Prefer a written implementation when it leaves a complete local body.
+      // Bare-header fallback must not turn its parameter list into errorEq.
+      prec.dynamic(3, seq(
+        field("definition", choice(
+          alias($._local_operator_definition, $.operator_definition),
+          alias($._local_operator_definition_unterminated, $.operator_definition),
+        )),
+        field("body", $._initializer_expression),
+      )),
+      // A complete implementation-free header consumes its parameter list;
+      // ending it before that list can hide a diagnostic in the next local def.
+      prec.dynamic(3, seq(
+        field("definition", alias($._local_operator_header_declaration, $.operator_definition)),
+        field("body", $._initializer_expression),
+      )),
       // Keep completed arithmetic or nested initializers before a parenthesized body;
       // those parentheses must not become a call on the initializer's final operand.
-      prec.dynamic(2, seq(
+      prec.dynamic(5, seq(
         field("definition", alias($._local_delimited_value_definition, $.value_definition)),
         field("body", choice($.unit_literal, $.parenthesized_expression, $.tuple_literal)),
       )),
