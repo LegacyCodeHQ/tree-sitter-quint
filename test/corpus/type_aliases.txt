@@ -326,17 +326,23 @@ module MixedTypePrecedence {
     (constant_declaration
       name: (identifier)
       type: (operator_type
-        parameter: (function_type parameter: (primitive_type) result: (primitive_type))
+        parameter: (function_type
+          parameter: (primitive_type)
+          result: (primitive_type))
         result: (primitive_type)))
     (constant_declaration
       name: (identifier)
       type: (operator_type
         parameter: (primitive_type)
-        result: (function_type parameter: (primitive_type) result: (primitive_type))))
+        result: (function_type
+          parameter: (primitive_type)
+          result: (primitive_type))))
     (constant_declaration
       name: (identifier)
       type: (operator_type
-        parameter: (function_type parameter: (primitive_type) result: (primitive_type))
+        parameter: (function_type
+          parameter: (primitive_type)
+          result: (primitive_type))
         result: (primitive_type)))))
 
 ========================================

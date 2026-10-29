@@ -396,15 +396,19 @@ module LocalEmptyValueParameters {
     name: (identifier)
     (operator_definition
       name: (identifier)
-      parameter: (annotated_parameter name: (identifier) type: (primitive_type))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
       return_type: (primitive_type)
       body: (block_expression
         expression: (nested_definition_expression
           definition: (value_definition
             name: (identifier)
             type: (primitive_type)
-            value: (name_reference name: (identifier)))
-          body: (name_reference name: (identifier)))))))
+            value: (name_reference
+              name: (identifier)))
+          body: (name_reference
+            name: (identifier)))))))
 
 ========================================
 Annotated tuple destructuring is rejected

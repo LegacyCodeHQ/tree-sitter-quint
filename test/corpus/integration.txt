@@ -661,3 +661,183 @@ module DataFeatures {
                 object: (name_reference
                   name: (identifier))
                 field: (identifier)))))))))
+
+========================================
+Quint 0.33 grammar compatibility integration
+========================================
+
+module Grammar033Integration {
+  type Predicate = int -> int => bool
+  const predicate: Predicate
+  const nullary: (,) => bool
+  var x: int
+
+  pure val empty(): List[int] = [,]
+  pure def sumPair(n: int): int = {
+    pure val pair() = (n, n + 1)
+    val (a, b) = pair
+    a + b
+  }
+
+  action init = x' = 0
+  action step = x' = x + 1
+  temporal increasing = always((next(x) > x).orKeep(x))
+  temporal conditional = always((if (x < 3) next(x) == x + 1 else next(x) == 0).orKeep(x))
+  temporal negated = always(not(step).orKeep(x))
+  temporal changed = always((next(x) > x).mustChange(x))
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (operator_type
+        parameter: (function_type
+          parameter: (primitive_type)
+          result: (primitive_type))
+        result: (primitive_type)))
+    (constant_declaration
+      name: (identifier)
+      type: (named_type
+        name: (identifier)))
+    (constant_declaration
+      name: (identifier)
+      type: (operator_type
+        result: (primitive_type)))
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (value_definition
+      name: (identifier)
+      type: (list_type
+        element: (primitive_type))
+      value: (list_literal))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (tuple_literal
+              element: (name_reference
+                name: (identifier))
+              element: (binary_expression
+                left: (name_reference
+                  name: (identifier))
+                right: (integer_literal))))
+          body: (nested_definition_expression
+            definition: (value_definition
+              name: (tuple_pattern
+                element: (identifier)
+                element: (identifier))
+              value: (name_reference
+                name: (identifier)))
+            body: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (name_reference
+                name: (identifier)))))))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (identifier))
+        value: (integer_literal)))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (identifier))
+        value: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (ufcs_call_expression
+          receiver: (parenthesized_expression
+            expression: (binary_expression
+              left: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (name_reference
+                  name: (identifier)))
+              right: (name_reference
+                name: (identifier))))
+          method: (identifier)
+          argument: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (ufcs_call_expression
+          receiver: (parenthesized_expression
+            expression: (if_expression
+              condition: (binary_expression
+                left: (name_reference
+                  name: (identifier))
+                right: (integer_literal))
+              consequence: (binary_expression
+                left: (call_expression
+                  function: (name_reference
+                    name: (identifier))
+                  argument: (name_reference
+                    name: (identifier)))
+                right: (binary_expression
+                  left: (name_reference
+                    name: (identifier))
+                  right: (integer_literal)))
+              alternative: (binary_expression
+                left: (call_expression
+                  function: (name_reference
+                    name: (identifier))
+                  argument: (name_reference
+                    name: (identifier)))
+                right: (integer_literal))))
+          method: (identifier)
+          argument: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (ufcs_call_expression
+          receiver: (call_expression
+            function: (name_reference
+              name: (identifier))
+            argument: (name_reference
+              name: (identifier)))
+          method: (identifier)
+          argument: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (ufcs_call_expression
+          receiver: (parenthesized_expression
+            expression: (binary_expression
+              left: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (name_reference
+                  name: (identifier)))
+              right: (name_reference
+                name: (identifier))))
+          method: (identifier)
+          argument: (name_reference
+            name: (identifier)))))))

@@ -978,11 +978,13 @@ module CommaOnlyForms {
     name: (identifier)
     (value_definition
       name: (identifier)
-      type: (list_type element: (primitive_type))
+      type: (list_type
+        element: (primitive_type))
       value: (list_literal))
     (constant_declaration
       name: (identifier)
-      type: (operator_type result: (primitive_type)))))
+      type: (operator_type
+        result: (primitive_type)))))
 
 ========================================
 Equality and ordering share left-associative precedence
@@ -1003,10 +1005,14 @@ module RelationPrecedence {
     (value_definition
       name: (identifier)
       value: (binary_expression
-        left: (binary_expression left: (integer_literal) right: (integer_literal))
+        left: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
         right: (integer_literal)))
     (value_definition
       name: (identifier)
       value: (binary_expression
-        left: (binary_expression left: (integer_literal) right: (integer_literal))
+        left: (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))
         right: (boolean_literal)))))
