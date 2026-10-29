@@ -4808,6 +4808,36 @@
                   "type": "ALIAS",
                   "content": {
                     "type": "SYMBOL",
+                    "name": "_local_continued_operator_definition"
+                  },
+                  "named": true,
+                  "value": "operator_definition"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "body",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_RIGHT",
+          "value": 0,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "definition",
+                "content": {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
                     "name": "_local_parameterized_operator_header"
                   },
                   "named": true,
@@ -9902,6 +9932,15 @@
                       },
                       "named": true,
                       "value": "operator_definition"
+                    },
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "_local_continued_operator_definition"
+                      },
+                      "named": true,
+                      "value": "operator_definition"
                     }
                   ]
                 }
@@ -11262,6 +11301,192 @@
           }
         }
       ]
+    },
+    "_local_continued_operator_definition": {
+      "type": "PREC_DYNAMIC",
+      "value": 32,
+      "content": {
+        "type": "PREC",
+        "value": "local_value",
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_operator_definition_head"
+            },
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "FIELD",
+              "name": "body",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_pair_expression"
+                    },
+                    "named": true,
+                    "value": "pair_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_implication_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_leads_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_iff_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_or_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_and_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_relation_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_add_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_mul_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_power_expression"
+                    },
+                    "named": true,
+                    "value": "binary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_local_compound_unary_initializer"
+                    },
+                    "named": true,
+                    "value": "unary_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_local_compound_if_initializer"
+                    },
+                    "named": true,
+                    "value": "if_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_local_compound_lambda_initializer"
+                    },
+                    "named": true,
+                    "value": "lambda_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_index_expression"
+                    },
+                    "named": true,
+                    "value": "index_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_ufcs_expression"
+                    },
+                    "named": true,
+                    "value": "ufcs_call_expression"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_init_field_expression"
+                    },
+                    "named": true,
+                    "value": "field_access_expression"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ";"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
+        }
+      }
     },
     "_local_delimited_value_definition": {
       "type": "PREC",
@@ -13216,6 +13441,10 @@
   ],
   "conflicts": [
     [
+      "_local_continued_operator_definition",
+      "_local_delimited_operator_definition"
+    ],
+    [
       "_init_unary",
       "_local_compound_unary_initializer"
     ],
@@ -13329,6 +13558,11 @@
     ],
     [
       "_init_pair",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_pair",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13337,6 +13571,11 @@
     ],
     [
       "_init_implication",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_implication",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13345,6 +13584,11 @@
     ],
     [
       "_init_leads",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_leads",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13353,6 +13597,11 @@
     ],
     [
       "_init_iff",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_iff",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13361,6 +13610,11 @@
     ],
     [
       "_init_or",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_or",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13369,6 +13623,11 @@
     ],
     [
       "_init_and",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_and",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13377,6 +13636,11 @@
     ],
     [
       "_init_relation",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_relation",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13385,6 +13649,11 @@
     ],
     [
       "_init_add",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_add",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13393,6 +13662,11 @@
     ],
     [
       "_init_mul",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_mul",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13401,6 +13675,11 @@
     ],
     [
       "_init_power",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_power",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [
@@ -13417,6 +13696,15 @@
     ],
     [
       "_init_postfix",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_postfix",
+      "_local_continued_operator_definition"
+    ],
+    [
+      "_init_postfix",
+      "_local_continued_operator_definition",
       "_local_delimited_operator_definition"
     ],
     [

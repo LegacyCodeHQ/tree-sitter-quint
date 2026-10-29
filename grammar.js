@@ -263,6 +263,27 @@ function delimitedInitializer($) {
   );
 }
 
+function continuedInitializer($) {
+  return choice(
+    alias($._init_pair_expression, $.pair_expression),
+    alias($._init_implication_expression, $.binary_expression),
+    alias($._init_leads_expression, $.binary_expression),
+    alias($._init_iff_expression, $.binary_expression),
+    alias($._init_or_expression, $.binary_expression),
+    alias($._init_and_expression, $.binary_expression),
+    alias($._init_relation_expression, $.binary_expression),
+    alias($._init_add_expression, $.binary_expression),
+    alias($._init_mul_expression, $.binary_expression),
+    alias($._init_power_expression, $.binary_expression),
+    alias($._local_compound_unary_initializer, $.unary_expression),
+    alias($._local_compound_if_initializer, $.if_expression),
+    alias($._local_compound_lambda_initializer, $.lambda_expression),
+    alias($._init_index_expression, $.index_expression),
+    alias($._init_ufcs_expression, $.ufcs_call_expression),
+    alias($._init_field_expression, $.field_access_expression),
+  );
+}
+
 // Share the full header syntax with the local form that requires a parameter
 // list, so all qualifiers, annotated parameters, and trailing commas stay aligned.
 function operatorDefinitionHead($, parametersRequired = false) {
@@ -527,6 +548,7 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._local_continued_operator_definition, $._local_delimited_operator_definition],
     [$._init_unary, $._local_compound_unary_initializer],
     [$._init_power, $._local_compound_unary_initializer],
     [$._init_postfix, $._local_compound_unary_initializer],
@@ -543,7 +565,12 @@ export default grammar({
       "_init_and", "_init_relation", "_init_add", "_init_mul", "_init_power", "_init_unary", "_init_postfix",
     ].flatMap(name => [
       [$[name], $._local_delimited_value_definition],
-      [$[name], $._local_delimited_operator_definition],
+      ...(["_init_unary", "_init_postfix"].includes(name)
+        ? [[$[name], $._local_delimited_operator_definition]] : []),
+      ...(name !== "_init_unary" ? [
+        [$[name], $._local_continued_operator_definition],
+        [$[name], $._local_continued_operator_definition, $._local_delimited_operator_definition],
+      ] : []),
     ]),
     [$._operator_definition_head, $._local_parameterized_operator_header],
     [$._operator_definition_head, $._local_bare_operator_header, $._local_parameterized_operator_header],
@@ -1164,6 +1191,10 @@ export default grammar({
     ),
 
     nested_definition_expression: $ => choice(
+      prec.right(PREC.BODY, seq(
+        field("definition", alias($._local_continued_operator_definition, $.operator_definition)),
+        field("body", $._expression),
+      )),
       prec.right(PREC.BODY, seq(
         field("definition", alias($._local_parameterized_operator_header, $.operator_definition)),
         field("body", $._expression),
@@ -1834,6 +1865,7 @@ export default grammar({
         field("definition", choice(
           alias($._local_operator_definition, $.operator_definition),
           alias($._local_operator_definition_unterminated, $.operator_definition),
+          alias($._local_continued_operator_definition, $.operator_definition),
         )),
         field("body", $._initializer_expression),
       )),
@@ -1917,6 +1949,14 @@ export default grammar({
       "else",
       field("alternative", delimitedInitializer($)),
     ),
+    // Completing a written operand chain precedes boundaries in later bodies.
+    _local_continued_operator_definition: $ => prec.dynamic(32, prec("local_value", seq(
+      $._operator_definition_head,
+      "=",
+      field("body", continuedInitializer($)),
+      optional(";"),
+    ))),
+
     _local_delimited_value_definition: $ => prec("local_value", seq(
       optional(field("qualifier", "pure")),
       "val",

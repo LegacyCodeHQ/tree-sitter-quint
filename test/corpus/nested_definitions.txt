@@ -2039,3 +2039,33 @@ module CompoundPrefixEdge {
 ---
 
 (source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (value_definition name: (identifier) value: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal))) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (primitive_type) body: (name_reference name: (identifier))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (lambda_expression parameter: (identifier) body: (binary_expression left: (name_reference name: (identifier)) right: (name_reference name: (identifier))))) body: (name_reference name: (identifier)))) body: (unit_literal)))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (unary_expression operand: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal)))) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (name_reference name: (identifier))) body: (list_literal element: (integer_literal))))) body: (name_reference name: (identifier)))))))
+
+======================================
+Completed operator initializers retain postfix and arithmetic continuations
+======================================
+
+module ContinuedOperatorInitializers {
+  pure val seed = 1
+  pure val values = List(1)
+  pure def source(n: int): List[int] = List(n)
+  pure def number(n: int): int = n
+  pure def indexed = {
+    val saved = def first = def second = source(0)[0];
+    seed()
+    seed
+  }
+  pure def nestedBody = {
+    val saved = def inner = source(0)[0];
+    val last = values[0]
+    values
+  }
+  pure def arithmetic = {
+    val saved = def inner = number(0)
+    -seed;
+    seed()
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (value_definition name: (identifier) value: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal))) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (list_type element: (primitive_type)) body: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier)))) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (primitive_type) body: (name_reference name: (identifier))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (operator_definition name: (identifier) body: (index_expression collection: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal)) index: (integer_literal))) body: (name_reference name: (identifier)))) body: (unit_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (index_expression collection: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal)) index: (integer_literal))) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (name_reference name: (identifier))) body: (list_literal element: (integer_literal))))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (binary_expression left: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal)) right: (name_reference name: (identifier)))) body: (name_reference name: (identifier)))) body: (unit_literal))))))
