@@ -68,6 +68,7 @@ test("incremental edits across local binding continuations match fresh parsing",
     ["syntax-greedy-equals-boundary.qnt", "def first(p) = value"],
     ["syntax-greedy-nested-call.qnt", "def local() = source"],
     ["syntax-greedy-assignment-subtraction.qnt", "def first() = { val local = { a: 1 } () }"],
+    ["syntax-greedy-assignment-chain.qnt", "def first() = { val local = {a: 1} () }"],
   ]) {
     const before = readFileSync(new URL(`../../test/fixtures/${fixture}`, import.meta.url), "utf8");
     pairs.push([before, before.replaceAll(`${boundary}\n`, `${boundary};\n`)]);

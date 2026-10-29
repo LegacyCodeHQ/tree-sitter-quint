@@ -262,6 +262,7 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._init_assignment_rhs_closed_mul, $._init_closed_mul],
     [$._operator_definition_head, $._local_bare_operator_header],
     [$._init_power, $._init_closed_power],
     [$._init_lambda_expression, $.name_reference],
@@ -1249,7 +1250,7 @@ export default grammar({
     ),
 
     _init_assignment_rhs_relation_expression: $ => prec.dynamic(2, seq(
-      field("left", $._init_closed_relation),
+      field("left", $._init_assignment_rhs_closed_relation),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
       field("right", $._init_assignment_rhs_add),
     )),
@@ -1260,7 +1261,7 @@ export default grammar({
     ),
 
     _init_assignment_rhs_add_expression: $ => prec.dynamic(2, seq(
-      field("left", $._init_closed_add),
+      field("left", $._init_assignment_rhs_closed_add),
       field("operator", choice("+", "-")),
       field("right", $._init_assignment_rhs_mul),
     )),
@@ -1271,9 +1272,44 @@ export default grammar({
     ),
 
     _init_assignment_rhs_mul_expression: $ => prec.dynamic(2, seq(
-      field("left", $._init_closed_mul),
+      field("left", $._init_assignment_rhs_closed_mul),
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_unary),
+    )),
+
+    // Give every operator in the consumed left chain the same RHS priority;
+    // otherwise an earlier split gains more weight than the final continuation.
+    _init_assignment_rhs_closed_relation: $ => choice(
+      $._init_assignment_rhs_closed_add,
+      alias($._init_assignment_rhs_closed_relation_expression, $.binary_expression),
+    ),
+
+    _init_assignment_rhs_closed_relation_expression: $ => prec.dynamic(2, seq(
+      field("left", $._init_assignment_rhs_closed_relation),
+      field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
+      field("right", $._init_assignment_rhs_closed_add),
+    )),
+
+    _init_assignment_rhs_closed_add: $ => choice(
+      $._init_assignment_rhs_closed_mul,
+      alias($._init_assignment_rhs_closed_add_expression, $.binary_expression),
+    ),
+
+    _init_assignment_rhs_closed_add_expression: $ => prec.dynamic(2, seq(
+      field("left", $._init_assignment_rhs_closed_add),
+      field("operator", choice("+", "-")),
+      field("right", $._init_assignment_rhs_closed_mul),
+    )),
+
+    _init_assignment_rhs_closed_mul: $ => choice(
+      $._init_closed_unary,
+      alias($._init_assignment_rhs_closed_mul_expression, $.binary_expression),
+    ),
+
+    _init_assignment_rhs_closed_mul_expression: $ => prec.dynamic(2, seq(
+      field("left", $._init_assignment_rhs_closed_mul),
+      field("operator", choice("*", alias($._division, "/"), "%")),
+      field("right", $._init_closed_unary),
     )),
 
     _init_unary: $ => choice(

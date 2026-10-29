@@ -5501,7 +5501,7 @@
             "name": "left",
             "content": {
               "type": "SYMBOL",
-              "name": "_init_closed_relation"
+              "name": "_init_assignment_rhs_closed_relation"
             }
           },
           {
@@ -5577,7 +5577,7 @@
             "name": "left",
             "content": {
               "type": "SYMBOL",
-              "name": "_init_closed_add"
+              "name": "_init_assignment_rhs_closed_add"
             }
           },
           {
@@ -5637,7 +5637,7 @@
             "name": "left",
             "content": {
               "type": "SYMBOL",
-              "name": "_init_closed_mul"
+              "name": "_init_assignment_rhs_closed_mul"
             }
           },
           {
@@ -5672,6 +5672,211 @@
             "content": {
               "type": "SYMBOL",
               "name": "_init_unary"
+            }
+          }
+        ]
+      }
+    },
+    "_init_assignment_rhs_closed_relation": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_init_assignment_rhs_closed_add"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_init_assignment_rhs_closed_relation_expression"
+          },
+          "named": true,
+          "value": "binary_expression"
+        }
+      ]
+    },
+    "_init_assignment_rhs_closed_relation_expression": {
+      "type": "PREC_DYNAMIC",
+      "value": 2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "left",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_init_assignment_rhs_closed_relation"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "operator",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "=="
+                },
+                {
+                  "type": "STRING",
+                  "value": "!="
+                },
+                {
+                  "type": "STRING",
+                  "value": "<"
+                },
+                {
+                  "type": "STRING",
+                  "value": "<="
+                },
+                {
+                  "type": "STRING",
+                  "value": ">"
+                },
+                {
+                  "type": "STRING",
+                  "value": ">="
+                }
+              ]
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "right",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_init_assignment_rhs_closed_add"
+            }
+          }
+        ]
+      }
+    },
+    "_init_assignment_rhs_closed_add": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_init_assignment_rhs_closed_mul"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_init_assignment_rhs_closed_add_expression"
+          },
+          "named": true,
+          "value": "binary_expression"
+        }
+      ]
+    },
+    "_init_assignment_rhs_closed_add_expression": {
+      "type": "PREC_DYNAMIC",
+      "value": 2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "left",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_init_assignment_rhs_closed_add"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "operator",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "+"
+                },
+                {
+                  "type": "STRING",
+                  "value": "-"
+                }
+              ]
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "right",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_init_assignment_rhs_closed_mul"
+            }
+          }
+        ]
+      }
+    },
+    "_init_assignment_rhs_closed_mul": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_init_closed_unary"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_init_assignment_rhs_closed_mul_expression"
+          },
+          "named": true,
+          "value": "binary_expression"
+        }
+      ]
+    },
+    "_init_assignment_rhs_closed_mul_expression": {
+      "type": "PREC_DYNAMIC",
+      "value": 2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "left",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_init_assignment_rhs_closed_mul"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "operator",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "*"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_division"
+                  },
+                  "named": false,
+                  "value": "/"
+                },
+                {
+                  "type": "STRING",
+                  "value": "%"
+                }
+              ]
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "right",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_init_closed_unary"
             }
           }
         ]
@@ -9209,6 +9414,10 @@
     }
   ],
   "conflicts": [
+    [
+      "_init_assignment_rhs_closed_mul",
+      "_init_closed_mul"
+    ],
     [
       "_operator_definition_head",
       "_local_bare_operator_header"

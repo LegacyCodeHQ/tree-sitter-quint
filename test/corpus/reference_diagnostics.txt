@@ -100,7 +100,49 @@ if (x) {a: x} else x' = y }
 
 ---
 
-(source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (binary_expression left: (block_expression expression: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier)))) right: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (call_expression function: (name_reference name: (identifier))) right: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (lambda_expression parameter: (identifier) body: (integer_literal)))))) body: (if_expression condition: (name_reference name: (identifier)) consequence: (record_literal (record_literal_field name: (identifier) value: (name_reference name: (identifier)))) alternative: (assignment_expression target: (primed_identifier name: (identifier)) value: (name_reference name: (identifier))))))))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (binary_expression
+          left: (block_expression
+            expression: (call_expression
+              function: (name_reference
+                name: (identifier))
+              argument: (name_reference
+                name: (identifier))))
+          right: (nested_definition_expression
+            definition: (value_definition
+              name: (identifier)
+              value: (binary_expression
+                left: (call_expression
+                  function: (name_reference
+                    name: (identifier)))
+                right: (nested_definition_expression
+                  definition: (operator_definition
+                    name: (identifier))
+                  body: (invalid_equality_expression
+                    left: (parenthesized_expression
+                      expression: (name_reference
+                        name: (identifier)))
+                    right: (lambda_expression
+                      parameter: (identifier)
+                      body: (integer_literal))))))
+            body: (if_expression
+              condition: (name_reference
+                name: (identifier))
+              consequence: (record_literal
+                (record_literal_field
+                  name: (identifier)
+                  value: (name_reference
+                    name: (identifier))))
+              alternative: (assignment_expression
+                target: (primed_identifier
+                  name: (identifier))
+                value: (name_reference
+                  name: (identifier))))))))))
 
 ========================================
 Greedy initializer reports unexpected equals through nested definitions
@@ -116,7 +158,55 @@ A }
 
 ---
 
-(source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (name_reference name: (identifier))) body: (binary_expression left: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier))) right: (tuple_literal element: (name_reference name: (identifier)) element: (name_reference name: (identifier)))))) body: (lambda_expression parameter: (identifier) body: (binary_expression left: (name_reference name: (identifier)) right: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (list_literal element: (integer_literal) element: (integer_literal)))))))) body: (name_reference name: (identifier)))))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            parameter: (parameter
+              name: (identifier))
+            body: (nested_definition_expression
+              definition: (value_definition
+                name: (identifier)
+                value: (nested_definition_expression
+                  definition: (operator_definition
+                    name: (identifier)
+                    parameter: (parameter
+                      name: (identifier))
+                    body: (name_reference
+                      name: (identifier)))
+                  body: (binary_expression
+                    left: (call_expression
+                      function: (name_reference
+                        name: (identifier))
+                      argument: (name_reference
+                        name: (identifier)))
+                    right: (tuple_literal
+                      element: (name_reference
+                        name: (identifier))
+                      element: (name_reference
+                        name: (identifier))))))
+              body: (lambda_expression
+                parameter: (identifier)
+                body: (binary_expression
+                  left: (name_reference
+                    name: (identifier))
+                  right: (nested_definition_expression
+                    definition: (operator_definition
+                      name: (identifier))
+                    body: (invalid_equality_expression
+                      left: (parenthesized_expression
+                        expression: (name_reference
+                          name: (identifier)))
+                      right: (list_literal
+                        element: (integer_literal)
+                        element: (integer_literal))))))))
+          body: (name_reference
+            name: (identifier)))))))
 
 ========================================
 Greedy initializer reports unexpected equals across repeated operator headers
@@ -132,7 +222,58 @@ def z(p) = [1,2]
 
 ---
 
-(source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (binary_expression left: (binary_expression left: (all_expression conjunct: (list_literal element: (integer_literal) element: (integer_literal)) conjunct: (list_literal element: (integer_literal) element: (integer_literal))) right: (name_reference name: (identifier))) right: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (name_reference name: (identifier))) body: (list_literal element: (integer_literal) element: (integer_literal)))) body: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (list_literal element: (integer_literal) element: (integer_literal))))))) body: (record_literal (record_literal_field name: (identifier) value: (name_reference name: (identifier)))))))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            parameter: (parameter
+              name: (identifier))
+            body: (binary_expression
+              left: (binary_expression
+                left: (all_expression
+                  conjunct: (list_literal
+                    element: (integer_literal)
+                    element: (integer_literal))
+                  conjunct: (list_literal
+                    element: (integer_literal)
+                    element: (integer_literal)))
+                right: (name_reference
+                  name: (identifier)))
+              right: (nested_definition_expression
+                definition: (operator_definition
+                  name: (identifier)
+                  parameter: (parameter
+                    name: (identifier))
+                  body: (nested_definition_expression
+                    definition: (operator_definition
+                      name: (identifier)
+                      parameter: (parameter
+                        name: (identifier))
+                      body: (name_reference
+                        name: (identifier)))
+                    body: (list_literal
+                      element: (integer_literal)
+                      element: (integer_literal))))
+                body: (nested_definition_expression
+                  definition: (operator_definition
+                    name: (identifier))
+                  body: (invalid_equality_expression
+                    left: (parenthesized_expression
+                      expression: (name_reference
+                        name: (identifier)))
+                    right: (list_literal
+                      element: (integer_literal)
+                      element: (integer_literal)))))))
+          body: (record_literal
+            (record_literal_field
+              name: (identifier)
+              value: (name_reference
+                name: (identifier)))))))))
 
 ========================================
 Greedy calls inside nested values retain the later header diagnostic
@@ -151,7 +292,37 @@ module NestedCall {
 
 ---
 
-(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (boolean_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (call_expression function: (name_reference name: (identifier)))) body: (all_expression conjunct: (boolean_literal) conjunct: (boolean_literal)))) body: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (unit_literal) right: (boolean_literal))))) body: (boolean_literal))))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (boolean_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (nested_definition_expression
+              definition: (value_definition
+                name: (identifier)
+                value: (nested_definition_expression
+                  definition: (operator_definition
+                    name: (identifier)
+                    body: (call_expression
+                      function: (name_reference
+                        name: (identifier))))
+                  body: (all_expression
+                    conjunct: (boolean_literal)
+                    conjunct: (boolean_literal))))
+              body: (nested_definition_expression
+                definition: (operator_definition
+                  name: (identifier))
+                body: (invalid_equality_expression
+                  left: (unit_literal)
+                  right: (boolean_literal)))))
+          body: (boolean_literal))))))
 
 ========================================
 Greedy nested call preserves diagnostic across a block combinator
@@ -167,7 +338,62 @@ match x { A => f(x) | _ => 1 } }
 
 ---
 
-(source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier)) argument: (name_reference name: (identifier)))) body: (all_expression conjunct: (list_literal element: (integer_literal) element: (integer_literal)) conjunct: (tuple_literal element: (name_reference name: (identifier)) element: (name_reference name: (identifier)))))) body: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (unary_expression operand: (name_reference name: (identifier))))))) body: (match_expression value: (name_reference name: (identifier)) arm: (match_arm variant: (identifier) body: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier)))) arm: (match_arm variant: (hole) body: (integer_literal))))))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (nested_definition_expression
+              definition: (value_definition
+                name: (identifier)
+                value: (nested_definition_expression
+                  definition: (operator_definition
+                    name: (identifier)
+                    parameter: (parameter
+                      name: (identifier))
+                    body: (call_expression
+                      function: (name_reference
+                        name: (identifier))
+                      argument: (name_reference
+                        name: (identifier))
+                      argument: (name_reference
+                        name: (identifier))))
+                  body: (all_expression
+                    conjunct: (list_literal
+                      element: (integer_literal)
+                      element: (integer_literal))
+                    conjunct: (tuple_literal
+                      element: (name_reference
+                        name: (identifier))
+                      element: (name_reference
+                        name: (identifier))))))
+              body: (nested_definition_expression
+                definition: (operator_definition
+                  name: (identifier))
+                body: (invalid_equality_expression
+                  left: (parenthesized_expression
+                    expression: (name_reference
+                      name: (identifier)))
+                  right: (unary_expression
+                    operand: (name_reference
+                      name: (identifier)))))))
+          body: (match_expression
+            value: (name_reference
+              name: (identifier))
+            arm: (match_arm
+              variant: (identifier)
+              body: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (name_reference
+                  name: (identifier))))
+            arm: (match_arm
+              variant: (hole)
+              body: (integer_literal))))))))
 
 ========================================
 Assignment RHS subtraction retains the later header diagnostic
@@ -185,7 +411,49 @@ module AssignmentSubtraction {
 
 ---
 
-(source_file (module_definition name: (identifier) (variable_declaration name: (identifier) type: (primitive_type)) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) body: (binary_expression left: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (record_literal (record_literal_field name: (identifier) value: (integer_literal)))) body: (unit_literal))) right: (assignment_expression target: (primed_identifier name: (identifier)) value: (binary_expression left: (name_reference name: (identifier)) right: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (unit_literal) right: (record_literal (record_literal_field name: (identifier) value: (integer_literal))))))))) body: (tuple_literal element: (integer_literal) element: (integer_literal)))))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (binary_expression
+              left: (block_expression
+                expression: (nested_definition_expression
+                  definition: (value_definition
+                    name: (identifier)
+                    value: (record_literal
+                      (record_literal_field
+                        name: (identifier)
+                        value: (integer_literal))))
+                  body: (unit_literal)))
+              right: (assignment_expression
+                target: (primed_identifier
+                  name: (identifier))
+                value: (binary_expression
+                  left: (name_reference
+                    name: (identifier))
+                  right: (nested_definition_expression
+                    definition: (operator_definition
+                      name: (identifier))
+                    body: (invalid_equality_expression
+                      left: (unit_literal)
+                      right: (record_literal
+                        (record_literal_field
+                          name: (identifier)
+                          value: (integer_literal)))))))))
+          body: (tuple_literal
+            element: (integer_literal)
+            element: (integer_literal)))))))
 
 ========================================
 Greedy assignment diagnostic survives a preceding nested block
@@ -200,4 +468,107 @@ pure def outer = { def z(p) = { val z = {a: x}
 
 ---
 
-(source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (binary_expression left: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (record_literal (record_literal_field name: (identifier) value: (name_reference name: (identifier))))) body: (unit_literal))) right: (assignment_expression target: (primed_identifier name: (identifier)) value: (binary_expression left: (name_reference name: (identifier)) right: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (record_literal (record_literal_field name: (identifier) value: (name_reference name: (identifier)))))))))) body: (tuple_literal element: (name_reference name: (identifier)) element: (name_reference name: (identifier))))))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            parameter: (parameter
+              name: (identifier))
+            body: (binary_expression
+              left: (block_expression
+                expression: (nested_definition_expression
+                  definition: (value_definition
+                    name: (identifier)
+                    value: (record_literal
+                      (record_literal_field
+                        name: (identifier)
+                        value: (name_reference
+                          name: (identifier)))))
+                  body: (unit_literal)))
+              right: (assignment_expression
+                target: (primed_identifier
+                  name: (identifier))
+                value: (binary_expression
+                  left: (name_reference
+                    name: (identifier))
+                  right: (nested_definition_expression
+                    definition: (operator_definition
+                      name: (identifier))
+                    body: (invalid_equality_expression
+                      left: (parenthesized_expression
+                        expression: (name_reference
+                          name: (identifier)))
+                      right: (record_literal
+                        (record_literal_field
+                          name: (identifier)
+                          value: (name_reference
+                            name: (identifier))))))))))
+          body: (tuple_literal
+            element: (name_reference
+              name: (identifier))
+            element: (name_reference
+              name: (identifier))))))))
+
+========================================
+Assignment RHS chains preserve the final header diagnostic
+========================================
+
+module V { var x: int pure val y = 1 pure def result = {
+def first() = { val local = {a: 1} () }
+-x' = y - y - def later() = {a: 1}
+(1, 2)
+} }
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (binary_expression
+              left: (block_expression
+                expression: (nested_definition_expression
+                  definition: (value_definition
+                    name: (identifier)
+                    value: (record_literal
+                      (record_literal_field
+                        name: (identifier)
+                        value: (integer_literal))))
+                  body: (unit_literal)))
+              right: (assignment_expression
+                target: (primed_identifier
+                  name: (identifier))
+                value: (binary_expression
+                  left: (binary_expression
+                    left: (name_reference
+                      name: (identifier))
+                    right: (name_reference
+                      name: (identifier)))
+                  right: (nested_definition_expression
+                    definition: (operator_definition
+                      name: (identifier))
+                    body: (invalid_equality_expression
+                      left: (unit_literal)
+                      right: (record_literal
+                        (record_literal_field
+                          name: (identifier)
+                          value: (integer_literal)))))))))
+          body: (tuple_literal
+            element: (integer_literal)
+            element: (integer_literal)))))))

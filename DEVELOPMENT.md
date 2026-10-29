@@ -100,7 +100,8 @@ All seven original greedy-boundary diagnostic cases now agree with Quint 0.33
 and run under `test/fixtures/` and `test/corpus/reference_diagnostics.txt` in the
 normal test gate. Their diagnostic kinds and source spans were checked against
 the corresponding ANTLR contexts. Semicolon-disambiguated fixtures and complete
-local operator headers guard against rejecting valid alternatives. There is no
+local operator headers guard against rejecting valid alternatives. Assignment
+RHS regressions also cover multiple subtraction operators before the diagnostic. There is no
 separate directory of known failing comparisons.
 
 Repeat the normal acceptance check against a 0.33.0 installation with:
