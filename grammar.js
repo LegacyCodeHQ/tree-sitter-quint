@@ -1341,7 +1341,7 @@ export default grammar({
       field("right", $._init_unary),
     )),
 
-    _init_call_expression: $ => prec.dynamic(1, seq(
+    _init_call_expression: $ => prec.dynamic(2, seq(
       field("function", choice($.name_reference, $.namespace_access_expression, $.reserved_operator)),
       "(",
       optional(seq(

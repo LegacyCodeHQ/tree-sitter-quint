@@ -133,3 +133,38 @@ def z(p) = [1,2]
 ---
 
 (source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (binary_expression left: (binary_expression left: (all_expression conjunct: (list_literal element: (integer_literal) element: (integer_literal)) conjunct: (list_literal element: (integer_literal) element: (integer_literal))) right: (name_reference name: (identifier))) right: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (name_reference name: (identifier))) body: (list_literal element: (integer_literal) element: (integer_literal)))) body: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (list_literal element: (integer_literal) element: (integer_literal))))))) body: (record_literal (record_literal_field name: (identifier) value: (name_reference name: (identifier)))))))))
+
+========================================
+Greedy calls inside nested values retain the later header diagnostic
+========================================
+
+module NestedCall {
+  pure val source = true
+  pure def result = {
+    val outer = val inner = def local() = source
+    ()
+    all { true, false }
+    def later() = true
+    true
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (boolean_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (call_expression function: (name_reference name: (identifier)))) body: (all_expression conjunct: (boolean_literal) conjunct: (boolean_literal)))) body: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (unit_literal) right: (boolean_literal))))) body: (boolean_literal))))))
+
+========================================
+Greedy nested call preserves diagnostic across a block combinator
+========================================
+
+module Probe {
+pure def outer = { val z = val z = def z(p) = A
+(x,y)
+all { [1,2], (x,y) }
+def z(p) = -x
+match x { A => f(x) | _ => 1 } }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) parameter: (parameter name: (identifier)) body: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier)) argument: (name_reference name: (identifier)))) body: (all_expression conjunct: (list_literal element: (integer_literal) element: (integer_literal)) conjunct: (tuple_literal element: (name_reference name: (identifier)) element: (name_reference name: (identifier)))))) body: (nested_definition_expression definition: (operator_definition name: (identifier)) body: (invalid_equality_expression left: (parenthesized_expression expression: (name_reference name: (identifier))) right: (unary_expression operand: (name_reference name: (identifier))))))) body: (match_expression value: (name_reference name: (identifier)) arm: (match_arm variant: (identifier) body: (call_expression function: (name_reference name: (identifier)) argument: (name_reference name: (identifier)))) arm: (match_arm variant: (hole) body: (integer_literal))))))))
