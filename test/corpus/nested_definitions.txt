@@ -425,4 +425,247 @@ module MultilineContinuations {
 
 ---
 
-(source_file (module_definition name: (identifier) (operator_definition name: (identifier) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (index_expression collection: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) index: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (list_type element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (ufcs_call_expression receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) (comment) method: (identifier) argument: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (list_type element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (ufcs_call_expression receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) method: (identifier) argument: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (boolean_literal) right: (boolean_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (list_type element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (integer_literal)) body: (list_literal element: (integer_literal) element: (integer_literal)))))))
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (index_expression
+              collection: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (integer_literal)
+                argument: (integer_literal))
+              index: (integer_literal)))
+          body: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      return_type: (list_type
+        element: (primitive_type))
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (ufcs_call_expression
+              receiver: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (integer_literal)
+                argument: (integer_literal))
+              (comment)
+              method: (identifier)
+              argument: (integer_literal)))
+          body: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      return_type: (list_type
+        element: (primitive_type))
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (ufcs_call_expression
+              receiver: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (integer_literal)
+                argument: (integer_literal))
+              method: (identifier)
+              argument: (integer_literal)))
+          body: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (integer_literal)
+              right: (integer_literal)))
+          body: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (integer_literal)
+              right: (integer_literal)))
+          body: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (boolean_literal)
+              right: (boolean_literal)))
+          body: (name_reference
+            name: (identifier)))))
+    (operator_definition
+      name: (identifier)
+      return_type: (list_type
+        element: (primitive_type))
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (integer_literal))
+          body: (list_literal
+            element: (integer_literal)
+            element: (integer_literal)))))))
+
+========================================
+Local initializers stay greedy while preserving a trailing body
+========================================
+
+module GreedyBoundaries {
+  type Pair = (int, int)
+  pure def tupleBody(pair: Pair): Pair = {
+    val (x, y) = pair
+    (x + 1, y + 1)
+  }
+  pure def nameBeforeTuple(pair: Pair): Pair = {
+    val value = pair
+    (value._1, value._2)
+  }
+  pure def unaryBody(a: int, b: int): bool = {
+    val delta = a - b
+    -a <= delta and delta <= b
+  }
+  pure def longestInitializer(a: int, b: int): int = {
+    val delta = a - b - a - b
+    -delta
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (tuple_type
+        element: (primitive_type)
+        element: (primitive_type)))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (named_type
+          name: (identifier)))
+      return_type: (named_type
+        name: (identifier))
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (tuple_pattern
+              element: (identifier)
+              element: (identifier))
+            value: (name_reference
+              name: (identifier)))
+          body: (tuple_literal
+            element: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (integer_literal))
+            element: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (integer_literal))))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (named_type
+          name: (identifier)))
+      return_type: (named_type
+        name: (identifier))
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (name_reference
+              name: (identifier)))
+          body: (tuple_literal
+            element: (field_access_expression
+              object: (name_reference
+                name: (identifier))
+              field: (identifier))
+            element: (field_access_expression
+              object: (name_reference
+                name: (identifier))
+              field: (identifier))))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (name_reference
+                name: (identifier))))
+          body: (binary_expression
+            left: (binary_expression
+              left: (unary_expression
+                operand: (name_reference
+                  name: (identifier)))
+              right: (name_reference
+                name: (identifier)))
+            right: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (name_reference
+                name: (identifier)))))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (binary_expression
+                left: (binary_expression
+                  left: (name_reference
+                    name: (identifier))
+                  right: (name_reference
+                    name: (identifier)))
+                right: (name_reference
+                  name: (identifier)))
+              right: (name_reference
+                name: (identifier))))
+          body: (unary_expression
+            operand: (name_reference
+              name: (identifier))))))))

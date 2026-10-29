@@ -119,6 +119,122 @@ const identifierOrHole = $ => choice(
   $.hole,
 );
 
+function binaryExpression($, expression) {
+  return choice(
+    prec.left(PREC.IMPLICATION, seq(
+      field("left", expression),
+      field("operator", "implies"),
+      field("right", expression),
+    )),
+    prec.left(PREC.LEADS_TO, seq(
+      field("left", expression),
+      field("operator", "leadsTo"),
+      field("right", expression),
+    )),
+    prec.left(PREC.EQUIVALENCE, seq(
+      field("left", expression),
+      field("operator", "iff"),
+      field("right", expression),
+    )),
+    prec.left(PREC.DISJUNCTION, seq(
+      field("left", expression),
+      field("operator", "or"),
+      field("right", expression),
+    )),
+    prec.left(PREC.CONJUNCTION, seq(
+      field("left", expression),
+      field("operator", "and"),
+      field("right", expression),
+    )),
+    // ANTLR's relations alternative gives equality and ordering equal precedence.
+    prec.left(PREC.RELATION, seq(
+      field("left", expression),
+      field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
+      field("right", expression),
+    )),
+    prec.left(PREC.ADDITIVE, seq(
+      field("left", expression),
+      field("operator", choice("+", "-")),
+      field("right", expression),
+    )),
+    prec.left(PREC.MULTIPLICATIVE, seq(
+      field("left", expression),
+      field("operator", choice("*", alias($._division, "/"), "%")),
+      field("right", expression),
+    )),
+    prec.right(PREC.POWER, seq(
+      field("left", expression),
+      field("operator", "^"),
+      field("right", expression),
+    )),
+  );
+}
+
+function callExpression($, expression) {
+  return prec.left(PREC.POSTFIX, seq(
+    field("function", choice(
+      $.name_reference,
+      $.namespace_access_expression,
+      $.reserved_operator,
+    )),
+    "(",
+    optional(seq(
+      field("argument", expression),
+      repeat(seq(",", field("argument", expression))),
+    )),
+    optional(","),
+    ")",
+  ));
+}
+
+function ufcsCallExpression($, expression) {
+  return prec.left(PREC.POSTFIX + 1, seq(
+    field("receiver", expression),
+    ".",
+    field("method", choice(
+      $.identifier,
+      $.qualified_identifier,
+      $.reserved_operator,
+    )),
+    "(",
+    optional(seq(
+      field("argument", expression),
+      repeat(seq(",", field("argument", expression))),
+    )),
+    ")",
+  ));
+}
+
+function indexExpression($, expression) {
+  return prec.left(PREC.POSTFIX, seq(
+    field("collection", expression),
+    "[",
+    field("index", expression),
+    "]",
+  ));
+}
+
+function fieldAccessExpression($, expression) {
+  return prec.left(PREC.POSTFIX, seq(
+    field("object", expression),
+    ".",
+    field("field", choice(
+      $.identifier,
+      $.qualified_identifier,
+      $.reserved_operator,
+    )),
+  ));
+}
+
+function pairExpression($, expression) {
+  return prec.left(PREC.PAIR, seq(
+    field("left", expression),
+    "->",
+    field("right", expression),
+  ));
+}
+
+
 export default grammar({
   name: "quint",
 
@@ -145,8 +261,10 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
-    [$._local_value_definition_unterminated, $.binary_expression],
-    [$._local_value_definition_unterminated, $.index_expression],
+    [$._initializer_expression, $._local_value_definition_unterminated],
+    [$._initializer_expression, $._initializer_call_expression, $._local_value_definition_unterminated],
+    [$._local_value_definition_unterminated, $._initializer_index_expression],
+    [$._local_value_definition_unterminated, $._initializer_binary_expression],
     [$._parenthesized_operator_type, $.tuple_type],
     [$.lambda_expression, $.name_reference],
     [$.lambda_expression, $.tuple_pattern],
@@ -1001,8 +1119,61 @@ export default grammar({
         field("name", choice($.tuple_pattern, $.record_pattern)),
       ),
       "=",
-      field("value", $._expression),
+      field("value", $._initializer_expression),
       ";",
+    ),
+
+    // Prefer continuing an initializer when both parses leave a trailing body.
+    // Shared constructors keep its named nodes and operator precedence identical.
+    _initializer_expression: $ => choice(
+      alias($._initializer_binary_expression, $.binary_expression),
+      alias($._initializer_call_expression, $.call_expression),
+      alias($._initializer_ufcs_call_expression, $.ufcs_call_expression),
+      alias($._initializer_index_expression, $.index_expression),
+      alias($._initializer_field_access_expression, $.field_access_expression),
+      alias($._initializer_pair_expression, $.pair_expression),
+      $.integer_literal,
+      $.boolean_literal,
+      $.string_literal,
+      $.list_literal,
+      $.tuple_literal,
+      $.unit_literal,
+      $.record_literal,
+      $.block_expression,
+      $._block_combinator_expression,
+      $.assignment_expression,
+      $.if_expression,
+      $.match_expression,
+      $.nested_definition_expression,
+      $.lambda_expression,
+      $.namespace_access_expression,
+      $.name_reference,
+      $.parenthesized_expression,
+      $.unary_expression,
+    ),
+
+    _initializer_binary_expression: $ => prec.dynamic(1,
+      binaryExpression($, $._initializer_expression),
+    ),
+
+    _initializer_call_expression: $ => prec.dynamic(1,
+      callExpression($, $._initializer_expression),
+    ),
+
+    _initializer_ufcs_call_expression: $ => prec.dynamic(1,
+      ufcsCallExpression($, $._initializer_expression),
+    ),
+
+    _initializer_index_expression: $ => prec.dynamic(1,
+      indexExpression($, $._initializer_expression),
+    ),
+
+    _initializer_field_access_expression: $ => prec.dynamic(1,
+      fieldAccessExpression($, $._initializer_expression),
+    ),
+
+    _initializer_pair_expression: $ => prec.dynamic(1,
+      pairExpression($, $._initializer_expression),
     ),
 
     _local_value_definition_unterminated: $ => prec("local_value", seq(
@@ -1020,7 +1191,11 @@ export default grammar({
         field("name", choice($.tuple_pattern, $.record_pattern)),
       ),
       "=",
-      field("value", $._expression),
+      field("value", choice(
+        $._initializer_expression,
+        $.name_reference,
+        $.namespace_access_expression,
+      )),
     )),
 
     lambda_expression: $ => prec.right(PREC.BODY, seq(
@@ -1058,53 +1233,13 @@ export default grammar({
       "}",
     ),
 
-    field_access_expression: $ => prec.left(PREC.POSTFIX, seq(
-      field("object", $._expression),
-      ".",
-      field("field", choice(
-        $.identifier,
-        $.qualified_identifier,
-        $.reserved_operator,
-      )),
-    )),
+    field_access_expression: $ => fieldAccessExpression($, $._expression),
 
-    index_expression: $ => prec.left(PREC.POSTFIX, seq(
-      field("collection", $._expression),
-      "[",
-      field("index", $._expression),
-      "]",
-    )),
+    index_expression: $ => indexExpression($, $._expression),
 
-    call_expression: $ => prec.left(PREC.POSTFIX, seq(
-      field("function", choice(
-        $.name_reference,
-        $.namespace_access_expression,
-        $.reserved_operator,
-      )),
-      "(",
-      optional(seq(
-        field("argument", $._expression),
-        repeat(seq(",", field("argument", $._expression))),
-      )),
-      optional(","),
-      ")",
-    )),
+    call_expression: $ => callExpression($, $._expression),
 
-    ufcs_call_expression: $ => prec.left(PREC.POSTFIX + 1, seq(
-      field("receiver", $._expression),
-      ".",
-      field("method", choice(
-        $.identifier,
-        $.qualified_identifier,
-        $.reserved_operator,
-      )),
-      "(",
-      optional(seq(
-        field("argument", $._expression),
-        repeat(seq(",", field("argument", $._expression))),
-      )),
-      ")",
-    )),
+    ufcs_call_expression: $ => ufcsCallExpression($, $._expression),
 
     reserved_operator: _ => choice(
       "and",
@@ -1132,60 +1267,9 @@ export default grammar({
       field("operand", $._expression),
     )),
 
-    pair_expression: $ => prec.left(PREC.PAIR, seq(
-      field("left", $._expression),
-      "->",
-      field("right", $._expression),
-    )),
+    pair_expression: $ => pairExpression($, $._expression),
 
-    binary_expression: $ => choice(
-      prec.left(PREC.IMPLICATION, seq(
-        field("left", $._expression),
-        field("operator", "implies"),
-        field("right", $._expression),
-      )),
-      prec.left(PREC.LEADS_TO, seq(
-        field("left", $._expression),
-        field("operator", "leadsTo"),
-        field("right", $._expression),
-      )),
-      prec.left(PREC.EQUIVALENCE, seq(
-        field("left", $._expression),
-        field("operator", "iff"),
-        field("right", $._expression),
-      )),
-      prec.left(PREC.DISJUNCTION, seq(
-        field("left", $._expression),
-        field("operator", "or"),
-        field("right", $._expression),
-      )),
-      prec.left(PREC.CONJUNCTION, seq(
-        field("left", $._expression),
-        field("operator", "and"),
-        field("right", $._expression),
-      )),
-      // ANTLR's relations alternative gives equality and ordering equal precedence.
-      prec.left(PREC.RELATION, seq(
-        field("left", $._expression),
-        field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
-        field("right", $._expression),
-      )),
-      prec.left(PREC.ADDITIVE, seq(
-        field("left", $._expression),
-        field("operator", choice("+", "-")),
-        field("right", $._expression),
-      )),
-      prec.left(PREC.MULTIPLICATIVE, seq(
-        field("left", $._expression),
-        field("operator", choice("*", alias($._division, "/"), "%")),
-        field("right", $._expression),
-      )),
-      prec.right(PREC.POWER, seq(
-        field("left", $._expression),
-        field("operator", "^"),
-        field("right", $._expression),
-      )),
-    ),
+    binary_expression: $ => binaryExpression($, $._expression),
 
     integer_literal: _ => /(?:0x[0-9a-fA-F](?:_?[0-9a-fA-F])*|0|[1-9](?:_?[0-9])*)/,
 
