@@ -6756,7 +6756,7 @@
     },
     "_init_ufcs_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 2,
+      "value": 3,
       "content": {
         "type": "SEQ",
         "members": [

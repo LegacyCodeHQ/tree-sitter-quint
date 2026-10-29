@@ -1461,7 +1461,7 @@ export default grammar({
       "]",
     )),
 
-    _init_ufcs_expression: $ => prec.dynamic(2, seq(
+    _init_ufcs_expression: $ => prec.dynamic(3, seq(
       field("receiver", $._init_postfix),
       ".",
       field("method", choice($.identifier, $.qualified_identifier, $.reserved_operator)),

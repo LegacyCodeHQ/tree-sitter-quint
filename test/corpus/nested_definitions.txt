@@ -988,3 +988,36 @@ module NestedIndexBoundary {
                 index: (integer_literal)))
             body: (unary_expression operand: (integer_literal))))
         body: (integer_literal)))))
+
+====================================
+Nested UFCS initializer boundary
+====================================
+
+module NestedUfcsBoundary {
+  pure def keep(n: int): int = n
+  pure def result = val outer = val inner = 1.keep()
+    -1;
+    outer
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter name: (identifier) type: (primitive_type))
+      return_type: (primitive_type)
+      body: (name_reference name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      body: (nested_definition_expression
+        definition: (value_definition
+          name: (identifier)
+          value: (nested_definition_expression
+            definition: (value_definition
+              name: (identifier)
+              value: (ufcs_call_expression receiver: (integer_literal) method: (identifier)))
+            body: (unary_expression operand: (integer_literal))))
+        body: (name_reference name: (identifier))))))
