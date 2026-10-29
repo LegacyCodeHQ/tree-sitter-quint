@@ -99,6 +99,8 @@ void tree_sitter_quint_external_scanner_destroy(void *payload) {
   q_document_destroy(&scanner->document);
   free(scanner->source);
   free(scanner->suffixes);
+  free(scanner->suffix_ranks);
+  free(scanner->positions);
   free(scanner->stacks);
   free(scanner);
 }
@@ -107,7 +109,8 @@ unsigned tree_sitter_quint_external_scanner_serialize(void *payload, char *buffe
   QScanner *scanner = payload;
   memcpy(buffer, &scanner->fingerprint, sizeof(uint64_t));
   memcpy(buffer + sizeof(uint64_t), &scanner->stack, sizeof(uint32_t));
-  return sizeof(uint64_t) + sizeof(uint32_t);
+  memcpy(buffer + sizeof(uint64_t) + sizeof(uint32_t), &scanner->position, sizeof(uint32_t));
+  return sizeof(uint64_t) + 2 * sizeof(uint32_t);
 }
 
 void tree_sitter_quint_external_scanner_deserialize(
@@ -117,12 +120,19 @@ void tree_sitter_quint_external_scanner_deserialize(
 ) {
   QScanner *scanner = payload;
   scanner->stack = 0;
-  if (length == sizeof(uint64_t) + sizeof(uint32_t)) {
+  scanner->position = 0;
+  if (length == sizeof(uint64_t) + 2 * sizeof(uint32_t)) {
     uint64_t fingerprint;
     uint32_t stack;
     memcpy(&fingerprint, buffer, sizeof(uint64_t));
     memcpy(&stack, buffer + sizeof(uint64_t), sizeof(uint32_t));
-    if (fingerprint == scanner->fingerprint && stack <= scanner->stack_count) scanner->stack = stack;
+    uint32_t position;
+    memcpy(&position, buffer + sizeof(uint64_t) + sizeof(uint32_t), sizeof(uint32_t));
+    if (fingerprint == scanner->fingerprint && stack <= scanner->stack_count &&
+        position < scanner->document.token_count) {
+      scanner->stack = stack;
+      scanner->position = position;
+    }
   }
 }
 
@@ -134,6 +144,7 @@ bool tree_sitter_quint_external_scanner_scan(
   QScanner *scanner = payload;
   // Recovery exposes every external token at once. Boundary markers must not
   // suppress Tree-sitter's normal error recovery in that mode.
+  if (valid_symbols[REFERENCE_BOUNDARIES] && valid_symbols[BEGIN_DEFINITION]) scanner->recovering = true;
   if (!(valid_symbols[REFERENCE_BOUNDARIES] && valid_symbols[BEGIN_DEFINITION])) {
     if (valid_symbols[REFERENCE_BOUNDARIES] || valid_symbols[RECOVERY_BOUNDARIES]) {
       if (!q_scan_document(scanner, lexer)) return false;

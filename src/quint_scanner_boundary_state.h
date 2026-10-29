@@ -8,7 +8,10 @@ typedef struct { uint32_t parent, start; uint8_t kind; } QDefinitionStack;
 typedef struct {
   QDocument document;
   char *source;
-  uint32_t *suffixes;
+  uint32_t *suffixes, *suffix_ranks, *positions;
+  size_t position_count;
+  uint32_t position;
+  bool recovering;
   size_t length;
   uint64_t fingerprint;
   bool recognized;
@@ -77,19 +80,43 @@ static bool q_build_suffixes(QScanner *scanner) {
     max_rank = classes;
     if ((size_t)classes + 1 == count) break;
   }
-  free(rank); free(next_rank); free(work); free(buckets);
+  free(next_rank); free(work); free(buckets);
   free(scanner->suffixes); scanner->suffixes = suffixes;
+  free(scanner->suffix_ranks); scanner->suffix_ranks = rank;
   return true;
 }
 static int q_suffix_byte(const QScanner *scanner, size_t index, size_t consumed) {
   size_t at = (size_t)scanner->suffixes[index] + consumed;
   return at < scanner->length ? (unsigned char)scanner->source[at] : -1;
 }
-static uint32_t q_locate_source(QScanner *scanner, TSLexer *lexer) {
+// Find a unique suffix inside the reference-boundary window. The inverse
+// suffix ranks make this independent of identical text elsewhere in the file.
+static uint32_t q_window_position(const QScanner *scanner, size_t low, size_t high,
+                                  size_t start, size_t end) {
+  uint32_t found = UINT32_MAX;
+  if (high - low < end - start + 1) {
+    for (size_t i = low; i < high; i++) {
+      uint32_t at = scanner->suffixes[i];
+      if (at < start || at > end) continue;
+      if (found != UINT32_MAX) return UINT32_MAX;
+      found = at;
+    }
+  } else {
+    for (size_t at = start; at <= end; at++) {
+      uint32_t rank = scanner->suffix_ranks[at];
+      if (rank < low || rank >= high) continue;
+      if (found != UINT32_MAX) return UINT32_MAX;
+      found = (uint32_t)at;
+    }
+  }
+  return found;
+}
+static uint32_t q_locate_source(QScanner *scanner, TSLexer *lexer, size_t start, size_t end) {
   if (lexer->eof(lexer)) return (uint32_t)scanner->length;
   size_t low = 0, high = scanner->length + 1, consumed = 0;
   while (low < high) {
-    if (high - low == 1) return scanner->suffixes[low];
+    uint32_t unique = q_window_position(scanner, low, high, start, end);
+    if (unique != UINT32_MAX) return unique;
     char bytes[4];
     size_t width = lexer->eof(lexer) ? 1 : q_utf8(lexer->lookahead, bytes);
     for (size_t i = 0; i < width; i++) {
@@ -108,7 +135,8 @@ static uint32_t q_locate_source(QScanner *scanner, TSLexer *lexer) {
       }
       high = left; consumed++;
       if (low == high) return UINT32_MAX;
-      if (high - low == 1) return scanner->suffixes[low];
+      unique = q_window_position(scanner, low, high, start, end);
+      if (unique != UINT32_MAX) return unique;
     }
     if (lexer->eof(lexer)) return UINT32_MAX;
     lexer->advance(lexer, false);
@@ -116,6 +144,24 @@ static uint32_t q_locate_source(QScanner *scanner, TSLexer *lexer) {
   return UINT32_MAX;
 }
 
+static int q_position_compare(const void *left, const void *right) {
+  uint32_t a = *(const uint32_t *)left, b = *(const uint32_t *)right;
+  return (a > b) - (a < b);
+}
+static bool q_build_positions(QScanner *scanner) {
+  size_t count = scanner->document.boundary_count;
+  if (count > SIZE_MAX / (2 * sizeof(uint32_t))) return false;
+  uint32_t *positions = count ? malloc(count * 2 * sizeof(uint32_t)) : NULL;
+  if (count && !positions) return false;
+  for (size_t i = 0; i < count; i++) {
+    positions[2*i] = scanner->document.boundaries[i].start;
+    positions[2*i+1] = scanner->document.boundaries[i].end;
+  }
+  if (count) qsort(positions, count * 2, sizeof(uint32_t), q_position_compare);
+  free(scanner->positions); scanner->positions = positions;
+  scanner->position_count = count * 2;
+  return true;
+}
 static bool q_scan_document(QScanner *scanner, TSLexer *lexer) {
   char *source = NULL;
   size_t length = 0, capacity = 0;
@@ -137,16 +183,48 @@ static bool q_scan_document(QScanner *scanner, TSLexer *lexer) {
     scanner->recognized = q_parse_document(&scanner->document, source, length);
     scanner->stack_count = 0;
     free(scanner->suffixes); scanner->suffixes = NULL;
+    free(scanner->suffix_ranks); scanner->suffix_ranks = NULL;
+    free(scanner->positions); scanner->positions = NULL; scanner->position_count = 0;
   } else free(source);
   // A failed allocation must be retried, never leave an index for old text.
   if (!scanner->suffixes && !q_build_suffixes(scanner)) return false;
+  if (scanner->document.boundary_count && !scanner->positions && !q_build_positions(scanner)) return false;
   scanner->stack = 0;
+  scanner->position = 0;
+  scanner->recovering = false;
   return true;
 }
 static uint32_t q_token_position(QScanner *scanner, TSLexer *lexer, unsigned prefix) {
   if (!prefix) lexer->mark_end(lexer);
   if (!scanner->suffixes) return UINT32_MAX;
-  uint32_t at = q_locate_source(scanner, lexer);
+  size_t start = 0, end = scanner->length;
+  if (scanner->recognized && !scanner->recovering && scanner->position < scanner->document.token_count) {
+    // No successful parse can cross the next reference marker without emitting
+    // it. Serialized lower bounds follow GLR backtracking; recovery uses the
+    // unrestricted index because skipped tokens break that guarantee.
+    uint32_t first = scanner->position;
+    if (scanner->stack && scanner->stacks[scanner->stack - 1].start == first &&
+        first + 1 < scanner->document.token_count) first++;
+    start = scanner->document.tokens[first].start;
+    size_t low = 0, high = scanner->position_count;
+    while (low < high) {
+      size_t mid = low + (high - low) / 2;
+      if (scanner->positions[mid] <= scanner->position) low = mid + 1;
+      else high = mid;
+    }
+    if (low < scanner->position_count) {
+      uint32_t next = scanner->positions[low];
+      if (next < scanner->document.token_count) end = scanner->document.tokens[next].start;
+    }
+    if (!scanner->stack) {
+      for (size_t i = 0; i < scanner->document.boundary_count; i++) {
+        QBoundary b = scanner->document.boundaries[i];
+        if (b.start == scanner->position && b.kind == 3) { end = start; break; }
+      }
+    }
+    if (prefix <= scanner->length - end) end += prefix;
+  }
+  uint32_t at = q_locate_source(scanner, lexer, start, end);
   if (at == UINT32_MAX || at < prefix) return UINT32_MAX;
   size_t offset = at - prefix;
   QDocument *doc = &scanner->document;
@@ -170,11 +248,12 @@ static bool q_begin_definition(QScanner *scanner, uint32_t start, uint8_t kind) 
   }
   for (size_t i = 0; i < scanner->stack_count; i++) {
     QDefinitionStack s = scanner->stacks[i];
-    if (s.parent == scanner->stack && s.start == start && s.kind == kind) { scanner->stack = (uint32_t)i + 1; return true; }
+    if (s.parent == scanner->stack && s.start == start && s.kind == kind) { scanner->stack = (uint32_t)i + 1; scanner->position = start; return true; }
   }
   if (!q_grow((void **)&scanner->stacks, &scanner->stack_capacity, scanner->stack_count + 1, sizeof(QDefinitionStack))) return false;
   scanner->stacks[scanner->stack_count++] = (QDefinitionStack){scanner->stack, start, kind};
   scanner->stack = (uint32_t)scanner->stack_count;
+  scanner->position = start;
   return true;
 }
 static bool q_end_definition(QScanner *scanner, uint32_t end, uint8_t kind) {
@@ -198,6 +277,7 @@ static bool q_end_definition(QScanner *scanner, uint32_t end, uint8_t kind) {
     if (!found) return false;
   }
   scanner->stack = top.parent;
+  scanner->position = end;
   return true;
 }
 #endif

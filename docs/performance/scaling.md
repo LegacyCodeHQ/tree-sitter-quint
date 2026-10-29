@@ -73,7 +73,7 @@ The other workloads still run with five alternating ordinary pairs by default.
 There is no elapsed-time gate in CI; the reference and native-work checks run
 with the ordinary test suite.
 
-## Remaining repeated-text cliff
+## Repeated-text cliff in this baseline
 
 The source-position index must distinguish a current suffix from every other
 matching suffix. For identical repeated definitions that can require reading
@@ -94,12 +94,12 @@ observed roughly 4.3 seconds for the initial 1,024-identical-definition parse
 on both versions, compared with under 0.14 seconds for 1,024 unique definitions;
 that pilot ran alongside checks and is not used for a speedup claim.
 
-Solving it requires position information the scanner interface does not expose,
-or redesigned token/guard placement. Source text alone cannot distinguish
-identical suffix prefixes without longer lookahead. Guessing from declaration
-order would need proof under GLR backtracking and recovery. The guard/lifetime
-requirements are recorded in the incremental investigation; this remains a
-known performance limit, not an acceptance or tree-shape disagreement.
+The [subsequent position-window experiment](repeated-position.md) addresses this
+cross-definition repetition without changing the grammar or existing error
+trees. It serializes the last marker position, restricts suffix candidates
+to the next reference boundary, and keeps unrestricted lookup during recovery.
+The table above records the original global-search diagnostic; the follow-up
+uses real-runtime scanner work and separate paired timing measurements.
 
 Artifacts are retained at `/private/tmp/quint-recognizer-perf-20261029`, including
 frozen baseline/arena/final binaries and sources, failure-injection and sanitizer

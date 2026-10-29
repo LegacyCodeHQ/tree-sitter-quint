@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
@@ -33,7 +33,7 @@ function capture(tree) {
 }
 if (args.includes("--worker")) {
   const binding = createRequire(import.meta.url)(path.resolve(option("--binding")));
-  const source = readFileSync(0, "utf8");
+  const source = readFileSync(option("--source-file", 0), "utf8");
   const parser = new Parser();
   parser.setLanguage(binding);
   const outputs = [];
@@ -126,20 +126,25 @@ if (args.includes("--worker")) {
   }
   if (option("--match")) inputs = inputs.filter(input => new RegExp(option("--match")).test(input.name));
   assert(inputs.length > 0, "No benchmark inputs selected");
-  const report = { schema: 2, scaling, stress, node: process.version, platform: `${process.platform}/${process.arch}`,
+  const report = { schema: 2, inputDelivery: "file", scaling, stress, node: process.version, platform: `${process.platform}/${process.arch}`,
     cpu: os.cpus()[0]?.model, bindings: {}, rounds, inputs: [], measurements: [] };
   for (const [version, file] of Object.entries({ baseline, candidate })) {
     report.bindings[version] = { path: path.resolve(file), sha256: hash(readFileSync(file)) };
   }
+  // Materialize inputs before worker startup instead of synchronously piping
+  // large payloads. Input I/O remains outside every timed region.
+  const temporary = mkdtempSync(path.join(os.tmpdir(), "quint-benchmark-"));
+  const sourceFile = path.join(temporary, "input.qnt");
   try {
     for (const input of inputs) {
+      writeFileSync(sourceFile, input.source);
       report.inputs.push({ name: input.name, bytes: Buffer.byteLength(input.source), sha256: hash(input.source) });
       let expected;
       for (let round = 0; round < rounds; round++) {
         for (const version of round % 2 ? ["candidate", "baseline"] : ["baseline", "candidate"]) {
           const run = spawnSync(process.execPath, [fileURLToPath(import.meta.url), "--worker",
-            "--binding", report.bindings[version].path, ...(scaling ? ["--extended-edits"] : [])],
-          { input: input.source, encoding: "utf8", timeout: 120000 });
+            "--binding", report.bindings[version].path, "--source-file", sourceFile, ...(scaling ? ["--extended-edits"] : [])],
+          { encoding: "utf8", timeout: 120000 });
           if (run.status !== 0) report.failure = { name: input.name, version, round, status: run.status,
             signal: run.signal, error: run.error?.message, stdout: run.stdout, stderr: run.stderr };
           assert.equal(run.status, 0, `${input.name} ${version}: ${run.stderr}`);
@@ -161,6 +166,7 @@ if (args.includes("--worker")) {
     report.error = error.stack;
     throw error;
   } finally {
+    rmSync(temporary, { recursive: true, force: true });
     // Every raw measurement and output digest is retained; no timing threshold is
     // used as a correctness test on shared development/CI hosts.
     writeFileSync(output, JSON.stringify(report, null, 2) + "\n", { flag: "wx" });

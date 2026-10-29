@@ -1,6 +1,7 @@
 // Standalone contract check: cc -std=c11 -O2 -I src test/scanner/position_test.c -o /tmp/quint-position-test
 #include <assert.h>
 #include <stdio.h>
+#include "allocations.h"
 #include "../../src/scanner.c"
 
 typedef struct {
@@ -42,6 +43,8 @@ static void check(QScanner *scanner, const char *source, size_t length) {
   Input input = at(source, length, 0);
   assert(q_scan_document(scanner, &input.lexer));
   assert(input.marked == 0);
+  // Error recovery permits arbitrary jumps and keeps the unrestricted lookup.
+  scanner->recovering = true;
   for (size_t offset = 0; offset <= length; offset++) {
     if (offset < length && ((unsigned char)source[offset] & 0xc0) == 0x80) continue;
     input = at(source, length, offset);
@@ -86,6 +89,7 @@ int main(void) {
   length += (size_t)snprintf(many + length, sizeof(many) - length, "}\n");
   Input input = at(many, length, 0);
   assert(q_scan_document(scanner, &input.lexer));
+  scanner->recovering = true;
   size_t lookups = 0, advances = 0;
   for (size_t i = 0; i < scanner->document.token_count; i++) {
     input = at(many, length, scanner->document.tokens[i].start);
@@ -94,6 +98,49 @@ int main(void) {
   }
   fprintf(stderr, "%zu lookups: %zu characters read (budget %zu)\n", lookups, advances, lookups * 64);
   assert(advances < lookups * 64);
+  // A speculative boundary sequence must restore both its stack and position.
+  scanner->recovering = false;
+  QBoundary boundary = scanner->document.boundaries[0];
+  assert(q_begin_definition(scanner, boundary.start, boundary.kind));
+  char state[TREE_SITTER_SERIALIZATION_BUFFER_SIZE];
+  unsigned state_length = tree_sitter_quint_external_scanner_serialize(scanner, state);
+  uint32_t saved_stack = scanner->stack;
+  assert(q_end_definition(scanner, boundary.end, boundary.kind));
+  assert(scanner->position == boundary.end);
+  tree_sitter_quint_external_scanner_deserialize(scanner, state, state_length);
+  assert(scanner->stack == saved_stack && scanner->position == boundary.start);
+  // Entering recovery stays conservative even when GLR restores an older state.
+  scanner->recovering = true;
+  tree_sitter_quint_external_scanner_deserialize(scanner, state, state_length);
+  assert(scanner->recovering);
+  uint32_t bad = UINT32_MAX;
+  memcpy(state + sizeof(uint64_t) + sizeof(uint32_t), &bad, sizeof(bad));
+  tree_sitter_quint_external_scanner_deserialize(scanner, state, state_length);
+  assert(scanner->stack == 0 && scanner->position == 0);
+  tree_sitter_quint_external_scanner_deserialize(scanner, NULL, 0);
+  assert(scanner->stack == 0 && scanner->position == 0);
+  // Rebuilding either index must clean up partial allocations and be retryable.
+  free(scanner->suffixes); scanner->suffixes = NULL;
+  free(scanner->suffix_ranks); scanner->suffix_ranks = NULL;
+  free(scanner->positions); scanner->positions = NULL; scanner->position_count = 0;
+  calls = 0;
+  input = at(many, length, 0);
+  assert(q_scan_document(scanner, &input.lexer));
+  size_t sites = calls;
+  for (size_t site = 1; site <= sites; site++) {
+    free(scanner->suffixes); scanner->suffixes = NULL;
+    free(scanner->suffix_ranks); scanner->suffix_ranks = NULL;
+    free(scanner->positions); scanner->positions = NULL; scanner->position_count = 0;
+    calls = 0; fail_at = site;
+    input = at(many, length, 0);
+    assert(!q_scan_document(scanner, &input.lexer));
+    fail_at = 0;
+    input = at(many, length, 0);
+    assert(q_scan_document(scanner, &input.lexer));
+    assert(scanner->suffixes && scanner->suffix_ranks && scanner->positions);
+  }
+  fprintf(stderr, "position index allocation failures: %zu retry sites pass\n", sites);
   tree_sitter_quint_external_scanner_destroy(scanner);
+  assert(live == 0);
   puts("scanner position contract and lookup-work budget pass");
 }
