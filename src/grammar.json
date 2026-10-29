@@ -3093,6 +3093,23 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "_primary_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "operator_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "function_type"
+        }
+      ]
+    },
+    "_primary_type": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
           "name": "primitive_type"
         },
         {
@@ -3121,10 +3138,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "operator_type"
-        },
-        {
-          "type": "SYMBOL",
           "name": "unit_type"
         },
         {
@@ -3138,10 +3151,6 @@
         {
           "type": "SYMBOL",
           "name": "record_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "function_type"
         }
       ]
     },
@@ -3356,7 +3365,7 @@
     },
     "operator_type": {
       "type": "PREC_RIGHT",
-      "value": 0,
+      "value": 1,
       "content": {
         "type": "CHOICE",
         "members": [
@@ -3469,6 +3478,10 @@
     "_operator_parameter_type": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "function_type"
+        },
         {
           "type": "SYMBOL",
           "name": "primitive_type"
@@ -3735,7 +3748,7 @@
     },
     "function_type": {
       "type": "PREC_RIGHT",
-      "value": 0,
+      "value": 2,
       "content": {
         "type": "SEQ",
         "members": [
@@ -3744,7 +3757,7 @@
             "name": "parameter",
             "content": {
               "type": "SYMBOL",
-              "name": "_type"
+              "name": "_primary_type"
             }
           },
           {
@@ -3755,8 +3768,17 @@
             "type": "FIELD",
             "name": "result",
             "content": {
-              "type": "SYMBOL",
-              "name": "_type"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_primary_type"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "function_type"
+                }
+              ]
             }
           }
         ]

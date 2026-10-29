@@ -635,6 +635,12 @@ export default grammar({
     ),
 
     _type: $ => choice(
+      $._primary_type,
+      $.operator_type,
+      $.function_type,
+    ),
+
+    _primary_type: $ => choice(
       $.primitive_type,
       $.type_variable,
       $.invalid_map_type,
@@ -642,12 +648,10 @@ export default grammar({
       $.named_type,
       $.set_type,
       $.list_type,
-      $.operator_type,
       $.unit_type,
       $.tuple_type,
       $.parenthesized_type,
       $.record_type,
-      $.function_type,
     ),
 
     primitive_type: _ => choice("int", "bool", "str"),
@@ -695,7 +699,7 @@ export default grammar({
       "]",
     ),
 
-    operator_type: $ => prec.right(choice(
+    operator_type: $ => prec.right(1, choice(
       seq(
         "(",
         optional(seq(
@@ -715,6 +719,7 @@ export default grammar({
     )),
 
     _operator_parameter_type: $ => choice(
+      $.function_type,
       $.primitive_type,
       $.type_variable,
       $.type_application,
@@ -766,10 +771,11 @@ export default grammar({
       field("type", $._type),
     ),
 
-    function_type: $ => prec.right(seq(
-      field("parameter", $._type),
+    // ANTLR places function arrows above operator arrows in the type rule.
+    function_type: $ => prec.right(2, seq(
+      field("parameter", $._primary_type),
       "->",
-      field("result", $._type),
+      field("result", choice($._primary_type, $.function_type)),
     )),
 
     _expression: $ => choice(
