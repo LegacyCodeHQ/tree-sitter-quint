@@ -1918,3 +1918,23 @@ module PostfixBodyEnd {
  definition: (value_definition name: (identifier) value: (binary_expression left: (name_reference name: (identifier)) right: (name_reference name: (identifier))))
  body: (field_access_expression object: (parenthesized_expression expression: (name_reference name: (identifier))) field: (identifier))))
  body: (unit_literal))))))
+
+======================================
+Compound arithmetic retains local value operands
+======================================
+
+module CompoundValueOperands {
+  pure val seed = 1
+  def implemented = {
+    val saved = seed -val pending = seed()
+    seed
+  }
+  def product = {
+    val saved = seed -seed * val pending();
+    seed
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (name_reference name: (identifier)) right: (nested_definition_expression definition: (value_definition name: (identifier) value: (name_reference name: (identifier))) body: (unit_literal)))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (name_reference name: (identifier)) right: (binary_expression left: (name_reference name: (identifier)) right: (nested_definition_expression definition: (value_definition name: (identifier)) body: (unit_literal))))) body: (name_reference name: (identifier)))))))

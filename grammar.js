@@ -1477,6 +1477,10 @@ export default grammar({
 
     _init_subtraction_header_expression: $ => prec(1, choice(
       prec.dynamic(12, seq(
+        field("definition", alias($._local_value_definition_unterminated, $.value_definition)),
+        field("body", $._initializer_expression),
+      )),
+      prec.dynamic(12, seq(
         field("definition", alias($._local_bare_value_header, $.value_definition)),
         field("body", $._initializer_expression),
       )),
@@ -1490,11 +1494,18 @@ export default grammar({
       )),
     )),
 
-    _init_mul_expression: $ => prec.dynamic(4, seq(
-      field("left", $._init_closed_mul),
-      field("operator", choice("*", alias($._division, "/"), "%")),
-      field("right", $._init_unary),
-    )),
+    _init_mul_expression: $ => choice(
+      prec.dynamic(4, seq(
+        field("left", $._init_closed_mul),
+        field("operator", choice("*", alias($._division, "/"), "%")),
+        field("right", $._init_unary),
+      )),
+      prec.dynamic(12, seq(
+        field("left", $._init_closed_mul),
+        field("operator", choice("*", alias($._division, "/"), "%")),
+        field("right", alias($._init_subtraction_header_expression, $.nested_definition_expression)),
+      )),
+    ),
 
     _init_assignment_expression: $ => seq(
       field("target", $.primed_identifier),
