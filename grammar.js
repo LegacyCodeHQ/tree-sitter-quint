@@ -1150,6 +1150,10 @@ export default grammar({
 
     nested_definition_expression: $ => choice(
       prec.right(PREC.BODY, seq(
+        field("definition", alias($._local_parameterized_operator_header, $.operator_definition)),
+        field("body", $._expression),
+      )),
+      prec.right(PREC.BODY, seq(
         field("definition", alias($._local_bare_value_header, $.value_definition)),
         field("body", $._expression),
       )),
@@ -1218,10 +1222,10 @@ export default grammar({
       field("name", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
     ))),
 
-    _local_parameterized_operator_header: $ => prec(1, seq(
+    _local_parameterized_operator_header: $ => prec.dynamic(24, prec(1, seq(
       operatorDefinitionHead($, true),
       optional(";"),
-    )),
+    ))),
 
     _local_value_header: $ => seq(
       optional(field("qualifier", "pure")),
@@ -1813,10 +1817,10 @@ export default grammar({
       )),
       // Consuming an explicit empty parameter list wins over treating it as
       // a unit expression at the start of a header's body.
-      prec.dynamic(12, seq(
+      seq(
         field("definition", alias($._local_parameterized_operator_header, $.operator_definition)),
         field("body", $._initializer_expression),
-      )),
+      ),
       // A complete implementation-free header consumes its parameter list;
       // ending it before that list can hide a diagnostic in the next local def.
       prec.dynamic(12, seq(
