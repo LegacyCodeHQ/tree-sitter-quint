@@ -8253,13 +8253,27 @@
             "type": "FIELD",
             "name": "value",
             "content": {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_init_closed_add_expression"
-              },
-              "named": true,
-              "value": "binary_expression"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_closed_add_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_nested_expression"
+                  },
+                  "named": true,
+                  "value": "nested_definition_expression"
+                }
+              ]
             }
           }
         ]
@@ -9722,6 +9736,10 @@
     }
   ],
   "conflicts": [
+    [
+      "_init_unary",
+      "_local_unit_value_definition"
+    ],
     [
       "_init_assignment_rhs_closed_mul",
       "_init_closed_mul"

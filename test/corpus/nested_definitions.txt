@@ -1053,3 +1053,42 @@ module NestedSubtractionBody {
                 right: (name_reference name: (identifier))))
             body: (unit_literal)))
         body: (name_reference name: (identifier))))))
+
+========================================
+Nested operator initializer before a unit body
+========================================
+
+module NestedOperatorUnit {
+  pure val seed = 1
+  pure val result = {a: seed, ...def outer(): () = val saved = def inner() = seed
+    seed
+    ();
+    {a: 2}}
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition name: (identifier) value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field name: (identifier) value: (name_reference name: (identifier)))
+        (record_spread
+          value: (nested_definition_expression
+            definition: (operator_definition
+              name: (identifier)
+              return_type: (unit_type)
+              body: (nested_definition_expression
+                definition: (value_definition
+                  name: (identifier)
+                  value: (nested_definition_expression
+                    definition: (operator_definition
+                      name: (identifier)
+                      body: (name_reference name: (identifier)))
+                    body: (name_reference name: (identifier))))
+                body: (unit_literal)))
+            body: (record_literal
+              (record_literal_field name: (identifier) value: (integer_literal)))))))))

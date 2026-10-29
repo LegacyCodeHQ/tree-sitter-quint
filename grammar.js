@@ -266,6 +266,7 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._init_unary, $._local_unit_value_definition],
     [$._init_assignment_rhs_closed_mul, $._init_closed_mul],
     [$._operator_definition_head, $._local_bare_operator_header],
     [$._init_power, $._init_closed_power],
@@ -1722,8 +1723,8 @@ export default grammar({
         )),
         field("body", $._initializer_expression),
       ),
-      // A subtraction initializer followed by a unit body must not become
-      // a unary-minus body calling the initializer's final operand.
+      // Keep completed arithmetic or nested initializers before a unit body;
+      // that unit must not become a call on the initializer's final operand.
       prec.dynamic(2, seq(
         field("definition", alias($._local_unit_value_definition, $.value_definition)),
         field("body", $.unit_literal),
@@ -1737,7 +1738,10 @@ export default grammar({
       optional(seq("(", ")")),
       optional(seq(":", field("type", $._type))),
       "=",
-      field("value", alias($._init_closed_add_expression, $.binary_expression)),
+      field("value", choice(
+        alias($._init_closed_add_expression, $.binary_expression),
+        alias($._init_nested_expression, $.nested_definition_expression),
+      )),
     )),
 
     _init_lambda_expression: $ => seq(
