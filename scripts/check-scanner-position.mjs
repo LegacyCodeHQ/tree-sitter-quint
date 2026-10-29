@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const temporary = mkdtempSync(path.join(tmpdir(), "quint-scanner-"));
 try {
-  for (const name of ["position", "recognizer"]) {
+  for (const name of ["position", "recognizer", "scaling"]) {
     const executable = path.join(temporary, name);
     const compile = spawnSync(process.env.CC || "cc", ["-std=c11", "-O2", "-I", "src",
       `test/scanner/${name}_test.c`, "-o", executable], { cwd: root, stdio: "inherit" });

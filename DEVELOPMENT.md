@@ -371,3 +371,9 @@ The [incremental recognition investigation](docs/performance/incremental-recogni
 explains the scanner lifetime limit in the installed Tree-sitter runtime and why
 per-scanner caches do not provide reuse across editor parses. Check real binding
 edit timings before treating an internal cache-work reduction as a speedup.
+
+The [scaling and stress workloads](docs/performance/scaling.md) cover large flat
+and nested inputs, repeated text, comments and incomplete buffers. Use
+`benchmark:parser --scale` for ordinary scaling and `--stress` for the expensive
+1,024-identical-definition case. ANTLR input validation and deterministic native
+allocation budgets run in the regular suite.

@@ -59,6 +59,7 @@ baseline rather than treating those batches as head-to-head timings.
 `arena.json` preserves all 70 raw measurements, input/binding fingerprints and
 490 tree captures. The complete 273-case corpus, 111 reference fixtures, 13 Node
 checks, and 8,259-case base syntax/structure/tokenization matrix pass unchanged.
-The larger deep matrix is rerun after the edit-reuse and scaling work as a final
-combined check. Whole-file recognition still runs after changed source in this
-commit; safe reuse is a separate change.
+The larger deep matrix and final restored-source validation are recorded in
+[the scaling report](scaling.md). Whole-file recognition still runs after edits;
+the incremental investigation explains why the payload-only reuse prototype was
+not shipped.
