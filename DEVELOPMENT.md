@@ -87,7 +87,8 @@ The pinned development compiler and package versions still target 0.32.0;
 use `QUINT_CLI` to repeat the checks with a 0.33.0 installation.
 
 The grammar represents ANTLR diagnostics with named nodes. In particular,
-`invalid_identifier` preserves QNT008 for reserved words in expressions, and
+`invalid_identifier` preserves QNT008 for reserved words in expressions,
+`invalid_equality_expression` preserves QNT006 for a standalone `=`, and
 `invalid_map_type` marks the legacy two-argument Map type. These nodes can occur
 in a tree whose `hasError` is false: consumers checking language acceptance must
 check these diagnostic nodes as well as Tree-sitter's `ERROR` and missing nodes.
@@ -95,12 +96,12 @@ The syntax parity checker does this, and reserved identifier diagnostics receive
 error highlighting. The greedy-call reserved-word regressions are part of the
 normal fixture and corpus suites, including the semicolon-disambiguated form.
 
-There are six remaining differences on malformed input, retained under
+Five original malformed-input cases still await individual promotion into the
+normal regression suite and are retained under
 [`test/known-reference-differences/`](test/known-reference-differences/).
 ANTLR greedily continues an initializer as a call and then diagnoses an
 unexpected `=` (QNT006). Tree-sitter can find an earlier binding boundary that
-produces a syntax tree without an error. These cases are outstanding
-compatibility bugs, rather than supported Quint examples. They are outside
+produces a syntax tree without an error. These are diagnostic regression cases, rather than supported Quint examples. They are outside
 `test/fixtures/`, whose parity checks must pass. Reproduce the known failing
 comparison explicitly with:
 
@@ -109,7 +110,8 @@ QUINT_CLI=/path/to/quint-0.33.0 \
   node scripts/check-syntax-acceptance-parity.mjs test/known-reference-differences
 ```
 
-This command currently reports six disagreements and exits unsuccessfully.
+This command currently reports two disagreements and exits unsuccessfully; the
+other three already agree after the shared QNT006 fix.
 Use the Quint compiler to determine validity; an error-free editor tree alone
 does not establish that a program is accepted by Quint.
 

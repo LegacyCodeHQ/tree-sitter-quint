@@ -113,7 +113,7 @@ function treeSitterResult(source, parser) {
   const tree = parser.parse(source);
   const error = firstTreeError(tree.rootNode);
   const diagnostic = tree.rootNode.descendantsOfType([
-    "invalid_map_type", "invalid_identifier",
+    "invalid_map_type", "invalid_identifier", "invalid_equality_expression",
   ])[0];
   return {
     accepted: !tree.rootNode.hasError && !diagnostic,

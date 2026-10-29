@@ -104,6 +104,7 @@
 (boolean_literal) @boolean
 (string_literal) @string
 (invalid_identifier) @error
+(invalid_equality_expression "=" @error)
 
 (name_reference
   name: (identifier) @variable)

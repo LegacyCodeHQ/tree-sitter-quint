@@ -41,6 +41,11 @@ test("greedy reserved-identifier diagnostics receive error highlighting", () => 
   assert.deepEqual(captures.filter(([name]) => name === "error"), [["error", "or"]]);
 });
 
+test("greedy unexpected-equals diagnostics highlight the offending operator", () => {
+  const captures = queryCaptures("highlights.scm", "../fixtures/syntax-greedy-equals-boundary.qnt");
+  assert.deepEqual(captures.filter(([name]) => name === "error"), [["error", "="]]);
+});
+
 test("bracket query pairs Quint delimiters", () => {
   assert.deepEqual(queryCaptures("brackets.scm", "brackets.qnt"), [
     ["open", "{"],

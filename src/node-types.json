@@ -132,6 +132,10 @@
         "named": true
       },
       {
+        "type": "invalid_equality_expression",
+        "named": true
+      },
+      {
         "type": "invalid_identifier",
         "named": true
       },
@@ -927,6 +931,32 @@
     }
   },
   {
+    "type": "invalid_equality_expression",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "invalid_identifier",
     "named": true,
     "fields": {}
@@ -1443,6 +1473,10 @@
           },
           {
             "type": "integer_literal",
+            "named": true
+          },
+          {
+            "type": "invalid_equality_expression",
             "named": true
           },
           {

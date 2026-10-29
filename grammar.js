@@ -16,13 +16,14 @@ const PREC = {
   EQUIVALENCE: 4,
   DISJUNCTION: 5,
   CONJUNCTION: 6,
-  ASSIGNMENT: 7,
-  RELATION: 8,
-  ADDITIVE: 9,
-  MULTIPLICATIVE: 10,
-  UNARY: 11,
-  POWER: 12,
-  POSTFIX: 13,
+  INVALID_EQUALITY: 7,
+  ASSIGNMENT: 8,
+  RELATION: 9,
+  ADDITIVE: 10,
+  MULTIPLICATIVE: 11,
+  UNARY: 12,
+  POWER: 13,
+  POSTFIX: 14,
 };
 
 const RESERVED_IDENTIFIERS = [
@@ -261,6 +262,7 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._operator_definition_head, $._local_bare_operator_header],
     [$._init_power, $._init_closed_power],
     [$._init_lambda_expression, $.name_reference],
     [$._init_ufcs_expression, $._init_field_expression],
@@ -907,6 +909,7 @@ export default grammar({
       $.block_expression,
       $._block_combinator_expression,
       $.assignment_expression,
+      $.invalid_equality_expression,
       $.if_expression,
       $.match_expression,
       $.nested_definition_expression,
@@ -1034,6 +1037,14 @@ export default grammar({
       field("value", $._expression),
     )),
 
+    // ANTLR accepts the errorEq production syntactically and emits QNT006.
+    // Keeping it in the tree preserves greedy decisions made before the error.
+    invalid_equality_expression: $ => prec.left(PREC.INVALID_EQUALITY, seq(
+      field("left", $._expression),
+      "=",
+      field("right", $._expression),
+    )),
+
     primed_identifier: $ => seq(
       field("name", choice($.identifier, $.qualified_identifier)),
       "'",
@@ -1097,10 +1108,26 @@ export default grammar({
         field("body", $._expression),
       )),
       prec.right(PREC.BODY, seq(
-        field("definition", alias($._operator_header_declaration, $.operator_definition)),
+        field("definition", alias($._local_operator_header_declaration, $.operator_definition)),
+        field("body", $._expression),
+      )),
+      prec.right(PREC.BODY, seq(
+        field("definition", alias($._local_bare_operator_header, $.operator_definition)),
         field("body", $._expression),
       )),
     ),
+
+    // ANTLR can end an implementation-free local header before '(' and parse
+    // the following parentheses as the body, including a QNT006 errorEq body.
+    _local_operator_header_declaration: $ => prec.dynamic(-2,
+      $._operator_header_declaration,
+    ),
+
+    _local_bare_operator_header: $ => prec.dynamic(-2, prec("local_value", seq(
+      optional(field("qualifier", "pure")),
+      "def",
+      field("name", $._normal_call_name),
+    ))),
 
     _local_operator_definition: $ => seq(
       $._operator_definition_head,
@@ -1182,7 +1209,7 @@ export default grammar({
     ),
 
     _init_and: $ => choice(
-      $._init_assignment,
+      $._init_equality,
       alias($._init_and_expression, $.binary_expression),
     ),
 
@@ -1199,6 +1226,17 @@ export default grammar({
     _init_mul: $ => choice(
       $._init_unary,
       alias($._init_mul_expression, $.binary_expression),
+    ),
+
+    _init_equality: $ => choice(
+      $._init_assignment,
+      alias($._init_invalid_equality_expression, $.invalid_equality_expression),
+    ),
+
+    _init_invalid_equality_expression: $ => seq(
+      field("left", $._init_closed_equality),
+      "=",
+      field("right", $._init_assignment),
     ),
 
     _init_assignment: $ => choice(
@@ -1265,7 +1303,7 @@ export default grammar({
     _init_and_expression: $ => prec.dynamic(1, seq(
       field("left", $._init_closed_and),
       field("operator", "and"),
-      field("right", $._init_assignment),
+      field("right", $._init_equality),
     )),
 
     _init_relation_expression: $ => prec.dynamic(1, seq(
@@ -1395,14 +1433,14 @@ export default grammar({
     )),
 
     _init_closed_and: $ => choice(
-      $._init_closed_assignment,
+      $._init_closed_equality,
       alias($._init_closed_and_expression, $.binary_expression),
     ),
 
     _init_closed_and_expression: $ => prec.dynamic(1, seq(
       field("left", $._init_closed_and),
       field("operator", "and"),
-      field("right", $._init_closed_assignment),
+      field("right", $._init_closed_equality),
     )),
 
     _init_closed_relation: $ => choice(
@@ -1437,6 +1475,17 @@ export default grammar({
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_closed_unary),
     )),
+
+    _init_closed_equality: $ => choice(
+      $._init_closed_assignment,
+      alias($._init_closed_invalid_equality_expression, $.invalid_equality_expression),
+    ),
+
+    _init_closed_invalid_equality_expression: $ => seq(
+      field("left", $._init_closed_equality),
+      "=",
+      field("right", $._init_closed_assignment),
+    ),
 
     _init_closed_assignment: $ => choice(
       $._init_closed_relation,
@@ -1565,7 +1614,8 @@ export default grammar({
         alias($._local_value_definition, $.value_definition),
         alias($._local_operator_definition, $.operator_definition),
         alias($._local_operator_definition_unterminated, $.operator_definition),
-        alias($._operator_header_declaration, $.operator_definition),
+        alias($._local_operator_header_declaration, $.operator_definition),
+        alias($._local_bare_operator_header, $.operator_definition),
       )),
       field("body", $._initializer_expression),
     ),

@@ -65,6 +65,7 @@ test("incremental edits across local binding continuations match fresh parsing",
     ["structure-nondet-boundaries.qnt", ".oneOf()"],
     ["structure-assignment-closure.qnt", "x' = 2"],
     ["syntax-greedy-reserved-boundary.qnt", "def local = identity"],
+    ["syntax-greedy-equals-boundary.qnt", "def first(p) = value"],
   ]) {
     const before = readFileSync(new URL(`../../test/fixtures/${fixture}`, import.meta.url), "utf8");
     pairs.push([before, before.replaceAll(`${boundary}\n`, `${boundary};\n`)]);

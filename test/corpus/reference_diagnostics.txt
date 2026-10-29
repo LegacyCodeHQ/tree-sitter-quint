@@ -17,9 +17,12 @@ module GreedyReserved {
     name: (identifier)
     (operator_definition
       name: (identifier)
-      parameter: (annotated_parameter name: (identifier) type: (primitive_type))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
       return_type: (primitive_type)
-      body: (name_reference name: (identifier)))
+      body: (name_reference
+        name: (identifier)))
     (operator_definition
       name: (identifier)
       body: (block_expression
@@ -27,10 +30,60 @@ module GreedyReserved {
           definition: (operator_definition
             name: (identifier)
             body: (call_expression
-              function: (name_reference name: (identifier))
+              function: (name_reference
+                name: (identifier))
               argument: (boolean_literal)))
           body: (binary_expression
             left: (binary_expression
               left: (invalid_identifier)
               right: (integer_literal))
             right: (integer_literal)))))))
+
+========================================
+Greedy local initializer retains unexpected equals diagnostic
+========================================
+
+module GreedyEquals {
+  pure val value = 1
+  pure def result = {
+    def first(p) = value
+    (1, 2) == def second(p) = (1, 2)
+    (1, 2)
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            parameter: (parameter
+              name: (identifier))
+            body: (binary_expression
+              left: (call_expression
+                function: (name_reference
+                  name: (identifier))
+                argument: (integer_literal)
+                argument: (integer_literal))
+              right: (nested_definition_expression
+                definition: (operator_definition
+                  name: (identifier))
+                body: (invalid_equality_expression
+                  left: (parenthesized_expression
+                    expression: (name_reference
+                      name: (identifier)))
+                  right: (tuple_literal
+                    element: (integer_literal)
+                    element: (integer_literal))))))
+          body: (tuple_literal
+            element: (integer_literal)
+            element: (integer_literal)))))))
