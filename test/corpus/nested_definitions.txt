@@ -1344,3 +1344,86 @@ module OperatorArithmeticBody {
                 right: (name_reference name: (identifier))))
             body: (unit_literal)))
         body: (integer_literal)))))
+
+======================================
+Prefix calls retain a following list body
+======================================
+
+module PrefixCallListBody {
+  pure def makeValues(dummy: int): List[int] = List(dummy)
+  pure def keep(n: int): int = n
+  pure def normal = { def outer() = def inner() = if (true) List(1) else makeValues
+    (0)[0]
+    0
+  }
+  pure def method = { def outer() = def inner() = if (true) 1 else 1.keep
+    ()[0]
+    0
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (list_type
+        element: (primitive_type))
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (name_reference
+          name: (identifier))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (name_reference
+        name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (nested_definition_expression
+              definition: (operator_definition
+                name: (identifier)
+                body: (if_expression
+                  condition: (boolean_literal)
+                  consequence: (call_expression
+                    function: (name_reference
+                      name: (identifier))
+                    argument: (integer_literal))
+                  alternative: (call_expression
+                    function: (name_reference
+                      name: (identifier))
+                    argument: (integer_literal))))
+              body: (list_literal
+                element: (integer_literal))))
+          body: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (nested_definition_expression
+              definition: (operator_definition
+                name: (identifier)
+                body: (if_expression
+                  condition: (boolean_literal)
+                  consequence: (integer_literal)
+                  alternative: (ufcs_call_expression
+                    receiver: (integer_literal)
+                    method: (identifier))))
+              body: (list_literal
+                element: (integer_literal))))
+          body: (integer_literal))))))
