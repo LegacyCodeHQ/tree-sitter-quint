@@ -52,10 +52,12 @@ try {
     ['syntax-acceptance', [accepted, rejected]],
     ['parse-structure', [accepted]],
     ['tokenization', [accepted]],
+    ['reference-coverage', [join(root, 'test/fixtures')]],
   ]) {
-    const script = join(root, `scripts/check-${layer}-parity.mjs`);
+    const script = join(root, layer === 'reference-coverage'
+      ? 'scripts/check-reference-coverage.mjs' : `scripts/check-${layer}-parity.mjs`);
     const result = spawnSync(process.execPath, [script, '--quiet', ...inputs], {
-      cwd: root, env: { ...process.env, QUINT_CLI: cli }, encoding: 'utf8',
+      cwd: root, env: { ...process.env, QUINT_CLI: cli, QUINT_COVERAGE_REPORT: join(scratch, 'reference-coverage.json') }, encoding: 'utf8',
       maxBuffer: 32 * 1024 * 1024,
     });
     const log = `${result.stdout ?? ''}${result.stderr ?? ''}${result.error ? '\n' + result.error.stack : ''}`;

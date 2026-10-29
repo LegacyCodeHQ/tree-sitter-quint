@@ -244,3 +244,20 @@ ANTLR's grammar accepts multiple spreads, but its frontend rejects them with
 QNT012. Like unbound row/type variables, this validation remains a compiler
 responsibility; the Tree-sitter grammar follows the ANTLR syntax for record
 fields and spreads.
+
+## ANTLR production coverage
+
+`bun run test:coverage` uses the locked 0.33 compiler, the generated audit
+matrices, and `test/fixtures` to require a witness for every file-reachable ANTLR
+parser alternative and emitted lexer token class. It currently covers **103/103
+alternatives and 68/68 token classes**. Only the three REPL-only entry rules
+(`declarationOrExpr`, `operator`, `literal`) and lexer-skipped whitespace/comments
+are excluded. Ordinary alternatives require a witness without parser diagnostics;
+the four explicit diagnostic alternatives require rejection witnesses instead.
+
+The `test:audit` gate runs this check and retains a JSON witness report with
+failed audit artifacts. `syntax-wrong-type-application.qnt` exercises QNT009;
+`integration-reference-production-witnesses.qnt` covers abstract type declarations
+and `any` actions. The latter program parses and typechecks with Quint 0.33.
+Production coverage establishes which alternatives were exercised; it does not
+prove equivalence for every combination or replace the structural comparisons.
