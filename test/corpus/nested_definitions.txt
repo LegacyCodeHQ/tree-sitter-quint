@@ -951,3 +951,40 @@ module AssignmentClosure {
             right: (tuple_literal
               element: (boolean_literal)
               element: (boolean_literal))))))))
+
+======================================
+Nested typed index initializer boundary
+======================================
+
+module NestedIndexBoundary {
+  pure val values = List(1)
+  pure def result = def first(): int = def second(): int = values[0]
+    -1;
+    0
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (name_reference name: (identifier))
+        argument: (integer_literal)))
+    (operator_definition
+      name: (identifier)
+      body: (nested_definition_expression
+        definition: (operator_definition
+          name: (identifier)
+          return_type: (primitive_type)
+          body: (nested_definition_expression
+            definition: (operator_definition
+              name: (identifier)
+              return_type: (primitive_type)
+              body: (index_expression
+                collection: (name_reference name: (identifier))
+                index: (integer_literal)))
+            body: (unary_expression operand: (integer_literal))))
+        body: (integer_literal)))))

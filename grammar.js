@@ -1454,7 +1454,7 @@ export default grammar({
       ")",
     )),
 
-    _init_index_expression: $ => prec.dynamic(1, seq(
+    _init_index_expression: $ => prec.dynamic(2, seq(
       field("collection", $._init_postfix),
       "[",
       field("index", $._expression),

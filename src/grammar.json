@@ -6723,7 +6723,7 @@
     },
     "_init_index_expression": {
       "type": "PREC_DYNAMIC",
-      "value": 1,
+      "value": 2,
       "content": {
         "type": "SEQ",
         "members": [
