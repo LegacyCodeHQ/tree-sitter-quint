@@ -899,7 +899,7 @@ export default grammar({
     )),
 
     // Like ANTLR's parenthesized typeOper alternative, this is a primary type.
-    _parenthesized_operator_type: $ => prec.dynamic(1, prec.right(3, seq(
+    _parenthesized_operator_type: $ => prec.dynamic(2, prec.right(3, seq(
       "(",
       optional(seq(
         field("parameter", $._type),
@@ -1185,11 +1185,11 @@ export default grammar({
 
     // ANTLR can end an implementation-free local header before '(' and parse
     // the following parentheses as the body, including a QNT006 errorEq body.
-    _local_operator_header_declaration: $ => prec.dynamic(-2,
+    _local_operator_header_declaration: $ => prec.dynamic(-4,
       $._operator_header_declaration,
     ),
 
-    _local_bare_operator_header: $ => prec.dynamic(-2, prec("local_value", seq(
+    _local_bare_operator_header: $ => prec.dynamic(-4, prec("local_value", seq(
       optional(field("qualifier", "pure")),
       "def",
       field("name", $._normal_call_name),
@@ -1212,7 +1212,7 @@ export default grammar({
       )),
     )),
 
-    _local_bare_value_header: $ => prec.dynamic(-2, prec("local_value", seq(
+    _local_bare_value_header: $ => prec.dynamic(-4, prec("local_value", seq(
       optional(field("qualifier", "pure")),
       "val",
       field("name", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
@@ -1325,7 +1325,7 @@ export default grammar({
       alias($._init_assignment_rhs_relation_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_relation_expression: $ => prec.dynamic(2, seq(
+    _init_assignment_rhs_relation_expression: $ => prec.dynamic(4, seq(
       field("left", $._init_assignment_rhs_closed_relation),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
       field("right", $._init_assignment_rhs_add),
@@ -1336,7 +1336,7 @@ export default grammar({
       alias($._init_assignment_rhs_add_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_add_expression: $ => prec.dynamic(2, seq(
+    _init_assignment_rhs_add_expression: $ => prec.dynamic(4, seq(
       field("left", $._init_assignment_rhs_closed_add),
       field("operator", choice("+", "-")),
       field("right", $._init_assignment_rhs_mul),
@@ -1347,7 +1347,7 @@ export default grammar({
       alias($._init_assignment_rhs_mul_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_mul_expression: $ => prec.dynamic(2, seq(
+    _init_assignment_rhs_mul_expression: $ => prec.dynamic(4, seq(
       field("left", $._init_assignment_rhs_closed_mul),
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_unary),
@@ -1360,7 +1360,7 @@ export default grammar({
       alias($._init_assignment_rhs_closed_relation_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_closed_relation_expression: $ => prec.dynamic(2, seq(
+    _init_assignment_rhs_closed_relation_expression: $ => prec.dynamic(4, seq(
       field("left", $._init_assignment_rhs_closed_relation),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
       field("right", $._init_assignment_rhs_closed_add),
@@ -1371,7 +1371,7 @@ export default grammar({
       alias($._init_assignment_rhs_closed_add_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_closed_add_expression: $ => prec.dynamic(2, seq(
+    _init_assignment_rhs_closed_add_expression: $ => prec.dynamic(4, seq(
       field("left", $._init_assignment_rhs_closed_add),
       field("operator", choice("+", "-")),
       field("right", $._init_assignment_rhs_closed_mul),
@@ -1382,7 +1382,7 @@ export default grammar({
       alias($._init_assignment_rhs_closed_mul_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_closed_mul_expression: $ => prec.dynamic(2, seq(
+    _init_assignment_rhs_closed_mul_expression: $ => prec.dynamic(4, seq(
       field("left", $._init_assignment_rhs_closed_mul),
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_closed_unary),
@@ -1416,50 +1416,50 @@ export default grammar({
       $.parenthesized_expression,
     ),
 
-    _init_pair_expression: $ => prec.dynamic(1, seq(
+    _init_pair_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_pair),
       "->",
       field("right", $._init_implication),
     )),
 
-    _init_implication_expression: $ => prec.dynamic(1, seq(
+    _init_implication_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_implication),
       field("operator", "implies"),
       field("right", $._init_leads),
     )),
 
-    _init_leads_expression: $ => prec.dynamic(1, seq(
+    _init_leads_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_leads),
       field("operator", "leadsTo"),
       field("right", $._init_iff),
     )),
 
-    _init_iff_expression: $ => prec.dynamic(1, seq(
+    _init_iff_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_iff),
       field("operator", "iff"),
       field("right", $._init_or),
     )),
 
-    _init_or_expression: $ => prec.dynamic(1, seq(
+    _init_or_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_or),
       field("operator", "or"),
       field("right", $._init_and),
     )),
 
-    _init_and_expression: $ => prec.dynamic(1, seq(
+    _init_and_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_and),
       field("operator", "and"),
       field("right", $._init_equality),
     )),
 
-    _init_relation_expression: $ => prec.dynamic(1, seq(
+    _init_relation_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_relation),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
       field("right", $._init_add),
     )),
 
     _init_add_expression: $ => choice(
-      prec.dynamic(1, seq(
+      prec.dynamic(2, seq(
         field("left", $._init_closed_add),
         field("operator", choice("+", "-")),
         field("right", $._init_mul),
@@ -1467,7 +1467,7 @@ export default grammar({
       // A subtraction continuation may contain a bare def header whose body
       // diagnoses '='. Prefer that continuation over a unary-minus body, without
       // raising the priority of implementation-free headers in other contexts.
-      prec.dynamic(3, seq(
+      prec.dynamic(6, seq(
         field("left", $._init_closed_add),
         field("operator", "-"),
         field("right", alias($._init_subtraction_header_expression, $.nested_definition_expression)),
@@ -1479,13 +1479,13 @@ export default grammar({
         field("definition", alias($._local_bare_operator_header, $.operator_definition)),
         field("body", $._initializer_expression),
       ),
-      prec.dynamic(1, seq(
+      prec.dynamic(2, seq(
         field("definition", alias($._local_operator_definition_unterminated, $.operator_definition)),
         field("body", choice($.name_reference, $.namespace_access_expression)),
       )),
     )),
 
-    _init_mul_expression: $ => prec.dynamic(1, seq(
+    _init_mul_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_mul),
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_unary),
@@ -1502,13 +1502,13 @@ export default grammar({
       field("operand", $._init_unary),
     ),
 
-    _init_power_expression: $ => prec.dynamic(1, seq(
+    _init_power_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_postfix),
       field("operator", "^"),
       field("right", $._init_unary),
     )),
 
-    _init_call_expression: $ => prec.dynamic(3, seq(
+    _init_call_expression: $ => prec.dynamic(6, seq(
       field("function", choice($.name_reference, $.namespace_access_expression, $.reserved_operator)),
       "(",
       optional(seq(
@@ -1519,14 +1519,14 @@ export default grammar({
       ")",
     )),
 
-    _init_index_expression: $ => prec.dynamic(2, seq(
+    _init_index_expression: $ => prec.dynamic(4, seq(
       field("collection", $._init_postfix),
       "[",
       field("index", $._expression),
       "]",
     )),
 
-    _init_ufcs_expression: $ => prec.dynamic(4, seq(
+    _init_ufcs_expression: $ => prec.dynamic(8, seq(
       field("receiver", $._init_postfix),
       ".",
       field("method", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
@@ -1538,7 +1538,7 @@ export default grammar({
       ")",
     )),
 
-    _init_field_expression: $ => prec.dynamic(1, seq(
+    _init_field_expression: $ => prec.dynamic(2, seq(
       field("object", $._init_postfix),
       ".",
       field("field", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
@@ -1549,7 +1549,7 @@ export default grammar({
       alias($._init_closed_pair_expression, $.pair_expression),
     ),
 
-    _init_closed_pair_expression: $ => prec.dynamic(1, seq(
+    _init_closed_pair_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_pair),
       "->",
       field("right", $._init_closed_implication),
@@ -1560,7 +1560,7 @@ export default grammar({
       alias($._init_closed_implication_expression, $.binary_expression),
     ),
 
-    _init_closed_implication_expression: $ => prec.dynamic(1, seq(
+    _init_closed_implication_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_implication),
       field("operator", "implies"),
       field("right", $._init_closed_leads),
@@ -1571,7 +1571,7 @@ export default grammar({
       alias($._init_closed_leads_expression, $.binary_expression),
     ),
 
-    _init_closed_leads_expression: $ => prec.dynamic(1, seq(
+    _init_closed_leads_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_leads),
       field("operator", "leadsTo"),
       field("right", $._init_closed_iff),
@@ -1582,7 +1582,7 @@ export default grammar({
       alias($._init_closed_iff_expression, $.binary_expression),
     ),
 
-    _init_closed_iff_expression: $ => prec.dynamic(1, seq(
+    _init_closed_iff_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_iff),
       field("operator", "iff"),
       field("right", $._init_closed_or),
@@ -1593,7 +1593,7 @@ export default grammar({
       alias($._init_closed_or_expression, $.binary_expression),
     ),
 
-    _init_closed_or_expression: $ => prec.dynamic(1, seq(
+    _init_closed_or_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_or),
       field("operator", "or"),
       field("right", $._init_closed_and),
@@ -1604,7 +1604,7 @@ export default grammar({
       alias($._init_closed_and_expression, $.binary_expression),
     ),
 
-    _init_closed_and_expression: $ => prec.dynamic(1, seq(
+    _init_closed_and_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_and),
       field("operator", "and"),
       field("right", $._init_closed_equality),
@@ -1615,7 +1615,7 @@ export default grammar({
       alias($._init_closed_relation_expression, $.binary_expression),
     ),
 
-    _init_closed_relation_expression: $ => prec.dynamic(1, seq(
+    _init_closed_relation_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_relation),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
       field("right", $._init_closed_add),
@@ -1626,7 +1626,7 @@ export default grammar({
       alias($._init_closed_add_expression, $.binary_expression),
     ),
 
-    _init_closed_add_expression: $ => prec.dynamic(1, seq(
+    _init_closed_add_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_add),
       field("operator", choice("+", "-")),
       field("right", $._init_closed_mul),
@@ -1637,7 +1637,7 @@ export default grammar({
       alias($._init_closed_mul_expression, $.binary_expression),
     ),
 
-    _init_closed_mul_expression: $ => prec.dynamic(1, seq(
+    _init_closed_mul_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_mul),
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_closed_unary),
@@ -1680,7 +1680,7 @@ export default grammar({
       alias($._init_closed_power_expression, $.binary_expression),
     ),
 
-    _init_closed_power_expression: $ => prec.dynamic(1, seq(
+    _init_closed_power_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_postfix),
       field("operator", "^"),
       field("right", $._init_closed_unary),
@@ -1694,7 +1694,7 @@ export default grammar({
       alias($._init_assigned_relation_expression, $.binary_expression),
     ),
 
-    _init_assigned_relation_expression: $ => prec.dynamic(1, seq(
+    _init_assigned_relation_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_relation),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
       field("right", $._init_assigned_add),
@@ -1705,7 +1705,7 @@ export default grammar({
       alias($._init_assigned_add_expression, $.binary_expression),
     ),
 
-    _init_assigned_add_expression: $ => prec.dynamic(1, seq(
+    _init_assigned_add_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_add),
       field("operator", choice("+", "-")),
       field("right", $._init_assigned_mul),
@@ -1716,7 +1716,7 @@ export default grammar({
       alias($._init_assigned_mul_expression, $.binary_expression),
     ),
 
-    _init_assigned_mul_expression: $ => prec.dynamic(1, seq(
+    _init_assigned_mul_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_closed_mul),
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_assigned_unary),
@@ -1737,7 +1737,7 @@ export default grammar({
       alias($._init_assigned_power_expression, $.binary_expression),
     ),
 
-    _init_assigned_power_expression: $ => prec.dynamic(1, seq(
+    _init_assigned_power_expression: $ => prec.dynamic(2, seq(
       field("left", $._init_postfix),
       field("operator", "^"),
       field("right", $._init_assigned_unary),
@@ -1787,7 +1787,7 @@ export default grammar({
       ),
       // Prefer a written implementation when it leaves a complete local body.
       // Bare-header fallback must not turn its parameter list into errorEq.
-      prec.dynamic(3, seq(
+      prec.dynamic(6, seq(
         field("definition", choice(
           alias($._local_operator_definition, $.operator_definition),
           alias($._local_operator_definition_unterminated, $.operator_definition),
@@ -1796,16 +1796,18 @@ export default grammar({
       )),
       // Consuming an explicit empty parameter list wins over treating it as
       // a unit expression at the start of a header's body.
-      prec.dynamic(3, seq(
+      prec.dynamic(6, seq(
         field("definition", alias($._local_parameterized_operator_header, $.operator_definition)),
         field("body", $._initializer_expression),
       )),
       // A complete implementation-free header consumes its parameter list;
       // ending it before that list can hide a diagnostic in the next local def.
-      prec.dynamic(3, seq(
+      prec.dynamic(6, seq(
         field("definition", alias($._local_operator_header_declaration, $.operator_definition)),
         field("body", $._initializer_expression),
       )),
+      // Initializer continuations use even dynamic scores so this boundary
+      // preference fits between a call (6) and arithmetic plus a call (8).
       // Keep completed arithmetic or nested initializers before a delimited body;
       // body delimiters must not become a postfix continuation on the initializer's final operand.
       prec.dynamic(5, seq(
@@ -1832,11 +1834,11 @@ export default grammar({
       field("value", delimitedInitializer($)),
     )),
 
-    _local_delimited_operator_definition: $ => prec("local_value", seq(
+    _local_delimited_operator_definition: $ => prec.dynamic(6, prec("local_value", seq(
       $._operator_definition_head,
       "=",
       field("body", delimitedInitializer($)),
-    )),
+    ))),
 
     _init_lambda_expression: $ => seq(
       choice(
