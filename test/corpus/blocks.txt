@@ -236,3 +236,28 @@ module Conjunctions {
             left: (name_reference
               name: (identifier))
             right: (integer_literal)))))))
+
+========================================
+Nondeterministic block bindings allow semicolons
+========================================
+
+module NondetSemicolon {
+  var x: int
+  action step = {
+    nondet n = Set(1, 2).oneOf();
+    x' = n
+  }
+}
+
+---
+
+(source_file
+  (module_definition name: (identifier)
+    (variable_declaration name: (identifier) type: (primitive_type))
+    (operator_definition name: (identifier)
+      body: (block_expression
+        binding: (nondet_binding name: (identifier)
+          value: (ufcs_call_expression
+            receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal))
+            method: (identifier)))
+        expression: (assignment_expression target: (primed_identifier name: (identifier)) value: (name_reference name: (identifier)))))))

@@ -864,6 +864,7 @@ export default grammar({
       field("name", $._normal_call_name),
       "=",
       field("value", $._expression),
+      optional(";"),
     )),
 
     any_expression: $ => seq(
