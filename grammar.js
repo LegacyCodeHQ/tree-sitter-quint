@@ -266,6 +266,7 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
+    [$._normal_call_name, $._local_bare_value_header],
     [$._init_unary, $._local_unit_value_definition],
     [$._init_assignment_rhs_closed_mul, $._init_closed_mul],
     [$._operator_definition_head, $._local_bare_operator_header],
@@ -1107,6 +1108,10 @@ export default grammar({
 
     nested_definition_expression: $ => choice(
       prec.right(PREC.BODY, seq(
+        field("definition", alias($._local_bare_value_header, $.value_definition)),
+        field("body", $._expression),
+      )),
+      prec.right(PREC.BODY, seq(
         field("definition", alias($._local_value_header, $.value_definition)),
         field("body", $._expression),
       )),
@@ -1164,6 +1169,12 @@ export default grammar({
         $.namespace_access_expression,
       )),
     )),
+
+    _local_bare_value_header: $ => prec.dynamic(-2, prec("local_value", seq(
+      optional(field("qualifier", "pure")),
+      "val",
+      field("name", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
+    ))),
 
     _local_value_header: $ => seq(
       optional(field("qualifier", "pure")),
@@ -1714,6 +1725,7 @@ export default grammar({
       seq(
         field("definition", choice(
           alias($._local_value_header, $.value_definition),
+          alias($._local_bare_value_header, $.value_definition),
           alias($._local_value_definition_unterminated, $.value_definition),
           alias($._local_value_definition, $.value_definition),
           alias($._local_operator_definition, $.operator_definition),

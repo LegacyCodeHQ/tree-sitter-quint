@@ -1092,3 +1092,31 @@ module NestedOperatorUnit {
                 body: (unit_literal)))
             body: (record_literal
               (record_literal_field name: (identifier) value: (integer_literal)))))))))
+
+======================================
+Bare local value header before a unit body
+======================================
+
+module BareValueHeader {
+  pure def result = {
+    def outer = val placeholder
+    ()
+    1
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (nested_definition_expression
+              definition: (value_definition name: (identifier))
+              body: (unit_literal)))
+          body: (integer_literal))))))
