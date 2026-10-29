@@ -1836,8 +1836,12 @@ export default grammar({
       )),
     ),
 
-    // A body beginning at a delimiter may continue through arithmetic or postfix operators.
+    // Completed compound initializers may precede delimited or prefix bodies.
+    // Prefix bodies use ordinary expression priorities, so their continuations
+    // do not outweigh an earlier initializer continuation.
     _local_delimited_body: $ => choice(
+      $.nested_definition_expression,
+      $.unary_expression,
       $.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal,
       alias($._local_delimited_binary, $.binary_expression),
       alias($._local_delimited_field, $.field_access_expression),

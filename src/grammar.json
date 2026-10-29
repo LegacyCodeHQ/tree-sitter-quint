@@ -9951,6 +9951,14 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "nested_definition_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "unary_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "unit_literal"
         },
         {
