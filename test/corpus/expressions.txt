@@ -1016,3 +1016,42 @@ module RelationPrecedence {
           left: (integer_literal)
           right: (integer_literal))
         right: (boolean_literal)))))
+
+========================================
+Nullary calls allow a comma without arguments
+========================================
+
+module CommaCalls {
+  pure def apply(f: () => int): int = f(,)
+}
+
+---
+
+(source_file
+  (module_definition name: (identifier)
+    (operator_definition name: (identifier)
+      parameter: (annotated_parameter name: (identifier) type: (operator_type result: (primitive_type)))
+      return_type: (primitive_type)
+      body: (call_expression function: (name_reference name: (identifier))))))
+
+========================================
+Trailing commas in ufcs calls are rejected
+:error
+========================================
+
+module InvalidComma { pure val value = 1.to(2,) }
+
+---
+
+(source_file)
+
+========================================
+Trailing commas in reserved-ufcs calls are rejected
+:error
+========================================
+
+module InvalidComma { pure val value = true.and(false,) }
+
+---
+
+(source_file)

@@ -1087,8 +1087,8 @@ export default grammar({
       optional(seq(
         field("argument", $._expression),
         repeat(seq(",", field("argument", $._expression))),
-        optional(","),
       )),
+      optional(","),
       ")",
     )),
 
@@ -1104,7 +1104,6 @@ export default grammar({
       optional(seq(
         field("argument", $._expression),
         repeat(seq(",", field("argument", $._expression))),
-        optional(","),
       )),
       ")",
     )),
