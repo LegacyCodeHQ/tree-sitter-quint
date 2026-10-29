@@ -8327,13 +8327,27 @@
                 "type": "FIELD",
                 "name": "definition",
                 "content": {
-                  "type": "ALIAS",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_local_delimited_value_definition"
-                  },
-                  "named": true,
-                  "value": "value_definition"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "_local_delimited_value_definition"
+                      },
+                      "named": true,
+                      "value": "value_definition"
+                    },
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "_local_delimited_operator_definition"
+                      },
+                      "named": true,
+                      "value": "operator_definition"
+                    }
+                  ]
                 }
               },
               {
@@ -8498,6 +8512,36 @@
                   "value": "nested_definition_expression"
                 }
               ]
+            }
+          }
+        ]
+      }
+    },
+    "_local_delimited_operator_definition": {
+      "type": "PREC",
+      "value": "local_value",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_operator_definition_head"
+          },
+          {
+            "type": "STRING",
+            "value": "="
+          },
+          {
+            "type": "FIELD",
+            "name": "body",
+            "content": {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_init_closed_add_expression"
+              },
+              "named": true,
+              "value": "binary_expression"
             }
           }
         ]

@@ -1756,7 +1756,10 @@ export default grammar({
       // Keep completed arithmetic or nested initializers before a parenthesized body;
       // those parentheses must not become a call on the initializer's final operand.
       prec.dynamic(5, seq(
-        field("definition", alias($._local_delimited_value_definition, $.value_definition)),
+        field("definition", choice(
+          alias($._local_delimited_value_definition, $.value_definition),
+          alias($._local_delimited_operator_definition, $.operator_definition),
+        )),
         field("body", choice($.unit_literal, $.parenthesized_expression, $.tuple_literal)),
       )),
     ),
@@ -1777,6 +1780,12 @@ export default grammar({
         alias($._init_closed_add_expression, $.binary_expression),
         alias($._init_nested_expression, $.nested_definition_expression),
       )),
+    )),
+
+    _local_delimited_operator_definition: $ => prec("local_value", seq(
+      $._operator_definition_head,
+      "=",
+      field("body", alias($._init_closed_add_expression, $.binary_expression)),
     )),
 
     _init_lambda_expression: $ => seq(

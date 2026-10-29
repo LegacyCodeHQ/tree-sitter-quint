@@ -1312,3 +1312,35 @@ module DestructuredBody {
                 expression: (name_reference
                   name: (identifier)))))
           body: (integer_literal))))))
+
+======================================
+Operator subtraction initializer before a unit body
+======================================
+
+module OperatorArithmeticBody {
+  pure val seed = 1
+  pure def result = def outer() = def inner() = seed
+    -seed
+    ()
+    0
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition name: (identifier) value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (nested_definition_expression
+        definition: (operator_definition
+          name: (identifier)
+          body: (nested_definition_expression
+            definition: (operator_definition
+              name: (identifier)
+              body: (binary_expression
+                left: (name_reference name: (identifier))
+                right: (name_reference name: (identifier))))
+            body: (unit_literal)))
+        body: (integer_literal)))))
