@@ -15,8 +15,7 @@ const PREC = {
   EQUIVALENCE: 3,
   DISJUNCTION: 4,
   CONJUNCTION: 5,
-  EQUALITY: 6,
-  COMPARISON: 7,
+  RELATION: 6,
   ADDITIVE: 8,
   MULTIPLICATIVE: 9,
   UNARY: 10,
@@ -1168,14 +1167,10 @@ export default grammar({
         field("operator", "and"),
         field("right", $._expression),
       )),
-      prec.left(PREC.EQUALITY, seq(
+      // ANTLR's relations alternative gives equality and ordering equal precedence.
+      prec.left(PREC.RELATION, seq(
         field("left", $._expression),
-        field("operator", choice("==", "!=")),
-        field("right", $._expression),
-      )),
-      prec.left(PREC.COMPARISON, seq(
-        field("left", $._expression),
-        field("operator", choice("<", "<=", ">", ">=")),
+        field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
         field("right", $._expression),
       )),
       prec.left(PREC.ADDITIVE, seq(

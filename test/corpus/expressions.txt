@@ -983,3 +983,30 @@ module CommaOnlyForms {
     (constant_declaration
       name: (identifier)
       type: (operator_type result: (primitive_type)))))
+
+========================================
+Equality and ordering share left-associative precedence
+========================================
+
+module RelationPrecedence {
+  // Syntax regression: this mixed chain is intentionally rejected by typechecking.
+  pure val equalityThenOrdering = 1 == 2 < 3
+  pure val orderingThenEquality = 1 < 2 == true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (comment)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression left: (integer_literal) right: (integer_literal))
+        right: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression left: (integer_literal) right: (integer_literal))
+        right: (boolean_literal)))))
