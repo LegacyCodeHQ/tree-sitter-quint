@@ -1524,7 +1524,7 @@ export default grammar({
       field("right", $._init_unary),
     )),
 
-    _init_call_expression: $ => prec.dynamic(12, seq(
+    _init_call_expression: $ => prec.dynamic(13, seq(
       field("function", choice($.name_reference, $.namespace_access_expression, $.reserved_operator)),
       "(",
       optional(seq(
@@ -1823,7 +1823,7 @@ export default grammar({
         field("definition", alias($._local_operator_header_declaration, $.operator_definition)),
         field("body", $._initializer_expression),
       )),
-      // A boundary (10) ranks below a call/index (12), but arithmetic plus
+      // A boundary (10) ranks below a call (13) or index (12), but arithmetic plus
       // field access plus this boundary (18) ranks above a method call (17).
       // Keep completed arithmetic or nested initializers before a delimited body;
       // body delimiters must not become a postfix continuation on the initializer's final operand.
