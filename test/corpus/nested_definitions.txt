@@ -1120,3 +1120,35 @@ module BareValueHeader {
               definition: (value_definition name: (identifier))
               body: (unit_literal)))
           body: (integer_literal))))))
+
+======================================
+Completed local operator before a list body
+======================================
+
+module IndexedLocalBody {
+  pure val seed = 1
+  pure def result = {
+    val saved = 1
+    -def later() = 1
+    seed[0]
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition name: (identifier) value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (integer_literal)
+              right: (nested_definition_expression
+                definition: (operator_definition name: (identifier) body: (integer_literal))
+                body: (name_reference name: (identifier)))))
+          body: (list_literal element: (integer_literal)))))))

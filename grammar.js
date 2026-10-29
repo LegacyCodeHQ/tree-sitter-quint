@@ -1427,9 +1427,15 @@ export default grammar({
       )),
     ),
 
-    _init_subtraction_header_expression: $ => prec(1, seq(
-      field("definition", alias($._local_bare_operator_header, $.operator_definition)),
-      field("body", $._initializer_expression),
+    _init_subtraction_header_expression: $ => prec(1, choice(
+      seq(
+        field("definition", alias($._local_bare_operator_header, $.operator_definition)),
+        field("body", $._initializer_expression),
+      ),
+      prec.dynamic(1, seq(
+        field("definition", alias($._local_operator_definition_unterminated, $.operator_definition)),
+        field("body", choice($.name_reference, $.namespace_access_expression)),
+      )),
     )),
 
     _init_mul_expression: $ => prec.dynamic(1, seq(
