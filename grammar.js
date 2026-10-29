@@ -1439,7 +1439,7 @@ export default grammar({
 
     _init_closed_assignment: $ => choice(
       $._init_closed_relation,
-      alias($._init_closed_assignment_expression, $.assignment_expression),
+      $._init_assigned_relation,
     ),
 
     _init_closed_assignment_expression: $ => seq(
@@ -1467,6 +1467,63 @@ export default grammar({
       field("left", $._init_postfix),
       field("operator", "^"),
       field("right", $._init_closed_unary),
+    )),
+
+    // An assignment can begin an arithmetic/relation operand, but its RHS
+    // absorbs every following operator above assignment precedence. Carry that
+    // open right edge up to the conjunction level before allowing a continuation.
+    _init_assigned_relation: $ => choice(
+      $._init_assigned_add,
+      alias($._init_assigned_relation_expression, $.binary_expression),
+    ),
+
+    _init_assigned_relation_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_closed_relation),
+      field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
+      field("right", $._init_assigned_add),
+    )),
+
+    _init_assigned_add: $ => choice(
+      $._init_assigned_mul,
+      alias($._init_assigned_add_expression, $.binary_expression),
+    ),
+
+    _init_assigned_add_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_closed_add),
+      field("operator", choice("+", "-")),
+      field("right", $._init_assigned_mul),
+    )),
+
+    _init_assigned_mul: $ => choice(
+      $._init_assigned_unary,
+      alias($._init_assigned_mul_expression, $.binary_expression),
+    ),
+
+    _init_assigned_mul_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_closed_mul),
+      field("operator", choice("*", alias($._division, "/"), "%")),
+      field("right", $._init_assigned_unary),
+    )),
+
+    _init_assigned_unary: $ => choice(
+      $._init_assigned_power,
+      alias($._init_assigned_unary_expression, $.unary_expression),
+    ),
+
+    _init_assigned_unary_expression: $ => seq(
+      field("operator", "-"),
+      field("operand", $._init_assigned_unary),
+    ),
+
+    _init_assigned_power: $ => choice(
+      alias($._init_closed_assignment_expression, $.assignment_expression),
+      alias($._init_assigned_power_expression, $.binary_expression),
+    ),
+
+    _init_assigned_power_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_postfix),
+      field("operator", "^"),
+      field("right", $._init_assigned_unary),
     )),
 
     _local_value_definition_unterminated: $ => prec("local_value", seq(
