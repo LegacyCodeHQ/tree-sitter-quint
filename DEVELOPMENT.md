@@ -96,8 +96,8 @@ The syntax parity checker does this, and reserved identifier diagnostics receive
 error highlighting. The greedy-call reserved-word regressions are part of the
 normal fixture and corpus suites, including the semicolon-disambiguated form.
 
-Five original malformed-input cases still await individual promotion into the
-normal regression suite and are retained under
+Original malformed-input cases awaiting individual promotion into the normal
+regression suite are retained under
 [`test/known-reference-differences/`](test/known-reference-differences/).
 ANTLR greedily continues an initializer as a call and then diagnoses an
 unexpected `=` (QNT006). Tree-sitter can find an earlier binding boundary that
@@ -110,8 +110,7 @@ QUINT_CLI=/path/to/quint-0.33.0 \
   node scripts/check-syntax-acceptance-parity.mjs test/known-reference-differences
 ```
 
-This command currently reports two disagreements and exits unsuccessfully; the
-other three already agree after the shared QNT006 fix.
+This command currently reports two disagreements and exits unsuccessfully.
 Use the Quint compiler to determine validity; an error-free editor tree alone
 does not establish that a program is accepted by Quint.
 
