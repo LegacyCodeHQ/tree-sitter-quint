@@ -679,6 +679,10 @@
             "named": true
           },
           {
+            "type": "operator_type",
+            "named": true
+          },
+          {
             "type": "parenthesized_type",
             "named": true
           },
@@ -730,6 +734,10 @@
           },
           {
             "type": "named_type",
+            "named": true
+          },
+          {
+            "type": "operator_type",
             "named": true
           },
           {

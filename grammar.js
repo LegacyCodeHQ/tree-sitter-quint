@@ -142,11 +142,11 @@ export default grammar({
   ],
 
   conflicts: $ => [
+    [$._parenthesized_operator_type, $.tuple_type],
     [$.lambda_expression, $.name_reference],
     [$.lambda_expression, $.tuple_pattern],
     [$.lambda_expression, $.tuple_pattern, $.name_reference],
     [$.namespace_access_expression, $.qualified_identifier],
-    [$.operator_type, $.tuple_type],
   ],
 
   rules: {
@@ -639,6 +639,7 @@ export default grammar({
     ),
 
     _primary_type: $ => choice(
+      alias($._parenthesized_operator_type, $.operator_type),
       $.primitive_type,
       $.type_variable,
       $.invalid_map_type,
@@ -697,35 +698,24 @@ export default grammar({
       "]",
     ),
 
-    operator_type: $ => prec.right(1, choice(
-      seq(
-        "(",
-        optional(seq(
-          field("parameter", $._type),
-          repeat(seq(",", field("parameter", $._type))),
-        )),
-        optional(","),
-        ")",
-        "=>",
-        field("result", $._type),
-      ),
-      seq(
-        field("parameter", $._operator_parameter_type),
-        "=>",
-        field("result", $._type),
-      ),
+    operator_type: $ => prec.right(1, seq(
+      field("parameter", choice($._primary_type, $.function_type)),
+      "=>",
+      field("result", $._type),
     )),
 
-    _operator_parameter_type: $ => choice(
-      $.function_type,
-      $.primitive_type,
-      $.type_variable,
-      $.type_application,
-      $.named_type,
-      $.set_type,
-      $.list_type,
-      $.record_type,
-    ),
+    // Like ANTLR's parenthesized typeOper alternative, this is a primary type.
+    _parenthesized_operator_type: $ => prec.dynamic(1, prec.right(3, seq(
+      "(",
+      optional(seq(
+        field("parameter", $._type),
+        repeat(seq(",", field("parameter", $._type))),
+      )),
+      optional(","),
+      ")",
+      "=>",
+      field("result", $._type),
+    ))),
 
     unit_type: _ => seq("(", ")"),
 
