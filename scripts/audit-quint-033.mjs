@@ -17,8 +17,8 @@ const { parsePhase1fromText } = require(join(dirname(cli), 'parsing/quintParserF
 const { newIdGenerator } = require(join(dirname(cli), 'idGenerator.js'));
 const cases = generateCases();
 const digest = createHash('sha256').update(JSON.stringify(cases)).digest('hex');
-assert.equal(cases.length, 5042, 'Unexpected audit matrix size');
-assert.equal(digest, 'd372ca7a9e2353e8c910d63ab3427728abdf890230cccc2afcc37a2a10b8fae3',
+assert.equal(cases.length, 8259, 'Unexpected audit matrix size');
+assert.equal(digest, '53f86c51ef5bce612df1bd5bbd7e7baf9a09d945144b74312d6b19b341271447',
   'Audit matrix changed: review coverage and update its fingerprint deliberately');
 const parent = resolve(process.env.QUINT_AUDIT_ARTIFACTS ?? tmpdir());
 mkdirSync(parent, { recursive: true });

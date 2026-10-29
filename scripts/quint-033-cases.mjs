@@ -1,3 +1,4 @@
+import { generateExpressionCases } from "./quint-033-expression-cases.mjs";
 import { generateAdditionalCases } from "./quint-033-lexical-cases.mjs";
 
 // Deterministic boundary matrices from the 0.33 compatibility investigation.
@@ -45,5 +46,5 @@ export function generateCases() {
     for (const semi of ['', ';'])
       for (const sep of ['\n',' /* boundary */\n','\n// boundary\n'])
         emit('assignment-chain', `module V { var x: int pure val y = 1 pure def result = {\ndef first() = { val local = {a: 1} () }${semi}${sep}-x' = ${'y - '.repeat(depth)}def later() = {a: 1}\n(1, 2)\n} }\n`, true);
-  return [...cases, ...generateAdditionalCases()];
+  return [...cases, ...generateAdditionalCases(), ...generateExpressionCases()];
 }

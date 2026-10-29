@@ -190,12 +190,19 @@ The audit refuses another compiler version, including the root package's current
 0.32 reference. CI uses the 0.33 reference for both the ordinary suite and audit.
 No global Quint installation is required.
 
-`scripts/quint-033-cases.mjs` and `scripts/quint-033-lexical-cases.mjs` generate
-5,042 deterministic programs covering headers, local-definition boundaries, comments and line endings, nested types,
+The generators `scripts/quint-033-cases.mjs`,
+`scripts/quint-033-lexical-cases.mjs`, and
+`scripts/quint-033-expression-cases.mjs` generate 8,259 deterministic programs
+covering headers, local-definition boundaries, comments and line endings, nested
+types,
 match and lambda forms, nested calls, assignment/subtraction chains, imports
 and exports, qualified identifiers, sum variants, and literal/comment boundaries
 (including embedded NUL characters and unterminated tokens). Type/row variables
-in the additional matrix are bound to keep semantic scope errors separate from syntax checks. The
+in the additional matrix are bound to keep semantic scope errors separate from
+syntax checks. The expression matrix includes every ordered pair of 18 binary
+operators in
+three contexts, 1,000 recursive expressions from fixed xorshift32 seed
+`0x0332026`, and 432 subtraction/local-definition boundary variations. The
 runner asserts both the case count and a SHA-256 fingerprint. Deliberate matrix
 changes require reviewing coverage and updating that fingerprint.
 
@@ -225,3 +232,15 @@ Incremental checks cover transitions between ordinary and NUL-containing tokens.
 The structure checker converts ANTLR code-point offsets to UTF-16 offsets before
 comparing with Node Tree-sitter spans. Emoji in strings, comments, or earlier
 source text must not cause spurious structure mismatches.
+
+Subtraction before a local `def` must preserve ANTLR's greedy initializer and its
+QNT006 diagnostic; `syntax-greedy-minus-local-definition.qnt` covers both value
+and operator initializers. `structure-greedy-minus-semicolon.qnt` guards the
+valid semicolon-disambiguated alternatives, which parse and typecheck in Quint.
+Incremental tests insert/remove those semicolons.
+
+Record expressions in the generated syntax matrix contain at most one spread.
+ANTLR's grammar accepts multiple spreads, but its frontend rejects them with
+QNT012. Like unbound row/type variables, this validation remains a compiler
+responsibility; the Tree-sitter grammar follows the ANTLR syntax for record
+fields and spreads.
