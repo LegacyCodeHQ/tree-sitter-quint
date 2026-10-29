@@ -709,8 +709,8 @@ export default grammar({
         optional(seq(
           field("parameter", $._type),
           repeat(seq(",", field("parameter", $._type))),
-          optional(","),
         )),
+        optional(","),
         ")",
         "=>",
         field("result", $._type),
@@ -821,8 +821,8 @@ export default grammar({
       optional(seq(
         field("element", $._expression),
         repeat(seq(",", field("element", $._expression))),
-        optional(","),
       )),
+      optional(","),
       "]",
     ),
 
