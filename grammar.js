@@ -745,14 +745,24 @@ export default grammar({
     ),
 
     _sum_type_variant_with_payload: $ => seq(
-      field("name", $.identifier),
+      field("name", choice(
+        $.identifier,
+        alias($.type_variable, $.identifier),
+        alias("Set", $.identifier),
+        alias("List", $.identifier),
+      )),
       "(",
       field("payload", $._type),
       ")",
     ),
 
     sum_type_variant: $ => seq(
-      field("name", $.identifier),
+      field("name", choice(
+        $.identifier,
+        alias($.type_variable, $.identifier),
+        alias("Set", $.identifier),
+        alias("List", $.identifier),
+      )),
       optional(seq(
         "(",
         field("payload", $._type),

@@ -422,3 +422,41 @@ module OperatorTypeConstructors {
           type: (operator_type
             parameter: (primitive_type)
             result: (primitive_type)))))))
+
+==============================
+Lowercase sum variant labels
+==============================
+
+module LowercaseVariants {
+  type Choice = present(int) | absent
+  type Hidden = _some(bool) | _none
+  pure val answer = present(1)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (type_alias_declaration
+      name: (identifier)
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))
+        (sum_type_variant
+          name: (identifier))))
+    (type_alias_declaration
+      name: (identifier)
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))
+        (sum_type_variant
+          name: (identifier))))
+    (value_definition
+      name: (identifier)
+      value: (call_expression
+        function: (name_reference
+          name: (identifier))
+        argument: (integer_literal)))))
