@@ -971,7 +971,8 @@ module NestedIndexBoundary {
     (value_definition
       name: (identifier)
       value: (call_expression
-        function: (name_reference name: (identifier))
+        function: (name_reference
+          name: (identifier))
         argument: (integer_literal)))
     (operator_definition
       name: (identifier)
@@ -984,9 +985,11 @@ module NestedIndexBoundary {
               name: (identifier)
               return_type: (primitive_type)
               body: (index_expression
-                collection: (name_reference name: (identifier))
+                collection: (name_reference
+                  name: (identifier))
                 index: (integer_literal)))
-            body: (unary_expression operand: (integer_literal))))
+            body: (unary_expression
+              operand: (integer_literal))))
         body: (integer_literal)))))
 
 ====================================
@@ -1007,9 +1010,12 @@ module NestedUfcsBoundary {
     name: (identifier)
     (operator_definition
       name: (identifier)
-      parameter: (annotated_parameter name: (identifier) type: (primitive_type))
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
       return_type: (primitive_type)
-      body: (name_reference name: (identifier)))
+      body: (name_reference
+        name: (identifier)))
     (operator_definition
       name: (identifier)
       body: (nested_definition_expression
@@ -1018,9 +1024,13 @@ module NestedUfcsBoundary {
           value: (nested_definition_expression
             definition: (value_definition
               name: (identifier)
-              value: (ufcs_call_expression receiver: (integer_literal) method: (identifier)))
-            body: (unary_expression operand: (integer_literal))))
-        body: (name_reference name: (identifier))))))
+              value: (ufcs_call_expression
+                receiver: (integer_literal)
+                method: (identifier)))
+            body: (unary_expression
+              operand: (integer_literal))))
+        body: (name_reference
+          name: (identifier))))))
 
 =======================================
 Nested subtraction initializer and unit body
@@ -1039,7 +1049,9 @@ module NestedSubtractionBody {
 (source_file
   (module_definition
     name: (identifier)
-    (value_definition name: (identifier) value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
     (operator_definition
       name: (identifier)
       body: (nested_definition_expression
@@ -1049,10 +1061,13 @@ module NestedSubtractionBody {
             definition: (value_definition
               name: (identifier)
               value: (binary_expression
-                left: (name_reference name: (identifier))
-                right: (name_reference name: (identifier))))
+                left: (name_reference
+                  name: (identifier))
+                right: (name_reference
+                  name: (identifier))))
             body: (unit_literal)))
-        body: (name_reference name: (identifier))))))
+        body: (name_reference
+          name: (identifier))))))
 
 ========================================
 Nested operator initializer before a unit body
@@ -1071,11 +1086,16 @@ module NestedOperatorUnit {
 (source_file
   (module_definition
     name: (identifier)
-    (value_definition name: (identifier) value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
     (value_definition
       name: (identifier)
       value: (record_literal
-        (record_literal_field name: (identifier) value: (name_reference name: (identifier)))
+        (record_literal_field
+          name: (identifier)
+          value: (name_reference
+            name: (identifier)))
         (record_spread
           value: (nested_definition_expression
             definition: (operator_definition
@@ -1087,11 +1107,15 @@ module NestedOperatorUnit {
                   value: (nested_definition_expression
                     definition: (operator_definition
                       name: (identifier)
-                      body: (name_reference name: (identifier)))
-                    body: (name_reference name: (identifier))))
+                      body: (name_reference
+                        name: (identifier)))
+                    body: (name_reference
+                      name: (identifier))))
                 body: (unit_literal)))
             body: (record_literal
-              (record_literal_field name: (identifier) value: (integer_literal)))))))))
+              (record_literal_field
+                name: (identifier)
+                value: (integer_literal)))))))))
 
 ======================================
 Bare local value header before a unit body
@@ -1117,7 +1141,8 @@ module BareValueHeader {
           definition: (operator_definition
             name: (identifier)
             body: (nested_definition_expression
-              definition: (value_definition name: (identifier))
+              definition: (value_definition
+                name: (identifier))
               body: (unit_literal)))
           body: (integer_literal))))))
 
@@ -1139,7 +1164,9 @@ module IndexedLocalBody {
 (source_file
   (module_definition
     name: (identifier)
-    (value_definition name: (identifier) value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
     (operator_definition
       name: (identifier)
       body: (block_expression
@@ -1149,9 +1176,13 @@ module IndexedLocalBody {
             value: (binary_expression
               left: (integer_literal)
               right: (nested_definition_expression
-                definition: (operator_definition name: (identifier) body: (integer_literal))
-                body: (name_reference name: (identifier)))))
-          body: (list_literal element: (integer_literal)))))))
+                definition: (operator_definition
+                  name: (identifier)
+                  body: (integer_literal))
+                body: (name_reference
+                  name: (identifier)))))
+          body: (list_literal
+            element: (integer_literal)))))))
 
 ======================================
 Nested initializer before a parenthesized body
@@ -1172,7 +1203,9 @@ module NestedParenthesizedBody {
 (source_file
   (module_definition
     name: (identifier)
-    (value_definition name: (identifier) value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
     (operator_definition
       name: (identifier)
       body: (block_expression
@@ -1185,7 +1218,97 @@ module NestedParenthesizedBody {
                 value: (nested_definition_expression
                   definition: (operator_definition
                     name: (identifier)
-                    body: (name_reference name: (identifier)))
-                  body: (name_reference name: (identifier))))
-              body: (parenthesized_expression expression: (name_reference name: (identifier)))))
-          body: (name_reference name: (identifier)))))))
+                    body: (name_reference
+                      name: (identifier)))
+                  body: (name_reference
+                    name: (identifier))))
+              body: (parenthesized_expression
+                expression: (name_reference
+                  name: (identifier)))))
+          body: (name_reference
+            name: (identifier)))))))
+
+======================================
+Destructured initializers before parenthesized bodies
+======================================
+
+module DestructuredBody {
+  pure val pairRecord = {left: 1, right: 2}
+  pure val pairTuple = (1, 2)
+  pure def recordResult = {
+    def outer = val {left, right} = def inner() = pairRecord
+    pairRecord
+    (left)
+    0
+  }
+  pure def tupleResult = {
+    def outer = val (left, right) = def inner() = pairTuple
+    pairTuple
+    (left)
+    0
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (tuple_literal
+        element: (integer_literal)
+        element: (integer_literal)))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (nested_definition_expression
+              definition: (value_definition
+                name: (record_pattern
+                  field: (identifier)
+                  field: (identifier))
+                value: (nested_definition_expression
+                  definition: (operator_definition
+                    name: (identifier)
+                    body: (name_reference
+                      name: (identifier)))
+                  body: (name_reference
+                    name: (identifier))))
+              body: (parenthesized_expression
+                expression: (name_reference
+                  name: (identifier)))))
+          body: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (nested_definition_expression
+              definition: (value_definition
+                name: (tuple_pattern
+                  element: (identifier)
+                  element: (identifier))
+                value: (nested_definition_expression
+                  definition: (operator_definition
+                    name: (identifier)
+                    body: (name_reference
+                      name: (identifier)))
+                  body: (name_reference
+                    name: (identifier))))
+              body: (parenthesized_expression
+                expression: (name_reference
+                  name: (identifier)))))
+          body: (integer_literal))))))

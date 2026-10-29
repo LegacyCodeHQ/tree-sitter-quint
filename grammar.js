@@ -1752,9 +1752,14 @@ export default grammar({
     _local_delimited_value_definition: $ => prec("local_value", seq(
       optional(field("qualifier", "pure")),
       "val",
-      field("name", $._normal_call_name),
-      optional(seq("(", ")")),
-      optional(seq(":", field("type", $._type))),
+      choice(
+        seq(
+          field("name", $._normal_call_name),
+          optional(seq("(", ")")),
+          optional(seq(":", field("type", $._type))),
+        ),
+        field("name", choice($.tuple_pattern, $.record_pattern)),
+      ),
       "=",
       field("value", choice(
         alias($._init_closed_add_expression, $.binary_expression),
