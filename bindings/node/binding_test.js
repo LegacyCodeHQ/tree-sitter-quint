@@ -79,6 +79,7 @@ test("incremental edits across local binding continuations match fresh parsing",
     ["structure-nested-ufcs-boundary.qnt", "1.keep()"],
     ["structure-nested-subtraction-body.qnt", "-seed"],
     ["structure-bare-value-header.qnt", "val placeholder"],
+    ["structure-nested-parenthesized-body.qnt", "    (seed)"],
   ]) {
     const before = readFileSync(new URL(`../../test/fixtures/${fixture}`, import.meta.url), "utf8");
     pairs.push([before, before.replaceAll(`${boundary}\n`, `${boundary};\n`)]);

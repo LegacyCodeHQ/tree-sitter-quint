@@ -267,7 +267,7 @@ export default grammar({
 
   conflicts: $ => [
     [$._normal_call_name, $._local_bare_value_header],
-    [$._init_unary, $._local_unit_value_definition],
+    [$._init_unary, $._local_delimited_value_definition],
     [$._init_assignment_rhs_closed_mul, $._init_closed_mul],
     [$._operator_definition_head, $._local_bare_operator_header],
     [$._init_power, $._init_closed_power],
@@ -1741,15 +1741,15 @@ export default grammar({
         )),
         field("body", $._initializer_expression),
       ),
-      // Keep completed arithmetic or nested initializers before a unit body;
-      // that unit must not become a call on the initializer's final operand.
+      // Keep completed arithmetic or nested initializers before a parenthesized body;
+      // those parentheses must not become a call on the initializer's final operand.
       prec.dynamic(2, seq(
-        field("definition", alias($._local_unit_value_definition, $.value_definition)),
-        field("body", $.unit_literal),
+        field("definition", alias($._local_delimited_value_definition, $.value_definition)),
+        field("body", choice($.unit_literal, $.parenthesized_expression, $.tuple_literal)),
       )),
     ),
 
-    _local_unit_value_definition: $ => prec("local_value", seq(
+    _local_delimited_value_definition: $ => prec("local_value", seq(
       optional(field("qualifier", "pure")),
       "val",
       field("name", $._normal_call_name),

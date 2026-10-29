@@ -1152,3 +1152,40 @@ module IndexedLocalBody {
                 definition: (operator_definition name: (identifier) body: (integer_literal))
                 body: (name_reference name: (identifier)))))
           body: (list_literal element: (integer_literal)))))))
+
+======================================
+Nested initializer before a parenthesized body
+======================================
+
+module NestedParenthesizedBody {
+  pure val seed = 1
+  pure def result = {
+    def outer = val saved = def inner() = seed
+    seed
+    (seed)
+    seed
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition name: (identifier) value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (nested_definition_expression
+              definition: (value_definition
+                name: (identifier)
+                value: (nested_definition_expression
+                  definition: (operator_definition
+                    name: (identifier)
+                    body: (name_reference name: (identifier)))
+                  body: (name_reference name: (identifier))))
+              body: (parenthesized_expression expression: (name_reference name: (identifier)))))
+          body: (name_reference name: (identifier)))))))

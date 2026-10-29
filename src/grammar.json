@@ -8283,7 +8283,7 @@
                   "type": "ALIAS",
                   "content": {
                     "type": "SYMBOL",
-                    "name": "_local_unit_value_definition"
+                    "name": "_local_delimited_value_definition"
                   },
                   "named": true,
                   "value": "value_definition"
@@ -8293,8 +8293,21 @@
                 "type": "FIELD",
                 "name": "body",
                 "content": {
-                  "type": "SYMBOL",
-                  "name": "unit_literal"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "unit_literal"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "parenthesized_expression"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "tuple_literal"
+                    }
+                  ]
                 }
               }
             ]
@@ -8302,7 +8315,7 @@
         }
       ]
     },
-    "_local_unit_value_definition": {
+    "_local_delimited_value_definition": {
       "type": "PREC",
       "value": "local_value",
       "content": {
@@ -9879,7 +9892,7 @@
     ],
     [
       "_init_unary",
-      "_local_unit_value_definition"
+      "_local_delimited_value_definition"
     ],
     [
       "_init_assignment_rhs_closed_mul",
