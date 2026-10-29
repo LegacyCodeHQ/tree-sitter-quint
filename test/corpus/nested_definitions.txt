@@ -669,3 +669,111 @@ module GreedyBoundaries {
           body: (unary_expression
             operand: (name_reference
               name: (identifier))))))))
+
+========================================
+Local operator bodies before tuple unary and list results
+========================================
+
+module LocalOperators {
+  pure def tupleBody(x: int): (int, int) = {
+    def f = x
+    (x, f)
+  }
+  pure def unaryBody(x: int): int = {
+    def f = x + 1
+    -f
+  }
+  pure def listBody(x: int): List[int] = {
+    pure def f(p: int): int = p + x
+    [f(1)]
+  }
+  pure def greedyBody(x: int): int = {
+    def f = x - x
+    -x
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (tuple_type
+        element: (primitive_type)
+        element: (primitive_type))
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (name_reference
+              name: (identifier)))
+          body: (tuple_literal
+            element: (name_reference
+              name: (identifier))
+            element: (name_reference
+              name: (identifier))))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (integer_literal)))
+          body: (unary_expression
+            operand: (name_reference
+              name: (identifier))))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (list_type
+        element: (primitive_type))
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            parameter: (annotated_parameter
+              name: (identifier)
+              type: (primitive_type))
+            return_type: (primitive_type)
+            body: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (name_reference
+                name: (identifier))))
+          body: (list_literal
+            element: (call_expression
+              function: (name_reference
+                name: (identifier))
+              argument: (integer_literal))))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (primitive_type))
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (operator_definition
+            name: (identifier)
+            body: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (name_reference
+                name: (identifier))))
+          body: (unary_expression
+            operand: (name_reference
+              name: (identifier))))))))

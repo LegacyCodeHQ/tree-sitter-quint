@@ -261,10 +261,25 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
-    [$._initializer_expression, $._local_value_definition_unterminated],
-    [$._initializer_expression, $._initializer_call_expression, $._local_value_definition_unterminated],
-    [$._local_value_definition_unterminated, $._initializer_index_expression],
-    [$._local_value_definition_unterminated, $._initializer_binary_expression],
+    [$._init_ufcs_expression, $._init_field_expression],
+    [$._init_relation_expression, $._init_add_expression],
+    [$._init_or_expression, $._init_and_expression],
+    [$._init_iff_expression, $._init_or_expression],
+    [$._init_leads_expression, $._init_iff_expression],
+    [$._init_implication_expression, $._init_leads_expression],
+    [$._init_pair_expression, $._init_implication_expression],
+    [$._init_atom, $._init_call_expression],
+    [$._init_atom, $._init_call_expression, $._local_value_definition_unterminated],
+    [$._local_operator_definition_unterminated, $._init_atom, $._init_call_expression],
+    [$._init_power, $._init_index_expression],
+    [$._init_relation, $._init_add_expression],
+    [$._init_or, $._init_and_expression],
+    [$._init_iff, $._init_or_expression],
+    [$._init_leads, $._init_iff_expression],
+    [$._init_implication, $._init_leads_expression],
+    [$._init_pair, $._init_implication_expression],
+    [$._init_atom, $._local_value_definition_unterminated],
+    [$._local_operator_definition_unterminated, $._init_atom],
     [$._parenthesized_operator_type, $.tuple_type],
     [$.lambda_expression, $.name_reference],
     [$.lambda_expression, $.tuple_pattern],
@@ -1083,7 +1098,11 @@ export default grammar({
         field("body", $._expression),
       )),
       prec.right(PREC.BODY, seq(
-        field("definition", $.operator_definition),
+        field("definition", alias($._local_operator_definition, $.operator_definition)),
+        field("body", $._expression),
+      )),
+      prec.right(PREC.BODY, seq(
+        field("definition", alias($._local_operator_definition_unterminated, $.operator_definition)),
         field("body", $._expression),
       )),
       prec.right(PREC.BODY, seq(
@@ -1091,6 +1110,23 @@ export default grammar({
         field("body", $._expression),
       )),
     ),
+
+    _local_operator_definition: $ => seq(
+      $._operator_definition_head,
+      "=",
+      field("body", $._initializer_expression),
+      ";",
+    ),
+
+    _local_operator_definition_unterminated: $ => prec("local_value", seq(
+      $._operator_definition_head,
+      "=",
+      field("body", choice(
+        $._initializer_expression,
+        $.name_reference,
+        $.namespace_access_expression,
+      )),
+    )),
 
     _local_value_header: $ => seq(
       optional(field("qualifier", "pure")),
@@ -1123,58 +1159,191 @@ export default grammar({
       ";",
     ),
 
-    // Prefer continuing an initializer when both parses leave a trailing body.
-    // Shared constructors keep its named nodes and operator precedence identical.
-    _initializer_expression: $ => choice(
-      alias($._initializer_binary_expression, $.binary_expression),
-      alias($._initializer_call_expression, $.call_expression),
-      alias($._initializer_ufcs_call_expression, $.ufcs_call_expression),
-      alias($._initializer_index_expression, $.index_expression),
-      alias($._initializer_field_access_expression, $.field_access_expression),
-      alias($._initializer_pair_expression, $.pair_expression),
-      $.integer_literal,
-      $.boolean_literal,
-      $.string_literal,
-      $.list_literal,
-      $.tuple_literal,
-      $.unit_literal,
-      $.record_literal,
-      $.block_expression,
-      $._block_combinator_expression,
-      $.assignment_expression,
-      $.if_expression,
-      $.match_expression,
-      $.nested_definition_expression,
-      $.lambda_expression,
-      $.namespace_access_expression,
-      $.name_reference,
+    // A local initializer needs to stop even where its last operand could continue
+    // as a call, index, or subtraction. Encoding precedence as levels lets GLR keep
+    // that boundary open without changing normal expression precedence. Dynamic
+    // weights prefer the longest initializer that still leaves a valid body.
+    _initializer_expression: $ => $._init_pair,
+
+    _init_pair: $ => choice(
+      $._init_implication,
+      alias($._init_pair_expression, $.pair_expression),
+    ),
+
+    _init_implication: $ => choice(
+      $._init_leads,
+      alias($._init_implication_expression, $.binary_expression),
+    ),
+
+    _init_leads: $ => choice(
+      $._init_iff,
+      alias($._init_leads_expression, $.binary_expression),
+    ),
+
+    _init_iff: $ => choice(
+      $._init_or,
+      alias($._init_iff_expression, $.binary_expression),
+    ),
+
+    _init_or: $ => choice(
+      $._init_and,
+      alias($._init_or_expression, $.binary_expression),
+    ),
+
+    _init_and: $ => choice(
+      $._init_assignment,
+      alias($._init_and_expression, $.binary_expression),
+    ),
+
+    _init_relation: $ => choice(
+      $._init_add,
+      alias($._init_relation_expression, $.binary_expression),
+    ),
+
+    _init_add: $ => choice(
+      $._init_mul,
+      alias($._init_add_expression, $.binary_expression),
+    ),
+
+    _init_mul: $ => choice(
+      $._init_unary,
+      alias($._init_mul_expression, $.binary_expression),
+    ),
+
+    _init_assignment: $ => choice(
+      $._init_relation,
+      alias($._init_assignment_expression, $.assignment_expression),
+    ),
+    _init_unary: $ => choice(
+      $._init_power,
+      alias($._init_unary_expression, $.unary_expression),
+    ),
+    _init_power: $ => choice(
+      $._init_postfix,
+      alias($._init_power_expression, $.binary_expression),
+    ),
+    _init_postfix: $ => choice(
+      $._init_atom,
+      alias($._init_call_expression, $.call_expression),
+      alias($._init_index_expression, $.index_expression),
+      alias($._init_ufcs_expression, $.ufcs_call_expression),
+      alias($._init_field_expression, $.field_access_expression),
+    ),
+    _init_atom: $ => choice(
+      $.integer_literal, $.boolean_literal, $.string_literal,
+      $.list_literal, $.tuple_literal, $.unit_literal, $.record_literal,
+      $.block_expression, $._block_combinator_expression,
+      $.if_expression, $.match_expression, $.nested_definition_expression,
+      $.lambda_expression, $.namespace_access_expression, $.name_reference,
       $.parenthesized_expression,
-      $.unary_expression,
     ),
 
-    _initializer_binary_expression: $ => prec.dynamic(1,
-      binaryExpression($, $._initializer_expression),
+    _init_pair_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_pair),
+      "->",
+      field("right", $._init_implication),
+    )),
+
+    _init_implication_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_implication),
+      field("operator", "implies"),
+      field("right", $._init_leads),
+    )),
+
+    _init_leads_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_leads),
+      field("operator", "leadsTo"),
+      field("right", $._init_iff),
+    )),
+
+    _init_iff_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_iff),
+      field("operator", "iff"),
+      field("right", $._init_or),
+    )),
+
+    _init_or_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_or),
+      field("operator", "or"),
+      field("right", $._init_and),
+    )),
+
+    _init_and_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_and),
+      field("operator", "and"),
+      field("right", $._init_assignment),
+    )),
+
+    _init_relation_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_relation),
+      field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
+      field("right", $._init_add),
+    )),
+
+    _init_add_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_add),
+      field("operator", choice("+", "-")),
+      field("right", $._init_mul),
+    )),
+
+    _init_mul_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_mul),
+      field("operator", choice("*", alias($._division, "/"), "%")),
+      field("right", $._init_unary),
+    )),
+
+    _init_assignment_expression: $ => seq(
+      field("target", $.primed_identifier),
+      "=",
+      field("value", $._init_assignment),
     ),
 
-    _initializer_call_expression: $ => prec.dynamic(1,
-      callExpression($, $._initializer_expression),
+    _init_unary_expression: $ => seq(
+      field("operator", "-"),
+      field("operand", $._init_unary),
     ),
 
-    _initializer_ufcs_call_expression: $ => prec.dynamic(1,
-      ufcsCallExpression($, $._initializer_expression),
-    ),
+    _init_power_expression: $ => prec.dynamic(1, seq(
+      field("left", $._init_postfix),
+      field("operator", "^"),
+      field("right", $._init_unary),
+    )),
 
-    _initializer_index_expression: $ => prec.dynamic(1,
-      indexExpression($, $._initializer_expression),
-    ),
+    _init_call_expression: $ => prec.dynamic(1, seq(
+      field("function", choice($.name_reference, $.namespace_access_expression, $.reserved_operator)),
+      "(",
+      optional(seq(
+        field("argument", $._expression),
+        repeat(seq(",", field("argument", $._expression))),
+      )),
+      optional(","),
+      ")",
+    )),
 
-    _initializer_field_access_expression: $ => prec.dynamic(1,
-      fieldAccessExpression($, $._initializer_expression),
-    ),
+    _init_index_expression: $ => prec.dynamic(1, seq(
+      field("collection", $._init_postfix),
+      "[",
+      field("index", $._expression),
+      "]",
+    )),
 
-    _initializer_pair_expression: $ => prec.dynamic(1,
-      pairExpression($, $._initializer_expression),
-    ),
+    _init_ufcs_expression: $ => prec.dynamic(1, seq(
+      field("receiver", $._init_postfix),
+      ".",
+      field("method", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
+      "(",
+      optional(seq(
+        field("argument", $._expression),
+        repeat(seq(",", field("argument", $._expression))),
+      )),
+      ")",
+    )),
+
+    _init_field_expression: $ => prec.dynamic(1, seq(
+      field("object", $._init_postfix),
+      ".",
+      field("field", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
+    )),
 
     _local_value_definition_unterminated: $ => prec("local_value", seq(
       optional(field("qualifier", "pure")),
