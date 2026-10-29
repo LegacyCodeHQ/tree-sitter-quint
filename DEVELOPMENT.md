@@ -362,3 +362,7 @@ and editor behavior, then compare alternating process runs and native memory.
 measurements; `bun run test:scanner` enforces the deterministic lookup-work
 budget without putting elapsed-time thresholds in CI. Whole-file reference
 recognition still runs after edits.
+
+The [recognizer allocation experiment](docs/performance/recognizer-allocations.md)
+records compact result buffers, temporary arena allocation, and failure-injection
+checks. Native allocation counters are distinct from process peak RSS.

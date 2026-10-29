@@ -111,7 +111,7 @@ static bool q_tokenize(QDocument *doc, const char *source, size_t length) {
 }
 
 typedef struct QTrace {
-  struct QTrace *left, *right, *allocated_next;
+  struct QTrace *left, *right;
   uint32_t start, end;
   uint8_t kind;
 } QTrace;
@@ -128,15 +128,40 @@ typedef struct {
   QMemo *memo, *inner;
   size_t transition, inner_index;
 } QFrame;
+typedef struct QArena {
+  struct QArena *next;
+  size_t used, capacity;
+  max_align_t data[];
+} QArena;
 typedef struct {
   QDocument *doc;
   QMemo **buckets, *allocated;
-  QTrace *traces;
+  QArena *arena;
   size_t bucket_count, memo_count;
   QFrame *frames;
   size_t depth, frame_capacity;
   bool failed;
 } QRecognizer;
+
+// Recognition owns all memo/trace/result lifetimes. Bump allocation keeps
+// their addresses stable and releases them together after collecting boundaries.
+static void *q_allocate(QRecognizer *r, size_t size) {
+  size_t alignment = _Alignof(max_align_t);
+  if (size > SIZE_MAX - (alignment - 1)) { r->failed = true; return NULL; }
+  size = (size + alignment - 1) / alignment * alignment;
+  QArena *arena = r->arena;
+  if (!arena || size > arena->capacity - arena->used) {
+    size_t capacity = size > 65536 ? size : 65536;
+    if (capacity > SIZE_MAX - sizeof(QArena)) { r->failed = true; return NULL; }
+    arena = malloc(sizeof(QArena) + capacity);
+    if (!arena) { r->failed = true; return NULL; }
+    arena->next = r->arena; arena->used = 0; arena->capacity = capacity;
+    r->arena = arena;
+  }
+  void *result = (unsigned char *)arena->data + arena->used;
+  arena->used += size;
+  return result;
+}
 
 static size_t q_hash(uint16_t state, uint32_t pos, uint8_t precedence) {
   return ((size_t)pos * 2654435761u) ^ ((size_t)state * 40503u) ^ precedence;
@@ -155,9 +180,9 @@ static QMemo *q_memo(QRecognizer *r, uint16_t state, uint32_t pos, uint8_t prece
   size_t hash = q_hash(state, pos, precedence) & (r->bucket_count - 1);
   for (QMemo *m = r->buckets[hash]; m; m = m->hash_next)
     if (m->state == state && m->position == pos && m->precedence == precedence) return m;
-  QMemo *m = calloc(1, sizeof(QMemo));
-  if (!m) { r->failed = true; return NULL; }
-  m->state = state; m->position = pos; m->precedence = precedence;
+  QMemo *m = q_allocate(r, sizeof(QMemo));
+  if (!m) return NULL;
+  *m = (QMemo){.state = state, .position = pos, .precedence = precedence};
   m->hash_next = r->buckets[hash]; r->buckets[hash] = m;
   m->allocated_next = r->allocated; r->allocated = m; r->memo_count++;
   return m;
@@ -167,10 +192,9 @@ static QTrace *q_trace(QRecognizer *r, QTrace *left, QTrace *right, uint8_t kind
     if (!left) return right;
     if (!right) return left;
   }
-  QTrace *trace = malloc(sizeof(QTrace));
-  if (!trace) { r->failed = true; return NULL; }
-  *trace = (QTrace){left, right, r->traces, start, end, kind};
-  r->traces = trace;
+  QTrace *trace = q_allocate(r, sizeof(QTrace));
+  if (!trace) return NULL;
+  *trace = (QTrace){left, right, start, end, kind};
   return trace;
 }
 static bool q_has_end(QMemo *m, uint32_t end) {
@@ -178,7 +202,14 @@ static bool q_has_end(QMemo *m, uint32_t end) {
   return false;
 }
 static void q_result(QRecognizer *r, QMemo *m, uint32_t end, QTrace *trace) {
-  if (!q_grow((void **)&m->results, &m->capacity, m->count + 1, sizeof(QResult))) { r->failed = true; return; }
+  if (m->count == m->capacity) {
+    if (m->capacity > SIZE_MAX / 2 / sizeof(QResult)) { r->failed = true; return; }
+    size_t capacity = m->capacity ? m->capacity * 2 : 1;
+    QResult *results = q_allocate(r, capacity * sizeof(QResult));
+    if (!results) return;
+    if (m->count) memcpy(results, m->results, m->count * sizeof(QResult));
+    m->results = results; m->capacity = capacity;
+  }
   m->results[m->count++] = (QResult){end, trace};
 }
 static bool q_push(QRecognizer *r, QMemo *m) {
@@ -289,13 +320,9 @@ static bool q_parse_document(QDocument *doc, const char *source, size_t length) 
       }
     }
   }
-  while (recognizer.allocated) {
-    QMemo *next = recognizer.allocated->allocated_next;
-    free(recognizer.allocated->results); free(recognizer.allocated); recognizer.allocated = next;
-  }
-  while (recognizer.traces) {
-    QTrace *next = recognizer.traces->allocated_next;
-    free(recognizer.traces); recognizer.traces = next;
+  while (recognizer.arena) {
+    QArena *next = recognizer.arena->next;
+    free(recognizer.arena); recognizer.arena = next;
   }
   free(recognizer.buckets); free(recognizer.frames);
   return valid;
