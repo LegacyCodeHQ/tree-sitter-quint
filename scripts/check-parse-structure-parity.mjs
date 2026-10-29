@@ -136,7 +136,7 @@ function literalOrIdentifierKind(text) {
   return "name_reference";
 }
 
-function declarationKind(node, source) {
+function declarationKind(node) {
   const contextName = node.constructor.name;
   if (contextName === "ConstContext") return "constant_declaration";
   if (contextName === "VarContext") return "variable_declaration";
@@ -184,7 +184,7 @@ function antlrSignatures(source, reference) {
         end: node.stop.stopIndex + 1,
       });
     } else if (ruleName === "declaration") {
-      const kind = declarationKind(node, source);
+      const kind = declarationKind(node);
       if (kind) add(kind, node);
     } else if (ruleName === "expr") {
       let kind = expressionKinds[contextName];

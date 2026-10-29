@@ -51,6 +51,19 @@ node scripts/check-syntax-acceptance-parity.mjs --quiet /path/to/quint
 node scripts/check-parse-structure-parity.mjs --quiet /path/to/quint
 ```
 
+The phase-one reference parser also reports some semantic errors, such as
+unbound row variables. The full `quint parse` command additionally resolves
+imports and names, and `quint typecheck` checks types and effects. A parity
+disagreement therefore needs investigation before treating it as a grammar
+defect. For example, phase one accepts `Set[int, bool]` as a generic type
+application, but the full compiler rejects it.
+
+The grammar retains editor tolerance for empty buffers and for line comments,
+documentation comments, and a hashbang ending at EOF. Quint's file grammar
+requires at least one module and a terminating newline for those line tokens.
+These existing editing allowances are separate from support for valid compiler
+input. Semantic constraints such as bound type variables remain compiler checks.
+
 After changing `grammar.js`, regenerate the committed parser sources and verify
 that they are current:
 

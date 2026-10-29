@@ -841,3 +841,146 @@ module Grammar033Integration {
           method: (identifier)
           argument: (name_reference
             name: (identifier)))))))
+
+========================================
+ANTLR second pass integration
+========================================
+
+module SecondPassSource {
+  const N: int
+  pure val count = N
+}
+
+module SecondPassIntegration {
+  import SecondPassSource(N = 1,) as Configured
+  import SecondPassSource(N = 2,).*
+
+  type Maybe = Some(int) | None
+  const mapper: int -> (int, bool) => str
+  pure def apply(f: () => int): int = f(,)
+  pure def mapped = x => x -> Configured::count
+  pure val conditional = if (true) 1 -> 2 else 3 -> 4
+  pure val local = val x = Configured::count x -> 2
+  pure def unpack(value: Maybe): int = match value {
+    | Some(x) => x
+    | _ => 0
+  }
+  var state: int
+  temporal constrained = state' = 1 and always(true)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (value_definition
+      name: (identifier)
+      value: (name_reference
+        name: (identifier))))
+  (module_definition
+    name: (identifier)
+    (instance_declaration
+      module: (identifier)
+      (instance_override
+        name: (identifier)
+        value: (integer_literal))
+      alias: (identifier))
+    (anonymous_instance_declaration
+      module: (identifier)
+      (instance_override
+        name: (identifier)
+        value: (integer_literal)))
+    (type_alias_declaration
+      name: (identifier)
+      value: (sum_type
+        (sum_type_variant
+          name: (identifier)
+          payload: (primitive_type))
+        (sum_type_variant
+          name: (identifier))))
+    (constant_declaration
+      name: (identifier)
+      type: (function_type
+        parameter: (primitive_type)
+        result: (operator_type
+          parameter: (primitive_type)
+          parameter: (primitive_type)
+          result: (primitive_type))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (operator_type
+          result: (primitive_type)))
+      return_type: (primitive_type)
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))))
+    (operator_definition
+      name: (identifier)
+      body: (lambda_expression
+        parameter: (identifier)
+        body: (pair_expression
+          left: (name_reference
+            name: (identifier))
+          right: (namespace_access_expression
+            namespace: (identifier)
+            member: (identifier)))))
+    (value_definition
+      name: (identifier)
+      value: (if_expression
+        condition: (boolean_literal)
+        consequence: (pair_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        alternative: (pair_expression
+          left: (integer_literal)
+          right: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (nested_definition_expression
+        definition: (value_definition
+          name: (identifier)
+          value: (namespace_access_expression
+            namespace: (identifier)
+            member: (identifier)))
+        body: (pair_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (named_type
+          name: (identifier)))
+      return_type: (primitive_type)
+      body: (match_expression
+        value: (name_reference
+          name: (identifier))
+        arm: (match_arm
+          variant: (identifier)
+          parameter: (identifier)
+          body: (name_reference
+            name: (identifier)))
+        arm: (match_arm
+          variant: (hole)
+          body: (integer_literal))))
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (binary_expression
+        left: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (integer_literal))
+        right: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (boolean_literal))))))

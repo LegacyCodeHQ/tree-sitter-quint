@@ -11,12 +11,12 @@ const PREC = {
   // Bodies extend through a pair; right associativity keeps the pair inside.
   BODY: 0,
   PAIR: 0,
-  ASSIGNMENT: 7,
   IMPLICATION: 2,
   LEADS_TO: 3,
   EQUIVALENCE: 4,
   DISJUNCTION: 5,
   CONJUNCTION: 6,
+  ASSIGNMENT: 7,
   RELATION: 8,
   ADDITIVE: 9,
   MULTIPLICATIVE: 10,

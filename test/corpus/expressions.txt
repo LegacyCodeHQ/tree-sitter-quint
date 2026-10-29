@@ -1028,11 +1028,18 @@ module CommaCalls {
 ---
 
 (source_file
-  (module_definition name: (identifier)
-    (operator_definition name: (identifier)
-      parameter: (annotated_parameter name: (identifier) type: (operator_type result: (primitive_type)))
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter
+        name: (identifier)
+        type: (operator_type
+          result: (primitive_type)))
       return_type: (primitive_type)
-      body: (call_expression function: (name_reference name: (identifier))))))
+      body: (call_expression
+        function: (name_reference
+          name: (identifier))))))
 
 ========================================
 Trailing commas in ufcs calls are rejected
@@ -1070,23 +1077,46 @@ module PairBodies {
 ---
 
 (source_file
-  (module_definition name: (identifier)
-    (operator_definition name: (identifier)
-      body: (lambda_expression parameter: (identifier)
-        body: (pair_expression left: (name_reference name: (identifier)) right: (integer_literal))))
-    (value_definition name: (identifier)
-      value: (if_expression condition: (boolean_literal)
-        consequence: (pair_expression left: (integer_literal) right: (integer_literal))
-        alternative: (pair_expression left: (integer_literal) right: (integer_literal))))
-    (value_definition name: (identifier)
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (lambda_expression
+        parameter: (identifier)
+        body: (pair_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (if_expression
+        condition: (boolean_literal)
+        consequence: (pair_expression
+          left: (integer_literal)
+          right: (integer_literal))
+        alternative: (pair_expression
+          left: (integer_literal)
+          right: (integer_literal))))
+    (value_definition
+      name: (identifier)
       value: (nested_definition_expression
-        definition: (value_definition name: (identifier) value: (integer_literal))
-        body: (pair_expression left: (name_reference name: (identifier)) right: (integer_literal))))
-    (value_definition name: (identifier)
+        definition: (value_definition
+          name: (identifier)
+          value: (integer_literal))
+        body: (pair_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (value_definition
+      name: (identifier)
       value: (nested_definition_expression
-        definition: (value_definition name: (identifier) value: (integer_literal))
-        body: (pair_expression left: (name_reference name: (identifier)) right: (integer_literal))))
-))
+        definition: (value_definition
+          name: (identifier)
+          value: (integer_literal))
+        body: (pair_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))))
 
 ========================================
 Assignments bind more tightly than Boolean and temporal connectives
@@ -1103,22 +1133,52 @@ module AssignmentPrecedence {
 ---
 
 (source_file
-  (module_definition name: (identifier)
-    (variable_declaration name: (identifier) type: (primitive_type))
-    (operator_definition name: (identifier)
+  (module_definition
+    name: (identifier)
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
       body: (binary_expression
-        left: (assignment_expression target: (primed_identifier name: (identifier)) value: (integer_literal))
-        right: (call_expression function: (name_reference name: (identifier)) argument: (boolean_literal))))
-    (operator_definition name: (identifier)
+        left: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (integer_literal))
+        right: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (boolean_literal))))
+    (operator_definition
+      name: (identifier)
       body: (binary_expression
-        left: (assignment_expression target: (primed_identifier name: (identifier)) value: (integer_literal))
-        right: (call_expression function: (name_reference name: (identifier)) argument: (boolean_literal))))
-    (operator_definition name: (identifier)
+        left: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (integer_literal))
+        right: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (boolean_literal))))
+    (operator_definition
+      name: (identifier)
       body: (binary_expression
-        left: (assignment_expression target: (primed_identifier name: (identifier)) value: (integer_literal))
-        right: (call_expression function: (name_reference name: (identifier)) argument: (boolean_literal))))
-    (operator_definition name: (identifier)
+        left: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (integer_literal))
+        right: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (boolean_literal))))
+    (operator_definition
+      name: (identifier)
       body: (binary_expression
-        left: (assignment_expression target: (primed_identifier name: (identifier)) value: (integer_literal))
-        right: (call_expression function: (name_reference name: (identifier)) argument: (boolean_literal))))
-))
+        left: (assignment_expression
+          target: (primed_identifier
+            name: (identifier))
+          value: (integer_literal))
+        right: (call_expression
+          function: (name_reference
+            name: (identifier))
+          argument: (boolean_literal))))))

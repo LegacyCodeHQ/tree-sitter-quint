@@ -384,18 +384,41 @@ module OperatorTypeConstructors {
 ---
 
 (source_file
-  (module_definition name: (identifier)
-    (constant_declaration name: (identifier)
-      type: (function_type parameter: (primitive_type)
-        result: (operator_type parameter: (primitive_type) parameter: (primitive_type) result: (primitive_type))))
-    (constant_declaration name: (identifier)
-      type: (function_type parameter: (primitive_type)
-        result: (operator_type parameter: (primitive_type) result: (primitive_type))))
-    (constant_declaration name: (identifier)
-      type: (function_type parameter: (primitive_type)
-        result: (operator_type result: (primitive_type))))
-    (constant_declaration name: (identifier)
-      type: (operator_type parameter: (function_type parameter: (primitive_type) result: (primitive_type)) result: (primitive_type)))
-    (constant_declaration name: (identifier)
-      type: (function_type parameter: (primitive_type)
-        result: (parenthesized_type type: (operator_type parameter: (primitive_type) result: (primitive_type)))))))
+  (module_definition
+    name: (identifier)
+    (constant_declaration
+      name: (identifier)
+      type: (function_type
+        parameter: (primitive_type)
+        result: (operator_type
+          parameter: (primitive_type)
+          parameter: (primitive_type)
+          result: (primitive_type))))
+    (constant_declaration
+      name: (identifier)
+      type: (function_type
+        parameter: (primitive_type)
+        result: (operator_type
+          parameter: (primitive_type)
+          result: (primitive_type))))
+    (constant_declaration
+      name: (identifier)
+      type: (function_type
+        parameter: (primitive_type)
+        result: (operator_type
+          result: (primitive_type))))
+    (constant_declaration
+      name: (identifier)
+      type: (operator_type
+        parameter: (function_type
+          parameter: (primitive_type)
+          result: (primitive_type))
+        result: (primitive_type)))
+    (constant_declaration
+      name: (identifier)
+      type: (function_type
+        parameter: (primitive_type)
+        result: (parenthesized_type
+          type: (operator_type
+            parameter: (primitive_type)
+            result: (primitive_type)))))))
