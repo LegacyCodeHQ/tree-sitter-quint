@@ -2093,3 +2093,43 @@ module UnaryLocalBodyPrecedence {
 ---
 
 (source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) parameter: (annotated_parameter name: (identifier) type: (primitive_type)) return_type: (primitive_type) body: (name_reference name: (identifier))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal))) body: (binary_expression left: (unary_expression operand: (name_reference name: (identifier))) right: (name_reference name: (identifier))))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (value_definition name: (identifier)) body: (name_reference name: (identifier)))) body: (binary_expression left: (unary_expression operand: (name_reference name: (identifier))) right: (name_reference name: (identifier))))) body: (name_reference name: (identifier)))))))
+
+======================================
+Local body operands preserve unary and postfix levels
+======================================
+
+module LocalBodyOperandLevels {
+  pure val seed = 1
+  pure val recordValue = {number: 1}
+  pure def division = {
+    def outer = val saved = 1 - seed
+    -seed / seed
+    seed
+  }
+  pure def fieldCase = {
+    val outer = def inner = val pending
+    seed
+    -recordValue.number()
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (value_definition name: (identifier) value: (record_literal (record_literal_field name: (identifier) value: (integer_literal)))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (name_reference name: (identifier)))) body: (binary_expression left: (unary_expression operand: (name_reference name: (identifier))) right: (name_reference name: (identifier))))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (value_definition name: (identifier)) body: (name_reference name: (identifier)))) body: (unary_expression operand: (field_access_expression object: (name_reference name: (identifier)) field: (identifier))))) body: (unit_literal))))))
+
+======================================
+Power remains inside unary local bodies
+======================================
+
+module PowerLocalBody {
+  pure val seed = 1
+  pure def result = {
+    def outer = val saved = 1 - seed
+    -seed ^ 2
+    seed
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (integer_literal)) (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (name_reference name: (identifier)))) body: (unary_expression operand: (binary_expression left: (name_reference name: (identifier)) right: (integer_literal))))) body: (name_reference name: (identifier)))))))

@@ -120,53 +120,53 @@ const identifierOrHole = $ => choice(
   $.hole,
 );
 
-function binaryExpression($, expression, rightExpression = expression) {
+function binaryExpression($, expression) {
   return choice(
     prec.left(PREC.IMPLICATION, seq(
       field("left", expression),
       field("operator", "implies"),
-      field("right", rightExpression),
+      field("right", expression),
     )),
     prec.left(PREC.LEADS_TO, seq(
       field("left", expression),
       field("operator", "leadsTo"),
-      field("right", rightExpression),
+      field("right", expression),
     )),
     prec.left(PREC.EQUIVALENCE, seq(
       field("left", expression),
       field("operator", "iff"),
-      field("right", rightExpression),
+      field("right", expression),
     )),
     prec.left(PREC.DISJUNCTION, seq(
       field("left", expression),
       field("operator", "or"),
-      field("right", rightExpression),
+      field("right", expression),
     )),
     prec.left(PREC.CONJUNCTION, seq(
       field("left", expression),
       field("operator", "and"),
-      field("right", rightExpression),
+      field("right", expression),
     )),
     // ANTLR's relations alternative gives equality and ordering equal precedence.
     prec.left(PREC.RELATION, seq(
       field("left", expression),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
-      field("right", rightExpression),
+      field("right", expression),
     )),
     prec.left(PREC.ADDITIVE, seq(
       field("left", expression),
       field("operator", choice("+", "-")),
-      field("right", rightExpression),
+      field("right", expression),
     )),
     prec.left(PREC.MULTIPLICATIVE, seq(
       field("left", expression),
       field("operator", choice("*", alias($._division, "/"), "%")),
-      field("right", rightExpression),
+      field("right", expression),
     )),
     prec.right(PREC.POWER, seq(
       field("left", expression),
       field("operator", "^"),
-      field("right", rightExpression),
+      field("right", expression),
     )),
   );
 }
@@ -185,6 +185,27 @@ function callExpression($, expression) {
     )),
     optional(","),
     ")",
+  ));
+}
+
+// Body operands can stop before a later local body, just like initializer
+// operands, while the explicit right levels preserve operator precedence.
+function localBodyBinaryExpression($, left, powerAllowed = true) {
+  const levels = [
+    [PREC.IMPLICATION, "implies", $._init_leads],
+    [PREC.LEADS_TO, "leadsTo", $._init_iff],
+    [PREC.EQUIVALENCE, "iff", $._init_or],
+    [PREC.DISJUNCTION, "or", $._init_and],
+    [PREC.CONJUNCTION, "and", $._init_equality],
+    [PREC.RELATION, choice("==", "!=", "<", "<=", ">", ">="), $._init_add],
+    [PREC.ADDITIVE, choice("+", "-"), $._init_mul],
+    [PREC.MULTIPLICATIVE, choice("*", alias($._division, "/"), "%"), $._init_unary],
+    ...(powerAllowed ? [[PREC.POWER, "^", $._init_unary]] : []),
+  ];
+  return choice(...levels.map(([priority, operator, right]) =>
+    (priority === PREC.POWER ? prec.right : prec.left)(priority, seq(
+      field("left", left), field("operator", operator), field("right", right),
+    )),
   ));
 }
 
@@ -548,7 +569,7 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
-    [$._body_power, $._body_ufcs_expression, $._body_field_expression],
+    [$._local_delimited_body, $._local_delimited_postfix],
     [$._body_power, $._body_index_expression],
     [$._body_ufcs_expression, $._body_field_expression],
     [$._init_atom, $._body_call_expression],
@@ -1379,7 +1400,7 @@ export default grammar({
       alias($._init_assignment_rhs_relation_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_relation_expression: $ => prec.dynamic(8, seq(
+    _init_assignment_rhs_relation_expression: $ => prec.dynamic(16, seq(
       field("left", $._init_assignment_rhs_closed_relation),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
       field("right", $._init_assignment_rhs_add),
@@ -1391,7 +1412,7 @@ export default grammar({
     ),
 
     _init_assignment_rhs_add_expression: $ => choice(
-      prec.dynamic(8, seq(
+      prec.dynamic(16, seq(
         field("left", $._init_assignment_rhs_closed_add),
         field("operator", choice("+", "-")),
         field("right", $._init_assignment_rhs_mul),
@@ -1408,7 +1429,7 @@ export default grammar({
       alias($._init_assignment_rhs_mul_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_mul_expression: $ => prec.dynamic(8, seq(
+    _init_assignment_rhs_mul_expression: $ => prec.dynamic(16, seq(
       field("left", $._init_assignment_rhs_closed_mul),
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_unary),
@@ -1421,7 +1442,7 @@ export default grammar({
       alias($._init_assignment_rhs_closed_relation_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_closed_relation_expression: $ => prec.dynamic(8, seq(
+    _init_assignment_rhs_closed_relation_expression: $ => prec.dynamic(16, seq(
       field("left", $._init_assignment_rhs_closed_relation),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
       field("right", $._init_assignment_rhs_closed_add),
@@ -1432,7 +1453,7 @@ export default grammar({
       alias($._init_assignment_rhs_closed_add_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_closed_add_expression: $ => prec.dynamic(8, seq(
+    _init_assignment_rhs_closed_add_expression: $ => prec.dynamic(16, seq(
       field("left", $._init_assignment_rhs_closed_add),
       field("operator", choice("+", "-")),
       field("right", $._init_assignment_rhs_closed_mul),
@@ -1443,7 +1464,7 @@ export default grammar({
       alias($._init_assignment_rhs_closed_mul_expression, $.binary_expression),
     ),
 
-    _init_assignment_rhs_closed_mul_expression: $ => prec.dynamic(8, seq(
+    _init_assignment_rhs_closed_mul_expression: $ => prec.dynamic(16, seq(
       field("left", $._init_assignment_rhs_closed_mul),
       field("operator", choice("*", alias($._division, "/"), "%")),
       field("right", $._init_closed_unary),
@@ -1603,7 +1624,7 @@ export default grammar({
       "]",
     )),
 
-    _init_ufcs_expression: $ => prec.dynamic(17, seq(
+    _init_ufcs_expression: $ => prec.dynamic(18, seq(
       field("receiver", $._init_postfix),
       ".",
       field("method", choice($.identifier, $.qualified_identifier, $.reserved_operator)),
@@ -1885,9 +1906,7 @@ export default grammar({
         field("definition", alias($._local_operator_header_declaration, $.operator_definition)),
         field("body", $._initializer_expression),
       )),
-      // A boundary (10) ranks below a call (13) or index (12), but arithmetic plus
-      // field access plus this boundary (18) ranks above a method call (17).
-      // Keep completed arithmetic or nested initializers before a delimited body;
+      // Keep completed arithmetic or nested initializers before a required body;
       // body delimiters must not become a postfix continuation on the initializer's final operand.
       prec.dynamic(10, seq(
         field("definition", choice(
@@ -1909,8 +1928,19 @@ export default grammar({
       alias($._local_delimited_binary, $.binary_expression),
       alias($._local_delimited_field, $.field_access_expression),
     ),
-    _local_delimited_binary: $ => prec.dynamic(4, binaryExpression($, choice($.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal), $._expression)),
-    _local_delimited_field: $ => prec.dynamic(4, fieldAccessExpression($, $._local_delimited_body)),
+    _local_delimited_binary: $ => prec.dynamic(13, choice(
+      localBodyBinaryExpression($, $._local_delimited_postfix),
+      localBodyBinaryExpression($, choice(
+        alias($._local_delimited_binary, $.binary_expression),
+        alias($._body_unary_expression, $.unary_expression),
+      ), false),
+    )),
+    _local_delimited_field: $ => prec.dynamic(4, fieldAccessExpression($, $._local_delimited_postfix)),
+    _local_delimited_postfix: $ => choice(
+      $.name_reference, $.namespace_access_expression,
+      $.unit_literal, $.parenthesized_expression, $.tuple_literal, $.list_literal,
+      alias($._local_delimited_field, $.field_access_expression),
+    ),
     // Unweighted unary bodies retain the same closed operand levels as an
     // initializer; a relation or multiplication cannot become the unary operand.
     _body_unary_expression: $ => seq(
