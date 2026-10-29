@@ -1467,6 +1467,7 @@ export default grammar({
       // A subtraction continuation may contain a bare def header whose body
       // diagnoses '='. Prefer that continuation over a unary-minus body, without
       // raising the priority of implementation-free headers in other contexts.
+      // Implemented headers retain that preference through compound local bodies.
       prec.dynamic(6, seq(
         field("left", $._init_closed_add),
         field("operator", "-"),
@@ -1479,9 +1480,9 @@ export default grammar({
         field("definition", alias($._local_bare_operator_header, $.operator_definition)),
         field("body", $._initializer_expression),
       ),
-      prec.dynamic(2, seq(
+      prec.dynamic(8, seq(
         field("definition", alias($._local_operator_definition_unterminated, $.operator_definition)),
-        field("body", choice($.name_reference, $.namespace_access_expression)),
+        field("body", $._initializer_expression),
       )),
     )),
 

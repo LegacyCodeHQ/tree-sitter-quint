@@ -8029,7 +8029,7 @@
           },
           {
             "type": "PREC_DYNAMIC",
-            "value": 2,
+            "value": 8,
             "content": {
               "type": "SEQ",
               "members": [
@@ -8050,17 +8050,8 @@
                   "type": "FIELD",
                   "name": "body",
                   "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "name_reference"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "namespace_access_expression"
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_initializer_expression"
                   }
                 }
               ]
