@@ -274,3 +274,27 @@ module NondetSemicolon {
             name: (identifier))
           value: (name_reference
             name: (identifier)))))))
+
+========================================
+Nondeterministic bindings before tuple and list bodies
+========================================
+
+module NondetBoundaries {
+  var x: int
+  action unary = {
+    nondet n = Set(1, 2).oneOf()
+    x' = -n
+  }
+  def listBody = {
+    nondet n = Set(1, 2).oneOf()
+    [n == 1, true].head()
+  }
+  def tupleBody = {
+    nondet n = Set(1, 2).oneOf()
+    (n, n) == (1, 1)
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (variable_declaration name: (identifier) type: (primitive_type)) (operator_definition name: (identifier) body: (block_expression binding: (nondet_binding name: (identifier) value: (ufcs_call_expression receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) method: (identifier))) expression: (assignment_expression target: (primed_identifier name: (identifier)) value: (unary_expression operand: (name_reference name: (identifier)))))) (operator_definition name: (identifier) body: (block_expression binding: (nondet_binding name: (identifier) value: (ufcs_call_expression receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) method: (identifier))) expression: (ufcs_call_expression receiver: (list_literal element: (binary_expression left: (name_reference name: (identifier)) right: (integer_literal)) element: (boolean_literal)) method: (identifier)))) (operator_definition name: (identifier) body: (block_expression binding: (nondet_binding name: (identifier) value: (ufcs_call_expression receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) method: (identifier))) expression: (binary_expression left: (tuple_literal element: (name_reference name: (identifier)) element: (name_reference name: (identifier))) right: (tuple_literal element: (integer_literal) element: (integer_literal)))))))

@@ -983,11 +983,11 @@ export default grammar({
       "}",
     ),
 
-    nondet_binding: $ => prec(1, seq(
+    nondet_binding: $ => prec("local_value", seq(
       "nondet",
       field("name", $._normal_call_name),
       "=",
-      field("value", $._expression),
+      field("value", $._initializer_expression),
       optional(";"),
     )),
 
