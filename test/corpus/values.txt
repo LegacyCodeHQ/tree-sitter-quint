@@ -355,3 +355,53 @@ module Numbers {
     (value_definition
       name: (identifier)
       value: (integer_literal))))
+
+========================================
+Value definitions allow empty parameter lists
+========================================
+
+module EmptyValueParameters {
+  pure val answer() = 42
+  val truth(): bool = true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (value_definition
+      name: (identifier)
+      type: (primitive_type)
+      value: (boolean_literal))))
+
+========================================
+Local value definitions allow empty parameter lists
+========================================
+
+module LocalEmptyValueParameters {
+  pure def identity(n: int): int = {
+    pure val x(): int = n
+    x
+  }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      parameter: (annotated_parameter name: (identifier) type: (primitive_type))
+      return_type: (primitive_type)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            type: (primitive_type)
+            value: (name_reference name: (identifier)))
+          body: (name_reference name: (identifier)))))))

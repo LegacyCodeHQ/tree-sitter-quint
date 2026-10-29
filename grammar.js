@@ -196,6 +196,7 @@ export default grammar({
       choice(
         seq(
           field("name", $._normal_call_name),
+          optional(seq("(", ")")),
           optional(seq(
             ":",
             field("type", $._type),
@@ -970,6 +971,7 @@ export default grammar({
       optional(field("qualifier", "pure")),
       "val",
       field("name", $._normal_call_name),
+      optional(seq("(", ")")),
       optional(seq(
         ":",
         field("type", $._type),
@@ -980,11 +982,13 @@ export default grammar({
     _local_value_definition: $ => seq(
       optional(field("qualifier", "pure")),
       "val",
-      field("name", choice(
-        $._normal_call_name,
-        $.tuple_pattern,
-        $.record_pattern,
-      )),
+      choice(
+        seq(
+          field("name", $._normal_call_name),
+          optional(seq("(", ")")),
+        ),
+        field("name", choice($.tuple_pattern, $.record_pattern)),
+      ),
       optional(seq(
         ":",
         field("type", $._type),
@@ -997,11 +1001,13 @@ export default grammar({
     _local_value_definition_unterminated: $ => seq(
       optional(field("qualifier", "pure")),
       "val",
-      field("name", choice(
-        $._normal_call_name,
-        $.tuple_pattern,
-        $.record_pattern,
-      )),
+      choice(
+        seq(
+          field("name", $._normal_call_name),
+          optional(seq("(", ")")),
+        ),
+        field("name", choice($.tuple_pattern, $.record_pattern)),
+      ),
       optional(seq(
         ":",
         field("type", $._type),
