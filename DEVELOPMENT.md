@@ -76,6 +76,46 @@ bun run generate
 bun run check:generated
 ```
 
+## Quint 0.33 audit and remaining diagnostic differences
+
+The grammar has also been checked against the exact upstream `v0.33.0` release
+(`d7ef819575c1ebcad7ba11018ce6c64377cfbe3c`). Its ANTLR grammar and generated
+parser are unchanged from `v0.32.0`. Validation includes the release's 77 example
+files with both `quint parse` and `quint typecheck`, and differential acceptance
+and source-spanned tree checks on generated expressions and local definitions.
+The pinned development compiler and package versions still target 0.32.0;
+use `QUINT_CLI` to repeat the checks with a 0.33.0 installation.
+
+There are seven known differences on malformed input, retained under
+[`test/known-reference-differences/`](test/known-reference-differences/).
+ANTLR greedily continues an initializer as a call and then diagnoses an
+unexpected `=` or a reserved word used as an identifier. Tree-sitter can find
+an earlier binding boundary that produces a syntax tree without an error.
+For example, Quint rejects this with QNT008, while Tree-sitter parses it:
+
+```quint
+module DiagnosticDifference {
+  pure def x = true
+  pure def result = {
+    def local = x
+    () or -1
+  }
+}
+```
+
+These cases remain compatibility limits, rather than supported Quint examples.
+They are outside `test/fixtures/`, whose parity checks must pass. Reproduce the
+known failing comparison explicitly with:
+
+```sh
+QUINT_CLI=/path/to/quint-0.33.0 \
+  node scripts/check-syntax-acceptance-parity.mjs test/known-reference-differences
+```
+
+This command currently reports seven disagreements and exits unsuccessfully.
+Use the Quint compiler to determine validity; an error-free editor tree alone
+does not establish that a program is accepted by Quint.
+
 ## Parsing locally
 
 The Tree-sitter manifest associates the grammar with `.qnt` and `.quint` files

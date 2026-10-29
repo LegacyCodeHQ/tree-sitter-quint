@@ -1,4 +1,5 @@
 import assert from "node:assert";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import Parser from "tree-sitter";
 
@@ -57,9 +58,19 @@ test("incremental edits across local binding continuations match fresh parsing",
     return result;
   };
 
-  for (const [before, after] of sources.slice(1).flatMap((source, index) => [
-    [sources[index], source],
-    [source, sources[index]],
+  const pairs = sources.slice(1).map((source, index) => [sources[index], source]);
+  for (const [fixture, boundary] of [
+    ["structure-local-operator-boundaries.qnt", "def f = x"],
+    ["structure-prefix-local-boundaries.qnt", "else -x"],
+    ["structure-nondet-boundaries.qnt", ".oneOf()"],
+    ["structure-assignment-closure.qnt", "x' = 2"],
+  ]) {
+    const before = readFileSync(new URL(`../../test/fixtures/${fixture}`, import.meta.url), "utf8");
+    pairs.push([before, before.replaceAll(`${boundary}\n`, `${boundary};\n`)]);
+  }
+
+  for (const [before, after] of pairs.flatMap(([before, after]) => [
+    [before, after], [after, before],
   ])) {
     let start = 0;
     while (start < before.length && start < after.length && before[start] === after[start]) start++;
