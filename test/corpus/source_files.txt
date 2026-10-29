@@ -19,3 +19,25 @@ module Executable {}
   (hashbang)
   (module_definition
     name: (identifier)))
+
+========================================
+A vertical tab is not Quint whitespace
+:error
+========================================
+
+module InvalidWhitespace {pure val answer = 42 }
+
+---
+
+(source_file)
+
+========================================
+A form feed is not Quint whitespace
+:error
+========================================
+
+module InvalidWhitespace {pure val answer = 42 }
+
+---
+
+(source_file)

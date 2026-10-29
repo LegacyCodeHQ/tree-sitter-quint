@@ -136,7 +136,7 @@ export default grammar({
   ],
 
   extras: $ => [
-    /\s/,
+    /[ \t\r\n]/,
     $.documentation_comment,
     $.comment,
   ],
