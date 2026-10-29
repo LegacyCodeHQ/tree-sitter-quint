@@ -405,3 +405,47 @@ module LocalEmptyValueParameters {
             type: (primitive_type)
             value: (name_reference name: (identifier)))
           body: (name_reference name: (identifier)))))))
+
+========================================
+Annotated tuple destructuring is rejected
+:error
+========================================
+
+module BadTuple { val (a, b): (int, int) = (1, 2) }
+
+---
+
+(source_file)
+
+========================================
+Annotated record destructuring is rejected
+:error
+========================================
+
+module BadRecord { val {a, b}: {a: int, b: int} = {a: 1, b: 2} }
+
+---
+
+(source_file)
+
+========================================
+Annotated local tuple destructuring is rejected
+:error
+========================================
+
+module BadLocalTuple { pure def f() = { val (a, b): (int, int) = (1, 2); a } }
+
+---
+
+(source_file)
+
+========================================
+Annotated local record destructuring is rejected
+:error
+========================================
+
+module BadLocalRecord { pure def f() = { val {a, b}: {a: int, b: int} = {a: 1, b: 2}; a } }
+
+---
+
+(source_file)

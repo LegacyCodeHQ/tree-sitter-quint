@@ -216,10 +216,6 @@ export default grammar({
         ),
         seq(
           field("name", choice($.tuple_pattern, $.record_pattern)),
-          optional(seq(
-            ":",
-            field("type", $._type),
-          )),
           "=",
           field("value", $._expression),
         ),
@@ -1000,13 +996,13 @@ export default grammar({
         seq(
           field("name", $._normal_call_name),
           optional(seq("(", ")")),
+          optional(seq(
+            ":",
+            field("type", $._type),
+          )),
         ),
         field("name", choice($.tuple_pattern, $.record_pattern)),
       ),
-      optional(seq(
-        ":",
-        field("type", $._type),
-      )),
       "=",
       field("value", $._expression),
       choice(";", $._newline),
@@ -1019,13 +1015,13 @@ export default grammar({
         seq(
           field("name", $._normal_call_name),
           optional(seq("(", ")")),
+          optional(seq(
+            ":",
+            field("type", $._type),
+          )),
         ),
         field("name", choice($.tuple_pattern, $.record_pattern)),
       ),
-      optional(seq(
-        ":",
-        field("type", $._type),
-      )),
       "=",
       field("value", $._expression),
     ),
