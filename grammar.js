@@ -8,19 +8,21 @@
 // @ts-check
 
 const PREC = {
-  PAIR: -1,
-  ASSIGNMENT: 0,
-  IMPLICATION: 1,
-  LEADS_TO: 2,
-  EQUIVALENCE: 3,
-  DISJUNCTION: 4,
-  CONJUNCTION: 5,
-  RELATION: 6,
-  ADDITIVE: 8,
-  MULTIPLICATIVE: 9,
-  UNARY: 10,
-  POWER: 11,
-  POSTFIX: 12,
+  // Bodies extend through a pair; right associativity keeps the pair inside.
+  BODY: 0,
+  PAIR: 0,
+  ASSIGNMENT: 1,
+  IMPLICATION: 2,
+  LEADS_TO: 3,
+  EQUIVALENCE: 4,
+  DISJUNCTION: 5,
+  CONJUNCTION: 6,
+  RELATION: 7,
+  ADDITIVE: 9,
+  MULTIPLICATIVE: 10,
+  UNARY: 11,
+  POWER: 12,
+  POSTFIX: 13,
 };
 
 const RESERVED_IDENTIFIERS = [
@@ -145,7 +147,6 @@ export default grammar({
     [$.lambda_expression, $.tuple_pattern, $.name_reference],
     [$.namespace_access_expression, $.qualified_identifier],
     [$.operator_type, $.tuple_type],
-    [$.nondet_binding, $.binary_expression],
   ],
 
   rules: {
@@ -916,7 +917,7 @@ export default grammar({
       "'",
     ),
 
-    if_expression: $ => prec.right(seq(
+    if_expression: $ => prec.right(PREC.BODY, seq(
       "if",
       "(",
       field("condition", $._expression),
@@ -953,23 +954,23 @@ export default grammar({
     ),
 
     nested_definition_expression: $ => choice(
-      prec.right(seq(
+      prec.right(PREC.BODY, seq(
         field("definition", alias($._local_value_header, $.value_definition)),
         field("body", $._expression),
       )),
-      prec.right(seq(
+      prec.right(PREC.BODY, seq(
         field("definition", alias($._local_value_definition_unterminated, $.value_definition)),
         field("body", $._expression),
       )),
-      prec.right(seq(
+      prec.right(PREC.BODY, seq(
         field("definition", alias($._local_value_definition, $.value_definition)),
         field("body", $._expression),
       )),
-      prec.right(seq(
+      prec.right(PREC.BODY, seq(
         field("definition", $.operator_definition),
         field("body", $._expression),
       )),
-      prec.right(seq(
+      prec.right(PREC.BODY, seq(
         field("definition", alias($._operator_header_declaration, $.operator_definition)),
         field("body", $._expression),
       )),
@@ -1024,7 +1025,7 @@ export default grammar({
       field("value", $._expression),
     ),
 
-    lambda_expression: $ => prec.right(seq(
+    lambda_expression: $ => prec.right(PREC.BODY, seq(
       choice(
         field("parameter", identifierOrHole($)),
         seq(

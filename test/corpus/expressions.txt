@@ -1055,3 +1055,35 @@ module InvalidComma { pure val value = true.and(false,) }
 ---
 
 (source_file)
+
+========================================
+Pairs remain inside lambda conditional and local definition bodies
+========================================
+
+module PairBodies {
+  pure def mapped = x => x -> 1
+  pure val conditional = if (true) 1 -> 2 else 2 -> 3
+  pure val local = val x = 1 x -> 2
+  pure val terminated = val x = 1; x -> 2
+}
+
+---
+
+(source_file
+  (module_definition name: (identifier)
+    (operator_definition name: (identifier)
+      body: (lambda_expression parameter: (identifier)
+        body: (pair_expression left: (name_reference name: (identifier)) right: (integer_literal))))
+    (value_definition name: (identifier)
+      value: (if_expression condition: (boolean_literal)
+        consequence: (pair_expression left: (integer_literal) right: (integer_literal))
+        alternative: (pair_expression left: (integer_literal) right: (integer_literal))))
+    (value_definition name: (identifier)
+      value: (nested_definition_expression
+        definition: (value_definition name: (identifier) value: (integer_literal))
+        body: (pair_expression left: (name_reference name: (identifier)) right: (integer_literal))))
+    (value_definition name: (identifier)
+      value: (nested_definition_expression
+        definition: (value_definition name: (identifier) value: (integer_literal))
+        body: (pair_expression left: (name_reference name: (identifier)) right: (integer_literal))))
+))
