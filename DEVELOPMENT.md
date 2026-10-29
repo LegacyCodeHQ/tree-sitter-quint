@@ -366,3 +366,8 @@ recognition still runs after edits.
 The [recognizer allocation experiment](docs/performance/recognizer-allocations.md)
 records compact result buffers, temporary arena allocation, and failure-injection
 checks. Native allocation counters are distinct from process peak RSS.
+
+The [incremental recognition investigation](docs/performance/incremental-recognition.md)
+explains the scanner lifetime limit in the installed Tree-sitter runtime and why
+per-scanner caches do not provide reuse across editor parses. Check real binding
+edit timings before treating an internal cache-work reduction as a speedup.

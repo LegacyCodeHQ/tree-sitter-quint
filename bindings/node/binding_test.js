@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { test } from "node:test";
 import Parser from "tree-sitter";
 
@@ -135,5 +135,38 @@ test("incremental edits across local binding continuations match fresh parsing",
     assert.equal(fresh.rootNode.hasError, false);
     assert.equal(incremental.rootNode.toString(), fresh.rootNode.toString());
     assert.deepEqual(ranges(incremental), ranges(fresh));
+  }
+});
+
+test("token-preserving edits and recovery transitions match independent fresh trees", async () => {
+  const { default: language } = await import("./index.js");
+  const snapshot = node => [node.type, node.isNamed, node.isMissing, node.hasError,
+    node.startIndex, node.endIndex, node.startPosition, node.endPosition,
+    node.children.map((child, i) => [node.fieldNameForChild(i), snapshot(child)])];
+  const point = (source, index) => {
+    const lines = source.slice(0, index).split("\n");
+    return { row: lines.length - 1, column: lines.at(-1).length };
+  };
+  const directory = new URL("../../test/fixtures/", import.meta.url);
+  for (const file of readdirSync(directory).filter(file => file.endsWith(".qnt")).sort()) {
+    const original = readFileSync(new URL(file, directory), "utf8");
+    const parser = new Parser();
+    parser.setLanguage(language);
+    let before = original, tree = parser.parse(original);
+    const renamed = original.replace(/(module\s+)([A-Za-z_][A-Za-z_0-9]*)/, "$1$2Renamed");
+    for (const after of ["/* \u03bb \ud83c\udf33 \0 */\n" + original, renamed,
+      original + "/* unfinished", original, original.replace(/}([^}]*)$/, "$1"), original]) {
+      // A whole-buffer edit exercises scanner state restoration without hiding
+      // changed byte ranges behind a reused declaration in the test harness.
+      tree.edit({ startIndex: 0, oldEndIndex: before.length, newEndIndex: after.length,
+        startPosition: { row: 0, column: 0 }, oldEndPosition: point(before, before.length),
+        newEndPosition: point(after, after.length) });
+      tree = parser.parse(after, tree);
+      const freshParser = new Parser();
+      freshParser.setLanguage(language);
+      const fresh = freshParser.parse(after);
+      assert.deepEqual(snapshot(tree.rootNode), snapshot(fresh.rootNode), file);
+      before = after;
+    }
   }
 });
