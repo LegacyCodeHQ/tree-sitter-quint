@@ -190,9 +190,12 @@ The audit refuses another compiler version, including the root package's current
 0.32 reference. CI uses the 0.33 reference for both the ordinary suite and audit.
 No global Quint installation is required.
 
-`scripts/quint-033-cases.mjs` generates 3,857 deterministic programs covering
-headers, local-definition boundaries, comments and line endings, nested types,
-match and lambda forms, nested calls, and assignment/subtraction chains. The
+`scripts/quint-033-cases.mjs` and `scripts/quint-033-lexical-cases.mjs` generate
+5,042 deterministic programs covering headers, local-definition boundaries, comments and line endings, nested types,
+match and lambda forms, nested calls, assignment/subtraction chains, imports
+and exports, qualified identifiers, sum variants, and literal/comment boundaries
+(including embedded NUL characters and unterminated tokens). Type/row variables
+in the additional matrix are bound to keep semantic scope errors separate from syntax checks. The
 runner asserts both the case count and a SHA-256 fingerprint. Deliberate matrix
 changes require reviewing coverage and updating that fingerprint.
 
@@ -211,3 +214,14 @@ audit artifacts for seven days. To reproduce a structural or token mismatch,
 use `scripts/check-parse-structure-parity.mjs` or
 `scripts/check-tokenization-parity.mjs` with the reported case and the same
 `QUINT_CLI` environment setting.
+
+The NUL regressions under `test/corpus/nul_characters.txt` and
+`test/fixtures/lexical-nul-characters.qnt` intentionally contain literal NUL bytes.
+The generated lexer excludes NUL from its character classes, so the external
+scanner recognizes NUL-containing strings, comments, and hashbangs. Ordinary
+tokens retain their existing generated-lexer behavior and tree node shapes.
+Incremental checks cover transitions between ordinary and NUL-containing tokens.
+
+The structure checker converts ANTLR code-point offsets to UTF-16 offsets before
+comparing with Node Tree-sitter spans. Emoji in strings, comments, or earlier
+source text must not cause spurious structure mismatches.
