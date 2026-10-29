@@ -65,3 +65,89 @@ module Documented {
     (value_definition
       name: (identifier)
       value: (integer_literal))))
+
+========================================
+Reject documentation comments inside expressions
+:error
+========================================
+
+module InvalidDocumentation { pure val x = 1
+/// misplaced
++ 2 }
+
+---
+
+(source_file)
+
+========================================
+Reject documentation comments between qualifier tokens
+:error
+========================================
+
+module InvalidDocumentation { pure
+/// misplaced
+val x = 1 }
+
+---
+
+(source_file)
+
+========================================
+Reject dangling documentation before a module closes
+:error
+========================================
+
+module InvalidDocumentation { pure val x = 1
+/// misplaced
+}
+
+---
+
+(source_file)
+
+========================================
+Reject four-slash documentation inside expressions
+:error
+========================================
+
+module InvalidDocumentation { pure val x = 1
+//// misplaced
++ 2 }
+
+---
+
+(source_file)
+
+========================================
+Carriage returns do not terminate line comments
+========================================
+
+module CarriageReturnComment {
+  // a CR is part of this comment  pure val hidden = 0
+  pure val answer = 42
+}
+
+---
+
+(source_file
+  (module_definition name: (identifier)
+    (comment)
+    (value_definition name: (identifier) value: (integer_literal))))
+
+========================================
+Division and comment prefixes stay distinct
+========================================
+
+module DivisionComments {
+  pure val a = 8/2
+  pure val b = 8 / /* between operator and operand */ 2
+  pure val c = 8 // before the division
+    / 2
+  pure val d = 8 / // after the division
+    2
+  pure val e = 8 /* before the division */ / 2
+}
+
+---
+
+(source_file (module_definition name: (identifier) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (integer_literal))) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) (comment) right: (integer_literal))) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) (comment) right: (integer_literal))) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) (comment) right: (integer_literal))) (value_definition name: (identifier) value: (binary_expression left: (integer_literal) (comment) right: (integer_literal)))))

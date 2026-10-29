@@ -1114,6 +1114,10 @@
         {
           "type": "_declaration",
           "named": true
+        },
+        {
+          "type": "documentation_comment",
+          "named": true
         }
       ]
     }
@@ -1835,6 +1839,14 @@
       "required": false,
       "types": [
         {
+          "type": "comment",
+          "named": true
+        },
+        {
+          "type": "documentation_comment",
+          "named": true
+        },
+        {
           "type": "hashbang",
           "named": true
         },
@@ -2433,8 +2445,7 @@
   },
   {
     "type": "documentation_comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "else",

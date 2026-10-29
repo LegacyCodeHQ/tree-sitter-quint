@@ -1,5 +1,8 @@
 * text=auto eol=lf
 
+# This lexer fixture must retain its literal CRLF bytes after checkout.
+test/fixtures/tokenization-documentation-crlf.qnt -text whitespace=cr-at-eol
+
 # Generated source files
 src/*.json linguist-generated
 src/parser.c linguist-generated

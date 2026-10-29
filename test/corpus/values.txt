@@ -74,9 +74,9 @@ module LeadingZero {
     name: (identifier)
     (value_definition
       name: (identifier)
-      (ERROR
-        (integer_literal))
-      value: (integer_literal))))
+      value: (integer_literal))
+    (ERROR
+      (integer_literal))))
 
 ========================================
 Zero-prefixed separator is rejected

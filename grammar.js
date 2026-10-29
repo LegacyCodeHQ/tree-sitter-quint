@@ -132,12 +132,11 @@ export default grammar({
   ],
 
   externals: $ => [
-    $._newline,
+    $._division,
   ],
 
   extras: $ => [
     /[ \t\r\n]/,
-    $.documentation_comment,
     $.comment,
   ],
 
@@ -158,16 +157,18 @@ export default grammar({
   rules: {
     source_file: $ => seq(
       optional($.hashbang),
-      repeat($.module_definition),
+      repeat(choice($.documentation_comment, $.module_definition)),
+      // An empty line comment at EOF remains useful in an editor buffer.
+      optional(alias(token("//"), $.comment)),
     ),
 
-    hashbang: _ => token(seq("#!", /[^\r\n]*/)),
+    hashbang: _ => token(seq("#!", /[^\n]*/, optional("\n"))),
 
     module_definition: $ => seq(
       "module",
       field("name", choice($.identifier, $.qualified_identifier)),
       "{",
-      repeat($._declaration),
+      repeat(seq(repeat($.documentation_comment), $._declaration)),
       "}",
     ),
 
@@ -1001,7 +1002,7 @@ export default grammar({
       ),
       "=",
       field("value", $._expression),
-      choice(";", $._newline),
+      ";",
     ),
 
     _local_value_definition_unterminated: $ => prec("local_value", seq(
@@ -1176,7 +1177,7 @@ export default grammar({
       )),
       prec.left(PREC.MULTIPLICATIVE, seq(
         field("left", $._expression),
-        field("operator", choice("*", "/", "%")),
+        field("operator", choice("*", alias($._division, "/"), "%")),
         field("right", $._expression),
       )),
       prec.right(PREC.POWER, seq(
@@ -1192,10 +1193,13 @@ export default grammar({
 
     string_literal: _ => /"[^"]*"/,
 
-    documentation_comment: _ => token(prec(1, seq("///", /[^\r\n]*/))),
+    documentation_comment: _ => token(prec(1, seq("///", /[^\n]*/, optional("\n")))),
 
     comment: _ => token(choice(
-      seq("//", /[^\r\n]*/),
+      seq("//", choice(
+        "\n",
+        seq(/[^/\n]/, /[^\n]*/, optional("\n")),
+      )),
       seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"),
     )),
 

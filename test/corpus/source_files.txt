@@ -41,3 +41,14 @@ module InvalidWhitespace {pure val answer = 42 }
 ---
 
 (source_file)
+
+========================================
+Carriage returns do not terminate hashbang lines
+========================================
+
+#!/usr/bin/quintmodule Hidden {}
+module Visible {}
+
+---
+
+(source_file (hashbang) (module_definition name: (identifier)))
