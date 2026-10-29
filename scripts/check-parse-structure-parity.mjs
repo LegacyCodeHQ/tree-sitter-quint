@@ -124,10 +124,6 @@ const typeKinds = {
   TypeVarCaseContext: "type_variable",
 };
 
-function contextSpan(node) {
-  return { start: node.start.startIndex, end: node.stop.stopIndex + 1 };
-}
-
 function literalOrIdentifierKind(text) {
   if (text === "true" || text === "false") return "boolean_literal";
   if (text.startsWith("\"")) return "string_literal";
@@ -161,6 +157,20 @@ function declarationKind(node) {
 }
 
 function antlrSignatures(source, reference) {
+  // ANTLR CharStreams indexes Unicode code points; Node Tree-sitter and
+  // String.slice index UTF-16 code units. Normalize before comparing spans.
+  const utf16Offsets = [0];
+  let offset = 0;
+  for (const character of source) {
+    offset += character.length;
+    utf16Offsets.push(offset);
+  }
+  function contextSpan(node) {
+    return {
+      start: utf16Offsets[node.start.startIndex],
+      end: utf16Offsets[node.stop.stopIndex + 1],
+    };
+  }
   const lexer = new reference.QuintLexer(reference.CharStreams.fromString(source));
   const parser = new reference.QuintParser(new reference.CommonTokenStream(lexer));
   lexer.removeErrorListeners();
@@ -180,8 +190,8 @@ function antlrSignatures(source, reference) {
     if (ruleName === "module") {
       const moduleToken = node.children?.find(child => child.text === "module")?.symbol;
       add("module_definition", node, {
-        start: moduleToken?.startIndex ?? node.start.startIndex,
-        end: node.stop.stopIndex + 1,
+        start: utf16Offsets[moduleToken?.startIndex ?? node.start.startIndex],
+        end: utf16Offsets[node.stop.stopIndex + 1],
       });
     } else if (ruleName === "declaration") {
       const kind = declarationKind(node);
@@ -192,11 +202,11 @@ function antlrSignatures(source, reference) {
         kind = node.LPAREN?.() ? "ufcs_call_expression" : "field_access_expression";
       } else if (contextName === "LetInContext") {
         const definition = node.operDef?.();
+        const definitionSpan = definition ? contextSpan(definition) : undefined;
         const definitionText = definition
-          ? source.slice(definition.start.startIndex, definition.stop.stopIndex + 1)
+          ? source.slice(definitionSpan.start, definitionSpan.end)
           : "";
         if (/^nondet\b/.test(definitionText)) {
-          const definitionSpan = contextSpan(definition);
           signatures.push({
             kind: "nondet_let",
             ...contextSpan(node),
@@ -206,7 +216,8 @@ function antlrSignatures(source, reference) {
           kind = undefined;
         }
       } else if (contextName === "LiteralOrIdContext") {
-        kind = literalOrIdentifierKind(source.slice(node.start.startIndex, node.stop.stopIndex + 1));
+        const span = contextSpan(node);
+        kind = literalOrIdentifierKind(source.slice(span.start, span.end));
       }
       if (kind) add(kind, node);
     } else if (ruleName === "type") {
