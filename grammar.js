@@ -141,7 +141,13 @@ export default grammar({
     $.comment,
   ],
 
+  // Keep a local binding's end incomparable with numeric expression precedences.
+  // GLR can then distinguish a continued initializer from a following body.
+  precedences: _ => [["local_value"]],
+
   conflicts: $ => [
+    [$._local_value_definition_unterminated, $.binary_expression],
+    [$._local_value_definition_unterminated, $.index_expression],
     [$._parenthesized_operator_type, $.tuple_type],
     [$.lambda_expression, $.name_reference],
     [$.lambda_expression, $.tuple_pattern],
@@ -997,7 +1003,7 @@ export default grammar({
       choice(";", $._newline),
     ),
 
-    _local_value_definition_unterminated: $ => seq(
+    _local_value_definition_unterminated: $ => prec("local_value", seq(
       optional(field("qualifier", "pure")),
       "val",
       choice(
@@ -1013,7 +1019,7 @@ export default grammar({
       ),
       "=",
       field("value", $._expression),
-    ),
+    )),
 
     lambda_expression: $ => prec.right(PREC.BODY, seq(
       choice(

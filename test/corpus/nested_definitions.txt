@@ -379,3 +379,50 @@ module LocalValueHeaders {
           definition: (value_definition
             name: (identifier))
           body: (integer_literal))))))
+
+========================================
+Local value initializers continue across newlines and comments
+========================================
+
+module MultilineContinuations {
+  pure def indexed(): int = {
+    val xs = List(1, 2)
+      [0]
+    xs
+  }
+  pure def commented(): List[int] = {
+    val xs = List(1, 2)
+      /* keep the chain together */
+      .append(3)
+    xs
+  }
+  pure def blankLines(): List[int] = {
+    val xs = List(1, 2)
+
+      .append(3)
+    xs
+  }
+  pure def arithmetic(): int = {
+    val n = 1
+      + 2
+    n
+  }
+  pure def subtraction(): int = {
+    val n = 3
+      - 1
+    n
+  }
+  pure def booleanContinuation(): bool = {
+    val flag = true
+      and false
+    flag
+  }
+  pure def listBody(): List[int] = {
+    val ignored = 1
+    [2, 3]
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier) (operator_definition name: (identifier) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (index_expression collection: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) index: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (list_type element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (ufcs_call_expression receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) (comment) method: (identifier) argument: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (list_type element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (ufcs_call_expression receiver: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal) argument: (integer_literal)) method: (identifier) argument: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (integer_literal) right: (integer_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (primitive_type) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (binary_expression left: (boolean_literal) right: (boolean_literal))) body: (name_reference name: (identifier))))) (operator_definition name: (identifier) return_type: (list_type element: (primitive_type)) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (integer_literal)) body: (list_literal element: (integer_literal) element: (integer_literal)))))))
