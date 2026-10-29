@@ -96,18 +96,19 @@ The syntax parity checker does this, and reserved identifier diagnostics receive
 error highlighting. The greedy-call reserved-word regressions are part of the
 normal fixture and corpus suites, including the semicolon-disambiguated form.
 
-One original malformed-input case remains under
-[`test/known-reference-differences/`](test/known-reference-differences/):
-a subtraction through an assignment still permits an earlier initializer
-boundary than ANTLR. All other original cases now run in the normal fixture and
-corpus suites. Reproduce the remaining failing comparison with:
+All seven original greedy-boundary diagnostic cases now agree with Quint 0.33
+and run under `test/fixtures/` and `test/corpus/reference_diagnostics.txt` in the
+normal test gate. Their diagnostic kinds and source spans were checked against
+the corresponding ANTLR contexts. Semicolon-disambiguated fixtures and complete
+local operator headers guard against rejecting valid alternatives. There is no
+separate directory of known failing comparisons.
+
+Repeat the normal acceptance check against a 0.33.0 installation with:
 
 ```sh
-QUINT_CLI=/path/to/quint-0.33.0 \
-  node scripts/check-syntax-acceptance-parity.mjs test/known-reference-differences
+QUINT_CLI=/path/to/quint-0.33.0 bun run test:syntax
 ```
 
-This command currently reports one disagreement and exits unsuccessfully.
 Use the Quint compiler to determine validity; an error-free editor tree alone
 does not establish that a program is accepted by Quint.
 

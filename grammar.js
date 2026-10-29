@@ -1239,9 +1239,43 @@ export default grammar({
       field("right", $._init_assignment),
     ),
 
-    _init_assignment: $ => choice(
-      $._init_relation,
+    _init_assignment: $ => $._init_relation,
+    // Keep an assignment's RHS continuation ahead of ending the containing
+    // initializer and reinterpreting '-' as a unary body. Its priority must
+    // balance the fallback cost of an implementation-free local operator header.
+    _init_assignment_rhs_relation: $ => choice(
+      $._init_assignment_rhs_add,
+      alias($._init_assignment_rhs_relation_expression, $.binary_expression),
     ),
+
+    _init_assignment_rhs_relation_expression: $ => prec.dynamic(2, seq(
+      field("left", $._init_closed_relation),
+      field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
+      field("right", $._init_assignment_rhs_add),
+    )),
+
+    _init_assignment_rhs_add: $ => choice(
+      $._init_assignment_rhs_mul,
+      alias($._init_assignment_rhs_add_expression, $.binary_expression),
+    ),
+
+    _init_assignment_rhs_add_expression: $ => prec.dynamic(2, seq(
+      field("left", $._init_closed_add),
+      field("operator", choice("+", "-")),
+      field("right", $._init_assignment_rhs_mul),
+    )),
+
+    _init_assignment_rhs_mul: $ => choice(
+      $._init_unary,
+      alias($._init_assignment_rhs_mul_expression, $.binary_expression),
+    ),
+
+    _init_assignment_rhs_mul_expression: $ => prec.dynamic(2, seq(
+      field("left", $._init_closed_mul),
+      field("operator", choice("*", alias($._division, "/"), "%")),
+      field("right", $._init_unary),
+    )),
+
     _init_unary: $ => choice(
       alias($._init_if_expression, $.if_expression),
       alias($._init_nested_expression, $.nested_definition_expression),
@@ -1327,7 +1361,7 @@ export default grammar({
     _init_assignment_expression: $ => seq(
       field("target", $.primed_identifier),
       "=",
-      field("value", $._init_assignment),
+      field("value", $._init_assignment_rhs_relation),
     ),
 
     _init_unary_expression: $ => seq(
