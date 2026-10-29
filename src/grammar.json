@@ -8002,6 +8002,36 @@
         "type": "CHOICE",
         "members": [
           {
+            "type": "PREC_DYNAMIC",
+            "value": 12,
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "FIELD",
+                  "name": "definition",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_local_bare_value_header"
+                    },
+                    "named": true,
+                    "value": "value_definition"
+                  }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "body",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_initializer_expression"
+                  }
+                }
+              ]
+            }
+          },
+          {
             "type": "SEQ",
             "members": [
               {

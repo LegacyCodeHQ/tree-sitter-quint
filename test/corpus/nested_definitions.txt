@@ -1872,3 +1872,24 @@ module IndexedPrefixInitializer {
 (value_definition name: (identifier) value: (call_expression function: (name_reference name: (identifier)) argument: (integer_literal)))
 (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (value_definition name: (identifier) value: (nested_definition_expression definition: (value_definition name: (identifier) value: (if_expression condition: (boolean_literal) consequence: (integer_literal) alternative: (index_expression collection: (name_reference name: (identifier)) index: (integer_literal)))) body: (name_reference name: (identifier)))) body: (list_literal element: (integer_literal)))))
 (operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression definition: (operator_definition name: (identifier) body: (nested_definition_expression definition: (operator_definition name: (identifier) body: (unary_expression operand: (index_expression collection: (name_reference name: (identifier)) index: (integer_literal)))) body: (name_reference name: (identifier)))) body: (list_literal element: (integer_literal)))))))
+
+======================================
+Subtracted value headers leave unit bodies
+======================================
+
+module SubtractedValueHeader {
+  pure val seed = 1
+  def result = {
+    val saved = seed -val pending()
+    seed
+  }
+}
+
+---
+
+(source_file (module_definition name: (identifier)
+(value_definition name: (identifier) value: (integer_literal))
+(operator_definition name: (identifier) body: (block_expression expression: (nested_definition_expression
+ definition: (value_definition name: (identifier) value: (binary_expression left: (name_reference name: (identifier))
+ right: (nested_definition_expression definition: (value_definition name: (identifier)) body: (unit_literal))))
+ body: (name_reference name: (identifier)))))))

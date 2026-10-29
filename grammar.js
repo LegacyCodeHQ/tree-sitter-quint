@@ -1476,6 +1476,10 @@ export default grammar({
     ),
 
     _init_subtraction_header_expression: $ => prec(1, choice(
+      prec.dynamic(12, seq(
+        field("definition", alias($._local_bare_value_header, $.value_definition)),
+        field("body", $._initializer_expression),
+      )),
       seq(
         field("definition", alias($._local_bare_operator_header, $.operator_definition)),
         field("body", $._initializer_expression),
