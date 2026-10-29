@@ -572,3 +572,33 @@ def first() = { val local = {a: 1} () }
           body: (tuple_literal
             element: (integer_literal)
             element: (integer_literal)))))))
+
+=======================================
+Greedy subtraction before a local def
+=======================================
+
+module GreedyMinus {
+  pure def result = { val saved = seed
+    -def later() = seed
+    seed }
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (name_reference name: (identifier))
+              right: (nested_definition_expression
+                definition: (operator_definition name: (identifier))
+                body: (invalid_equality_expression
+                  left: (unit_literal)
+                  right: (name_reference name: (identifier))))))
+          body: (name_reference name: (identifier)))))))

@@ -1399,10 +1399,25 @@ export default grammar({
       field("right", $._init_add),
     )),
 
-    _init_add_expression: $ => prec.dynamic(1, seq(
-      field("left", $._init_closed_add),
-      field("operator", choice("+", "-")),
-      field("right", $._init_mul),
+    _init_add_expression: $ => choice(
+      prec.dynamic(1, seq(
+        field("left", $._init_closed_add),
+        field("operator", choice("+", "-")),
+        field("right", $._init_mul),
+      )),
+      // A subtraction continuation may contain a bare def header whose body
+      // diagnoses '='. Prefer that continuation over a unary-minus body, without
+      // raising the priority of implementation-free headers in other contexts.
+      prec.dynamic(3, seq(
+        field("left", $._init_closed_add),
+        field("operator", "-"),
+        field("right", alias($._init_subtraction_header_expression, $.nested_definition_expression)),
+      )),
+    ),
+
+    _init_subtraction_header_expression: $ => prec(1, seq(
+      field("definition", alias($._local_bare_operator_header, $.operator_definition)),
+      field("body", $._initializer_expression),
     )),
 
     _init_mul_expression: $ => prec.dynamic(1, seq(
