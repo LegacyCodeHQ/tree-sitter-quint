@@ -67,6 +67,11 @@ bun run benchmark:parser \
   --output /private/tmp/quint-perf-measurements.json
 ```
 
+The current driver also yields between editor operations and records that
+scheduling in schema 3. Historical measurements on this page used synchronous
+workers; see the [memory investigation](memory-investigation.md). Compare both
+bindings with the same driver and scheduling, not across those methods.
+
 Run benchmarks serially with other builds, tests and profiles finished. Five
 fresh processes per binding/workload alternate order by pair. Ordinary release
 bindings have no diagnostic instrumentation. Synthetic inputs vary definition

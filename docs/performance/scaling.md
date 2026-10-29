@@ -51,7 +51,9 @@ summary records the actual edit count. Every incremental tree must match a
 separate fresh parser, and baseline/candidate captures must agree exactly.
 Generated cases also check their expected initial Tree-sitter syntax status.
 
-Reports use schema 2. They retain every timing, input/binary SHA-256, named edit,
+The original reports use schema 2. The current driver uses schema 3 with
+explicit event-loop scheduling; see the [memory investigation](memory-investigation.md)
+before comparing batches. Reports retain every timing, input/binary SHA-256, named edit,
 node/field/flag/range digest, process CPU and peak RSS. An abnormal worker's exit,
 signal, error, stdout and stderr are retained in the failure report. Process CPU
 includes startup and captures; parse wall times exclude capture. As before, RSS

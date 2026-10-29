@@ -139,6 +139,11 @@ process peaks, but does not isolate the cause of the full-worker increase. The
 higher full-worker RSS remains a reported tradeoff; no memory improvement is
 claimed.
 
+The [memory follow-up](memory-investigation.md) adds native allocation accounting
+and controlled capture/collection profiles. It also introduces schema 3 with
+event-loop turns between editor operations. The historical figures above use
+the synchronous schema-2 worker and are not directly comparable to that method.
+
 ## Final validation
 
 - 273 corpus parses, 111 curated token/syntax/structure fixtures, 14 Node/query/

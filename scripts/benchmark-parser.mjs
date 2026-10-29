@@ -32,15 +32,39 @@ function capture(tree) {
   return hash(JSON.stringify(rows));
 }
 if (args.includes("--worker")) {
+  const memoryMode = option("--memory-diagnostics");
+  if (args.includes("--memory-diagnostics")) assert(
+    ["full", "no-capture", "yield", "gc"].includes(memoryMode), "Unknown memory diagnostic mode");
+  if (memoryMode === "gc") assert.equal(typeof global.gc, "function", "gc mode requires --expose-gc");
+  const snapshots = [];
+  let eventLoopYields = 0, forcedGc = 0;
+  const sample = phase => {
+    if (memoryMode) snapshots.push({ phase, ...process.memoryUsage(),
+      peakRssKiB: process.resourceUsage().maxRSS });
+  };
+  const captureTree = memoryMode === "no-capture" ? () => null : capture;
+  const shouldYield = memoryMode !== "full" && memoryMode !== "no-capture";
+  async function yieldBetweenParses() {
+    await new Promise(setImmediate); eventLoopYields++;
+    if (memoryMode === "gc") {
+      global.gc(); forcedGc++;
+      await new Promise(setImmediate); eventLoopYields++;
+    }
+  }
   const binding = createRequire(import.meta.url)(path.resolve(option("--binding")));
   const source = readFileSync(option("--source-file", 0), "utf8");
   const parser = new Parser();
   parser.setLanguage(binding);
   const outputs = [];
+  sample("start");
   const initialStart = performance.now();
   let tree = parser.parse(source);
   const initialMs = performance.now() - initialStart;
-  outputs.push(["initial", tree.rootNode.hasError, capture(tree)]);
+  sample("initial-parse");
+  outputs.push(["initial", tree.rootNode.hasError, captureTree(tree)]);
+  sample("initial-capture");
+  if (shouldYield) await yieldBetweenParses();
+  sample("initial-ready");
   // A prefix comment, a module rename, and an incomplete final brace exercise
   // shifts, unchanged suffixes, and valid/recovery transitions in both directions.
   const name = /module\s+([A-Za-z_][A-Za-z_0-9]*)/.exec(source);
@@ -73,20 +97,31 @@ if (args.includes("--worker")) {
       const begin = performance.now();
       tree = parser.parse(next, tree);
       editsMs.push(performance.now() - begin);
-      const digest = capture(tree);
+      sample("edit-parse");
+      const digest = captureTree(tree);
+      sample("edit-capture");
       const freshParser = new Parser();
       freshParser.setLanguage(binding);
       const fresh = freshParser.parse(next);
-      assert.equal(digest, capture(fresh), "incremental tree differs from fresh parse");
+      sample("fresh-parse");
+      assert.equal(digest, captureTree(fresh), "incremental tree differs from fresh parse");
+      sample("fresh-capture");
       outputs.push([`${editNames[index]}${next === source ? ":undo" : ""}`, tree.rootNode.hasError, digest]);
       current = next;
+      if (shouldYield) await yieldBetweenParses();
+      sample("ready");
     }
   }
+  sample("end");
   const usage = process.resourceUsage();
   console.log(JSON.stringify({ initialMs, editsMs, outputs,
+    diagnosticOnly: Boolean(memoryMode), treeValidation: memoryMode === "no-capture" ? "omitted" : "full",
+    scheduling: shouldYield ? "yield-between-parses" : "synchronous", eventLoopYields,
+    ...(memoryMode ? { memoryDiagnostics: { mode: memoryMode, forcedGc, snapshots } } : {}),
     maxRssKiB: usage.maxRSS,
     processCpuMicros: { user: usage.userCPUTime, system: usage.systemCPUTime } }));
 } else {
+  assert(!args.includes("--memory-diagnostics"), "Memory diagnostics are worker-only; use profile-parser-memory.mjs");
   const baseline = option("--baseline-binding");
   const candidate = option("--candidate-binding", "build/Release/tree_sitter_quint_binding.node");
   const output = option("--output");
@@ -126,7 +161,7 @@ if (args.includes("--worker")) {
   }
   if (option("--match")) inputs = inputs.filter(input => new RegExp(option("--match")).test(input.name));
   assert(inputs.length > 0, "No benchmark inputs selected");
-  const report = { schema: 2, inputDelivery: "file", scaling, stress, node: process.version, platform: `${process.platform}/${process.arch}`,
+  const report = { schema: 3, scheduling: "yield-between-parses", peakRssScope: "full-validation-worker", inputDelivery: "file", scaling, stress, node: process.version, platform: `${process.platform}/${process.arch}`,
     cpu: os.cpus()[0]?.model, bindings: {}, rounds, inputs: [], measurements: [] };
   for (const [version, file] of Object.entries({ baseline, candidate })) {
     report.bindings[version] = { path: path.resolve(file), sha256: hash(readFileSync(file)) };
@@ -150,6 +185,9 @@ if (args.includes("--worker")) {
           assert.equal(run.status, 0, `${input.name} ${version}: ${run.stderr}`);
           assert.equal(run.stderr, "");
           const result = JSON.parse(run.stdout);
+          assert.equal(result.diagnosticOnly, false, "Ordinary benchmarks must not use diagnostic modes");
+          assert.equal(result.treeValidation, "full");
+          assert.equal(result.scheduling, report.scheduling);
           report.measurements.push({ name: input.name, round, version, ...result });
           if (input.referenceAccepted !== undefined) {
             assert.equal(result.outputs[0][1], !input.referenceAccepted, `${input.name}: unexpected initial syntax status`);
