@@ -9972,10 +9972,127 @@
                   "type": "ALIAS",
                   "content": {
                     "type": "SYMBOL",
-                    "name": "_init_closed_add_expression"
+                    "name": "_init_pair_expression"
+                  },
+                  "named": true,
+                  "value": "pair_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_implication_expression"
                   },
                   "named": true,
                   "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_leads_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_iff_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_or_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_and_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_relation_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_add_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_mul_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_power_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_assignment_expression"
+                  },
+                  "named": true,
+                  "value": "assignment_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_unary_expression"
+                  },
+                  "named": true,
+                  "value": "unary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_if_expression"
+                  },
+                  "named": true,
+                  "value": "if_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_lambda_expression"
+                  },
+                  "named": true,
+                  "value": "lambda_expression"
                 },
                 {
                   "type": "ALIAS",
@@ -10010,13 +10127,144 @@
             "type": "FIELD",
             "name": "body",
             "content": {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_init_closed_add_expression"
-              },
-              "named": true,
-              "value": "binary_expression"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_pair_expression"
+                  },
+                  "named": true,
+                  "value": "pair_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_implication_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_leads_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_iff_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_or_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_and_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_relation_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_add_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_mul_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_power_expression"
+                  },
+                  "named": true,
+                  "value": "binary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_assignment_expression"
+                  },
+                  "named": true,
+                  "value": "assignment_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_unary_expression"
+                  },
+                  "named": true,
+                  "value": "unary_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_if_expression"
+                  },
+                  "named": true,
+                  "value": "if_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_lambda_expression"
+                  },
+                  "named": true,
+                  "value": "lambda_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_init_nested_expression"
+                  },
+                  "named": true,
+                  "value": "nested_definition_expression"
+                }
+              ]
             }
           }
         ]
@@ -11480,9 +11728,92 @@
   ],
   "conflicts": [
     [
+      "_init_pair",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_pair",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_implication",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_implication",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_leads",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_leads",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_iff",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_iff",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_or",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_or",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_and",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_and",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_relation",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_relation",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_add",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_add",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_mul",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_mul",
+      "_local_delimited_operator_definition"
+    ],
+    [
       "_init_power",
-      "_init_index_expression",
-      "_init_closed_power"
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_power",
+      "_local_delimited_operator_definition"
+    ],
+    [
+      "_init_unary",
+      "_local_delimited_value_definition"
+    ],
+    [
+      "_init_unary",
+      "_local_delimited_operator_definition"
     ],
     [
       "_operator_definition_head",
@@ -11496,10 +11827,6 @@
     [
       "_normal_call_name",
       "_local_bare_value_header"
-    ],
-    [
-      "_init_unary",
-      "_local_delimited_value_definition"
     ],
     [
       "_init_assignment_rhs_closed_mul",

@@ -236,6 +236,28 @@ function pairExpression($, expression) {
 }
 
 
+// Prefix and compound initializers can end before a parenthesized/list body.
+// Keep their node kinds while allowing that boundary through the final operand.
+function delimitedInitializer($) {
+  return choice(
+    alias($._init_pair_expression, $.pair_expression),
+    alias($._init_implication_expression, $.binary_expression),
+    alias($._init_leads_expression, $.binary_expression),
+    alias($._init_iff_expression, $.binary_expression),
+    alias($._init_or_expression, $.binary_expression),
+    alias($._init_and_expression, $.binary_expression),
+    alias($._init_relation_expression, $.binary_expression),
+    alias($._init_add_expression, $.binary_expression),
+    alias($._init_mul_expression, $.binary_expression),
+    alias($._init_power_expression, $.binary_expression),
+    alias($._init_assignment_expression, $.assignment_expression),
+    alias($._init_unary_expression, $.unary_expression),
+    alias($._init_if_expression, $.if_expression),
+    alias($._init_lambda_expression, $.lambda_expression),
+    alias($._init_nested_expression, $.nested_definition_expression),
+  );
+}
+
 // Share the full header syntax with the local form that requires a parameter
 // list, so all qualifiers, annotated parameters, and trailing commas stay aligned.
 function operatorDefinitionHead($, parametersRequired = false) {
@@ -500,11 +522,18 @@ export default grammar({
   precedences: _ => [["local_value"]],
 
   conflicts: $ => [
-    [$._init_power, $._init_index_expression, $._init_closed_power],
+    // Preserve a compound initializer's end alongside its continuation until
+    // the following delimited body resolves the enclosing local definition.
+    ...[
+      "_init_pair", "_init_implication", "_init_leads", "_init_iff", "_init_or",
+      "_init_and", "_init_relation", "_init_add", "_init_mul", "_init_power", "_init_unary",
+    ].flatMap(name => [
+      [$[name], $._local_delimited_value_definition],
+      [$[name], $._local_delimited_operator_definition],
+    ]),
     [$._operator_definition_head, $._local_parameterized_operator_header],
     [$._operator_definition_head, $._local_bare_operator_header, $._local_parameterized_operator_header],
     [$._normal_call_name, $._local_bare_value_header],
-    [$._init_unary, $._local_delimited_value_definition],
     [$._init_assignment_rhs_closed_mul, $._init_closed_mul],
     [$._operator_definition_head, $._local_bare_operator_header],
     [$._init_power, $._init_closed_power],
@@ -1800,16 +1829,13 @@ export default grammar({
         field("name", choice($.tuple_pattern, $.record_pattern)),
       ),
       "=",
-      field("value", choice(
-        alias($._init_closed_add_expression, $.binary_expression),
-        alias($._init_nested_expression, $.nested_definition_expression),
-      )),
+      field("value", delimitedInitializer($)),
     )),
 
     _local_delimited_operator_definition: $ => prec("local_value", seq(
       $._operator_definition_head,
       "=",
-      field("body", alias($._init_closed_add_expression, $.binary_expression)),
+      field("body", delimitedInitializer($)),
     )),
 
     _init_lambda_expression: $ => seq(
