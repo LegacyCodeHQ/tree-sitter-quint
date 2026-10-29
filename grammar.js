@@ -250,6 +250,10 @@ export default grammar({
 
   externals: $ => [
     $._division,
+    $._nul_string_literal,
+    $._nul_comment,
+    $._nul_documentation_comment,
+    $._nul_hashbang,
   ],
 
   extras: $ => [
@@ -288,7 +292,10 @@ export default grammar({
       optional(alias(token("//"), $.comment)),
     ),
 
-    hashbang: _ => token(seq("#!", /[^\n]*/, optional("\n"))),
+    hashbang: $ => choice(
+      $._nul_hashbang,
+      token(seq("#!", /[^\n]*/, optional("\n"))),
+    ),
 
     module_definition: $ => seq(
       "module",
@@ -1796,17 +1803,20 @@ export default grammar({
 
     boolean_literal: _ => choice("true", "false"),
 
-    string_literal: _ => /"[^"]*"/,
+    string_literal: $ => choice($._nul_string_literal, /"[^"]*"/),
 
-    documentation_comment: _ => token(prec(1, seq("///", /[^\n]*/, optional("\n")))),
+    documentation_comment: $ => choice(
+      $._nul_documentation_comment,
+      token(prec(1, seq("///", /[^\n]*/, optional("\n")))),
+    ),
 
-    comment: _ => token(choice(
+    comment: $ => choice($._nul_comment, token(choice(
       seq("//", choice(
         "\n",
         seq(/[^/\n]/, /[^\n]*/, optional("\n")),
       )),
       seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"),
-    )),
+    ))),
 
     // ANTLR's identifier rule consumes these tokens and reports QNT008. Keep
     // that diagnostic path so a greedy local call does not silently backtrack

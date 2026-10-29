@@ -59,6 +59,10 @@ test("incremental edits across local binding continuations match fresh parsing",
   };
 
   const pairs = sources.slice(1).map((source, index) => [sources[index], source]);
+  const nulSource = readFileSync(new URL("../../test/fixtures/lexical-nul-characters.qnt", import.meta.url), "utf8");
+  for (const replacement of ["", "ordinary", "\0\0"]) {
+    pairs.push([nulSource, nulSource.replaceAll("\0", replacement)]);
+  }
   for (const [fixture, boundary] of [
     ["structure-local-operator-boundaries.qnt", "def f = x"],
     ["structure-prefix-local-boundaries.qnt", "else -x"],

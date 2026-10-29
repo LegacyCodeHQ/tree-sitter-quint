@@ -603,6 +603,12 @@
     }
   },
   {
+    "type": "comment",
+    "named": true,
+    "extra": true,
+    "fields": {}
+  },
+  {
     "type": "constant_declaration",
     "named": true,
     "fields": {
@@ -631,6 +637,11 @@
         ]
       }
     }
+  },
+  {
+    "type": "documentation_comment",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "field_access_expression",
@@ -783,6 +794,11 @@
         ]
       }
     }
+  },
+  {
+    "type": "hashbang",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "if_expression",
@@ -1997,6 +2013,11 @@
     }
   },
   {
+    "type": "string_literal",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "sum_type",
     "named": true,
     "fields": {},
@@ -2570,21 +2591,12 @@
     "named": false
   },
   {
-    "type": "comment",
-    "named": true,
-    "extra": true
-  },
-  {
     "type": "const",
     "named": false
   },
   {
     "type": "def",
     "named": false
-  },
-  {
-    "type": "documentation_comment",
-    "named": true
   },
   {
     "type": "else",
@@ -2601,10 +2613,6 @@
   {
     "type": "from",
     "named": false
-  },
-  {
-    "type": "hashbang",
-    "named": true
   },
   {
     "type": "hole",
@@ -2669,10 +2677,6 @@
   {
     "type": "str",
     "named": false
-  },
-  {
-    "type": "string_literal",
-    "named": true
   },
   {
     "type": "temporal",
