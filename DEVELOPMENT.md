@@ -36,7 +36,9 @@ The detailed red/green workflow for grammar changes is documented in
 - Tokenization parity against Quint's generated ANTLR lexer.
 - Syntax-acceptance parity against Quint's phase-one parser.
 - Source-spanned parse-structure parity.
-- The Node.js binding test.
+- Scanner lookup/allocation checks and binding, query, and editor regression tests.
+- Compiler-gated benchmark inputs and the 80-case local-header matrix.
+- Tests that keep the quick audit small, deterministic, and representative.
 
 Run an individual parity layer with:
 
@@ -45,6 +47,21 @@ bun run test:tokens
 bun run test:syntax
 bun run test:structure
 ```
+
+Routine push/PR CI runs this suite, generated-file and package checks, and
+`bun run test:audit:quick`. The quick differential audit uses 348 programs:
+eight samples from each of the 31 boundary families, 64 seeded deep expressions,
+and 36 local-body operator-pair samples. It checks acceptance, source-spanned
+structures and tokens against Quint 0.33.0. It does not run the exhaustive
+alternative/token coverage pass or claim exhaustive matrix coverage.
+
+The full 54,907-program audit runs in the **Exhaustive Quint 0.33 audit** workflow:
+weekly on Mondays at 02:00 UTC, manually through **Run workflow**, and as a
+required dependency of tag-release publishing. Boundary and deep matrices run
+as independent parallel jobs. They remain available locally with
+`bun run test:audit` and `bun run test:audit:deep`; use those commands or a manual
+workflow run for an exhaustive parser/scanner change check. Known failures
+should always gain focused tests in the ordinary regression suite.
 
 The parity scripts also accept directories and recursively check every `.qnt`
 file. Use them to compare the grammar with a local Quint checkout:
@@ -192,7 +209,9 @@ QUINT_CLI="$PWD/test/reference-quint033/node_modules/@informalsystems/quint/dist
 
 The private reference package pins Quint **0.33.0** with its own frozen lockfile.
 The audit refuses another compiler version, including the root package's current
-0.32 reference. CI uses the 0.33 reference for the ordinary suite and both audits.
+0.32 reference. All CI workflows use the 0.33 reference. Routine CI runs the
+ordinary suite and quick audit; scheduled, manual and release runs retain both
+exhaustive matrices.
 No global Quint installation is required.
 
 The generators `scripts/quint-033-cases.mjs`,

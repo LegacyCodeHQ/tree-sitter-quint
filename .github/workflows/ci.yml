@@ -44,19 +44,17 @@ jobs:
       - name: Verify npm package
         run: bun run test:package
 
-      - name: Audit Quint 0.33 boundary matrices
+      - name: Check representative Quint 0.33 compatibility cases
         id: audit
         env:
           QUINT_AUDIT_ARTIFACTS: ${{ runner.temp }}/quint-033-audit
-        run: |
-          bun run test:audit
-          bun run test:audit:deep
+        run: bun run test:audit:quick
 
       - name: Preserve failed audit sources and logs
         if: failure() && steps.audit.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: quint-033-audit-failure
+          name: quint-033-quick-failure
           path: ${{ runner.temp }}/quint-033-audit
           if-no-files-found: ignore
           retention-days: 7

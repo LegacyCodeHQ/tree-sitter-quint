@@ -9,9 +9,14 @@ permissions:
   contents: read
 
 jobs:
+  audit-quint033:
+    if: github.repository == 'LegacyCodeHQ/tree-sitter-quint'
+    uses: ./.github/workflows/quint-audit.yml
+
   publish-npm:
     name: Publish npm package
     if: github.repository == 'LegacyCodeHQ/tree-sitter-quint'
+    needs: audit-quint033
     runs-on: ubuntu-latest
     env:
       QUINT_CLI: ${{ github.workspace }}/test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js
@@ -56,7 +61,8 @@ jobs:
           fi
 
       - name: Publish to npm
-        # npm runs prepublishOnly, which executes the complete release gate.
+        # Exhaustive audits are gated by audit-quint033. npm's prepublishOnly
+        # runs the ordinary tests, generated-file check, and package check.
         run: npm publish --access public --provenance --tag "${{ steps.npm-dist-tag.outputs.tag }}"
 
       - name: Create GitHub release
