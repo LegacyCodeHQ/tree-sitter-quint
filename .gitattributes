@@ -5,7 +5,8 @@ test/fixtures/tokenization-documentation-crlf.qnt -text whitespace=cr-at-eol
 
 # Generated source files
 src/*.json linguist-generated
-src/parser.c linguist-generated
+**/parser.c linguist-generated
+src/quint_033_atn.h linguist-generated
 src/tree_sitter/* linguist-generated
 
 # C bindings

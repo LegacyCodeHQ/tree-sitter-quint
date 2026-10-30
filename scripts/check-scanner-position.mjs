@@ -11,7 +11,8 @@ try {
   for (const name of ["position", "recognizer", "scaling", "repeated", "index"]) {
     const executable = path.join(temporary, name);
     const runtime = "node_modules/tree-sitter/vendor/tree-sitter/lib";
-    const extra = name === "repeated" ? ["-I", `${runtime}/include`, "-I", `${runtime}/src`,
+    // glibc hides endian helpers and fdopen under strict C11 without this.
+    const extra = name === "repeated" ? ["-D_DEFAULT_SOURCE", "-I", `${runtime}/include`, "-I", `${runtime}/src`,
       `${runtime}/src/lib.c`, "src/parser.c"] : [];
     const compile = spawnSync(process.env.CC || "cc", ["-std=c11", "-O2", "-I", "src",
       `test/scanner/${name}_test.c`, ...extra, "-o", executable], { cwd: root, stdio: "inherit" });
