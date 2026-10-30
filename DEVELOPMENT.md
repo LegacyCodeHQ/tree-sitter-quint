@@ -374,6 +374,11 @@ separate from the fixed CI matrices.
 
 ## Performance tuning
 
+Use the [interleaved editor benchmark](docs/performance/editor-benchmarks.md)
+to measure switching between files, including edits that change token kinds.
+Fresh-parser validation runs after the timed sequence so it cannot warm the
+recognition cache between editor turns.
+
 Follow the [boundary-position performance workflow](docs/performance/boundary-position.md):
 freeze an ordinary native baseline, identify repeated work, preserve exact trees
 and editor behavior, then compare alternating process runs and native memory.

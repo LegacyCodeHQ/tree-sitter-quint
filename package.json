@@ -47,7 +47,7 @@
     "install": "node-gyp-build",
     "prepublishOnly": "bun run check:release",
     "test": "tree-sitter test && bun run test:scanner && bun run test:tokens && bun run test:syntax && bun run test:structure && bun run test:node && bun run test:benchmark-cases && bun run test:headers",
-    "test:node": "node --test bindings/node/binding_test.js test/query/query_test.js test/zed_extension_test.js test/benchmark/memory_test.mjs test/audit/quick_test.mjs",
+    "test:node": "node --test bindings/node/binding_test.js test/query/query_test.js test/zed_extension_test.js test/benchmark/memory_test.mjs test/audit/quick_test.mjs test/benchmark/editor_test.mjs",
     "test:package": "node scripts/check-npm-package.mjs",
     "test:structure": "node scripts/check-parse-structure-parity.mjs test/fixtures",
     "test:syntax": "node scripts/check-syntax-acceptance-parity.mjs test/fixtures",
@@ -62,7 +62,8 @@
     "test:scanner": "node scripts/check-scanner-position.mjs",
     "profile:memory": "node scripts/profile-parser-memory.mjs",
     "benchmark:parser": "node scripts/benchmark-parser.mjs",
-    "test:benchmark-cases": "node scripts/check-benchmark-cases.mjs"
+    "test:benchmark-cases": "node scripts/check-benchmark-cases.mjs",
+    "benchmark:editor": "node scripts/benchmark-editor.mjs"
   },
   "packageManager": "bun@1.4.0",
   "dependencies": {
