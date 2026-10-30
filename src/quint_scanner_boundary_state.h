@@ -308,7 +308,7 @@ static bool q_scan_document(QScanner *scanner, TSLexer *lexer) {
   if (scanner->length != length || scanner->fingerprint != fingerprint || (length && memcmp(scanner->source, source, length))) {
     free(scanner->source); scanner->source = source; scanner->length = length;
     scanner->fingerprint = fingerprint;
-    scanner->recognized = q_parse_document(&scanner->document, source, length);
+    scanner->recognized = q_parse_document_cached(&scanner->document, source, length);
     scanner->end_cached = false;
     scanner->begin_cached = false;
     scanner->stack_count = 0;

@@ -379,8 +379,8 @@ freeze an ordinary native baseline, identify repeated work, preserve exact trees
 and editor behavior, then compare alternating process runs and native memory.
 `bun run benchmark:parser --baseline-binding FILE --output FILE` records paired
 measurements; `bun run test:scanner` enforces the deterministic lookup-work
-budget without putting elapsed-time thresholds in CI. Whole-file reference
-recognition still runs after edits.
+budget without putting elapsed-time thresholds in CI. Whole-file lexing still
+runs after edits; reference recognition can reuse a complete token-kind match.
 
 The [recognizer allocation experiment](docs/performance/recognizer-allocations.md)
 records compact result buffers, temporary arena allocation, and failure-injection
@@ -390,6 +390,14 @@ The [incremental recognition investigation](docs/performance/incremental-recogni
 explains the scanner lifetime limit in the installed Tree-sitter runtime and why
 per-scanner caches do not provide reuse across editor parses. Check real binding
 edit timings before treating an internal cache-work reduction as a speedup.
+
+The [bounded content cache](docs/performance/recognition-cache.md) survives
+scanner destruction using a process-lifetime entry with exact token-kind
+matching. It preserves whole-file invalidation, uses nonblocking contention
+fallback, and is disabled on targets without the supported atomics path.
+The [recovery filter](docs/performance/recovery-filter.md) removes impossible
+marker lookups while preserving existing error trees; repeated surviving
+suffixes can still make recovery quadratic.
 
 The [scaling and stress workloads](docs/performance/scaling.md) cover large flat
 and nested inputs, repeated text, comments and incomplete buffers. Use

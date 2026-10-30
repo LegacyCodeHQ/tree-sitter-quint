@@ -72,3 +72,9 @@ The later [guard-locality experiment](guard-locality.md) records a concrete
 cross-module invalidation dependency and the compatibility failures of an
 unguarded grammar prototype. Its suffix-edit regression is a gate for future
 guard changes.
+
+The [content-cache follow-up](recognition-cache.md) investigates a bounded
+process-lifetime owner keyed by the complete token-kind sequence. This differs
+from the payload-local prototype above: it can survive scanner destruction and
+does not require a stable host document identity. Whole-file lexing and guard
+invalidation remain necessary.

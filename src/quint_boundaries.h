@@ -307,9 +307,7 @@ static bool q_collect(QRecognizer *r, QTrace *root) {
   free(stack);
   return valid;
 }
-static bool q_parse_document(QDocument *doc, const char *source, size_t length) {
-  doc->token_count = 0; doc->boundary_count = 0;
-  if (length > UINT32_MAX || !q_tokenize(doc, source, length)) return false;
+static bool q_parse_tokens(QDocument *doc) {
   QRecognizer recognizer = {.doc = doc};
   QMemo *root = q_recognize(&recognizer);
   bool valid = false;
@@ -327,6 +325,72 @@ static bool q_parse_document(QDocument *doc, const char *source, size_t length) 
   free(recognizer.buckets); free(recognizer.frames);
   return valid;
 }
+static inline bool q_parse_document(QDocument *doc, const char *source, size_t length) {
+  doc->token_count = 0; doc->boundary_count = 0;
+  return length <= UINT32_MAX && q_tokenize(doc, source, length) && q_parse_tokens(doc);
+}
+
+// A process-lifetime content cache survives scanner destruction without holding
+// document pointers. Recognition depends only on the complete token-kind stream;
+// boundaries contain token indices, never source byte offsets. Retokenize first
+// and compare EVERY kind (including EOF), not just a fingerprint or prefix.
+// Unsupported targets retain the uncached implementation.
+#if !defined(Q_DISABLE_RECOGNITION_CACHE) && !defined(__STDC_NO_ATOMICS__) && \
+    defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && \
+    !defined(_MSC_VER) && !defined(__EMSCRIPTEN__) && !defined(__wasm__)
+#include <stdatomic.h>
+#define Q_RECOGNITION_CACHE_ENABLED 1
+enum { Q_CACHE_TOKENS = 65536, Q_CACHE_BOUNDARIES = 16384 };
+static atomic_flag q_cache_lock = ATOMIC_FLAG_INIT;
+static struct {
+  int16_t kinds[Q_CACHE_TOKENS];
+  QBoundary boundaries[Q_CACHE_BOUNDARIES];
+  size_t token_count, boundary_count;
+} q_recognition_cache;
+
+// Return -1 on allocation failure, 0 on miss/busy, 1 on a complete copy. A busy
+// reader or writer never waits: it performs ordinary recognition instead.
+static int q_cached_boundaries(QDocument *doc) {
+  if (doc->token_count > Q_CACHE_TOKENS ||
+      atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire)) return 0;
+  int result = 0;
+  if (doc->token_count == q_recognition_cache.token_count) {
+    size_t i = 0;
+    while (i < doc->token_count && doc->tokens[i].kind == q_recognition_cache.kinds[i]) i++;
+    if (i == doc->token_count) {
+      size_t count = q_recognition_cache.boundary_count;
+      if (!q_grow((void **)&doc->boundaries, &doc->boundary_capacity, count, sizeof(QBoundary))) result = -1;
+      else {
+        if (count) memcpy(doc->boundaries, q_recognition_cache.boundaries, count * sizeof(QBoundary));
+        doc->boundary_count = count; result = 1;
+      }
+    }
+  }
+  atomic_flag_clear_explicit(&q_cache_lock, memory_order_release);
+  return result;
+}
+static void q_cache_boundaries(const QDocument *doc) {
+  if (doc->token_count > Q_CACHE_TOKENS || doc->boundary_count > Q_CACHE_BOUNDARIES ||
+      atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire)) return;
+  for (size_t i = 0; i < doc->token_count; i++) q_recognition_cache.kinds[i] = doc->tokens[i].kind;
+  if (doc->boundary_count) memcpy(q_recognition_cache.boundaries, doc->boundaries,
+    doc->boundary_count * sizeof(QBoundary));
+  q_recognition_cache.token_count = doc->token_count;
+  q_recognition_cache.boundary_count = doc->boundary_count;
+  atomic_flag_clear_explicit(&q_cache_lock, memory_order_release);
+}
+static bool q_parse_document_cached(QDocument *doc, const char *source, size_t length) {
+  doc->token_count = 0; doc->boundary_count = 0;
+  if (length > UINT32_MAX || !q_tokenize(doc, source, length)) return false;
+  int cached = q_cached_boundaries(doc);
+  if (cached) return cached > 0;
+  bool valid = q_parse_tokens(doc);
+  if (valid) q_cache_boundaries(doc);
+  return valid;
+}
+#else
+#define q_parse_document_cached q_parse_document
+#endif
 static void q_document_destroy(QDocument *doc) {
   free(doc->tokens); free(doc->boundaries);
 }
