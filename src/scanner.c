@@ -167,6 +167,11 @@ bool tree_sitter_quint_external_scanner_scan(
       while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
              lexer->lookahead == '\r' || lexer->lookahead == '\n') lexer->advance(lexer, true);
       bool comment = lexer->lookahead == '/';
+      if (scanner->recognized && scanner->recovering &&
+          !q_end_may_match(scanner, lexer, doc_prefix,
+                          valid_symbols[END_DEFINITION], valid_symbols[END_DECLARATION]) &&
+          (comment || !q_begin_may_match(scanner, lexer,
+                          valid_symbols[BEGIN_DEFINITION], valid_symbols[BEGIN_DECLARATION]))) return false;
       uint32_t position = q_token_position(scanner, lexer, doc_prefix);
       if (valid_symbols[END_DEFINITION] && q_end_definition(scanner, position, 4)) {
         lexer->result_symbol = END_DEFINITION; return true;

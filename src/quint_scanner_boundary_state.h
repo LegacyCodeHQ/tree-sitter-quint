@@ -16,6 +16,12 @@ typedef struct {
   size_t position_count;
   uint32_t position;
   bool recovering;
+  uint64_t end_bytes[4];
+  uint32_t end_token;
+  unsigned end_prefix;
+  bool end_cached;
+  uint64_t begin_bytes[2][4];
+  bool begin_cached;
   size_t length;
   uint64_t fingerprint;
   bool recognized;
@@ -202,6 +208,65 @@ static bool q_has_boundary(const QScanner *scanner, uint32_t start, uint8_t kind
   QBoundary b = scanner->boundary_index[low];
   return b.start == start && b.kind == kind && (!exact || b.end == end);
 }
+// Negative filter only: a possible character still requires the original exact
+// position lookup. Include the whole token and its leading skipped text, since
+// recovery can enter either at an interior byte or before a skipped comment.
+static void q_marker_bytes(const QScanner *scanner, uint32_t index, unsigned prefix, uint64_t bytes[4]) {
+  size_t start = index ? scanner->document.tokens[index - 1].end : 0;
+  QToken token = scanner->document.tokens[index];
+  size_t end = token.kind == -1 ? scanner->length : token.end;
+  end += prefix <= scanner->length - end ? prefix : scanner->length - end;
+  for (size_t at = start; at < end; at++) {
+    unsigned c = (unsigned char)scanner->source[at];
+    bytes[c / 64] |= UINT64_C(1) << (c % 64);
+  }
+}
+static bool q_begin_may_match(QScanner *scanner, TSLexer *lexer, bool definition, bool declaration) {
+  if (!definition && !declaration) return false;
+  if (lexer->eof(lexer)) return true;
+  if (!scanner->begin_cached) {
+    memset(scanner->begin_bytes, 0, sizeof(scanner->begin_bytes));
+    for (size_t i = 0; i < scanner->document.boundary_count; i++) {
+      QBoundary b = scanner->document.boundaries[i];
+      if ((b.kind == 3 || b.kind == 4) && b.start < scanner->document.token_count)
+        q_marker_bytes(scanner, b.start, 0, scanner->begin_bytes[b.kind - 3]);
+    }
+    scanner->begin_cached = true;
+  }
+  char bytes[4]; q_utf8(lexer->lookahead, bytes);
+  unsigned byte = (unsigned char)bytes[0];
+  uint64_t mask = (declaration ? scanner->begin_bytes[0][byte / 64] : 0)
+    | (definition ? scanner->begin_bytes[1][byte / 64] : 0);
+  return (mask >> (byte % 64)) & 1;
+}
+static bool q_end_may_match(QScanner *scanner, TSLexer *lexer, unsigned prefix,
+                            bool definition, bool declaration) {
+  if (!scanner->stack || scanner->stack > scanner->stack_count) return false;
+  QDefinitionStack top = scanner->stacks[scanner->stack - 1];
+  if (!((top.kind == 4 && definition) || (top.kind == 3 && declaration))) return false;
+  if (lexer->eof(lexer)) return true;
+  char bytes[4]; q_utf8(lexer->lookahead, bytes);
+  unsigned byte = (unsigned char)bytes[0];
+  size_t low = 0, high = scanner->document.boundary_count;
+  QBoundary key = {.start = top.start, .kind = top.kind};
+  while (low < high) {
+    size_t mid = low + (high - low) / 2;
+    if (q_boundary_compare(&scanner->boundary_index[mid], &key) < 0) low = mid + 1;
+    else high = mid;
+  }
+  for (; low < scanner->document.boundary_count; low++) {
+    QBoundary b = scanner->boundary_index[low];
+    if (b.start != top.start || b.kind != top.kind) break;
+    if (b.end >= scanner->document.token_count) continue;
+    if (!scanner->end_cached || scanner->end_token != b.end || scanner->end_prefix != prefix) {
+      memset(scanner->end_bytes, 0, sizeof(scanner->end_bytes));
+      q_marker_bytes(scanner, b.end, prefix, scanner->end_bytes);
+      scanner->end_token = b.end; scanner->end_prefix = prefix; scanner->end_cached = true;
+    }
+    if ((scanner->end_bytes[byte / 64] >> (byte % 64)) & 1) return true;
+  }
+  return false;
+}
 static size_t q_stack_hash(uint32_t parent, uint32_t start, uint8_t kind) {
   uint64_t x = ((uint64_t)parent << 32) | start;
   x ^= (uint64_t)kind * UINT64_C(0x9e3779b97f4a7c15);
@@ -244,6 +309,8 @@ static bool q_scan_document(QScanner *scanner, TSLexer *lexer) {
     free(scanner->source); scanner->source = source; scanner->length = length;
     scanner->fingerprint = fingerprint;
     scanner->recognized = q_parse_document(&scanner->document, source, length);
+    scanner->end_cached = false;
+    scanner->begin_cached = false;
     scanner->stack_count = 0;
     if (scanner->stack_slots) memset(scanner->stack_slots, 0, scanner->slot_capacity * sizeof(uint32_t));
     free(scanner->boundary_index); scanner->boundary_index = NULL;

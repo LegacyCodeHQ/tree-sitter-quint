@@ -57,6 +57,28 @@ static void check(QScanner *scanner, const char *source, size_t length) {
     }
     assert(token == expected);
     assert(input.marked == offset);
+    // The recovery filter must never reject an end that the original position
+    // lookup could accept, including interior token bytes and leading trivia.
+    if (scanner->recognized) {
+      for (size_t i = 0; i < scanner->document.boundary_count; i++) {
+        QBoundary boundary = scanner->document.boundaries[i];
+        if (boundary.start == expected) {
+          input = at(source, length, offset);
+          assert(q_begin_may_match(scanner, &input.lexer, boundary.kind == 4, boundary.kind == 3));
+          assert(!q_begin_may_match(scanner, &input.lexer, false, false));
+        }
+        if (boundary.end != expected) continue;
+        scanner->stack = 0;
+        assert(q_begin_definition(scanner, boundary.start, boundary.kind));
+        input = at(source, length, offset);
+        assert(q_end_may_match(scanner, &input.lexer, 0, boundary.kind == 4, boundary.kind == 3));
+        assert(!q_end_may_match(scanner, &input.lexer, 0, false, false));
+        if (offset + 3 <= length && !memcmp(source + offset, "///", 3)) {
+          input = at(source, length, offset + 2);
+          assert(q_end_may_match(scanner, &input.lexer, 2, boundary.kind == 4, boundary.kind == 3));
+        }
+      }
+    }
     if (offset + 3 <= length && !memcmp(source + offset, "///", 3)) {
       input = at(source, length, offset + 2);
       input.marked = offset;

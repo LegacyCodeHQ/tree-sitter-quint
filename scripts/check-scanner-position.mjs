@@ -8,11 +8,11 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const temporary = mkdtempSync(path.join(tmpdir(), "quint-scanner-"));
 try {
-  for (const name of ["position", "recognizer", "scaling", "repeated", "index"]) {
+  for (const name of ["position", "recognizer", "scaling", "repeated", "index", "recovery"]) {
     const executable = path.join(temporary, name);
     const runtime = "node_modules/tree-sitter/vendor/tree-sitter/lib";
     // glibc hides endian helpers and fdopen under strict C11 without this.
-    const extra = name === "repeated" ? ["-D_DEFAULT_SOURCE", "-I", `${runtime}/include`, "-I", `${runtime}/src`,
+    const extra = ["repeated", "recovery"].includes(name) ? ["-D_DEFAULT_SOURCE", "-I", `${runtime}/include`, "-I", `${runtime}/src`,
       `${runtime}/src/lib.c`, "src/parser.c"] : [];
     const compile = spawnSync(process.env.CC || "cc", ["-std=c11", "-O2", "-I", "src",
       `test/scanner/${name}_test.c`, ...extra, "-o", executable], { cwd: root, stdio: "inherit" });

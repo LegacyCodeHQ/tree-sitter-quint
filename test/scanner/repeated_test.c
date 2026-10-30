@@ -5,7 +5,9 @@
 #include "../../src/quint_scanner_boundary_state.h"
 // The real runtime exposes its absolute cursor to this diagnostic only. Compare
 // every optimized lookup, including speculative calls, to that independent oracle.
+static size_t recovery_lookups;
 static uint32_t checked_position(QScanner *scanner, TSLexer *lexer, unsigned prefix) {
+  if (scanner->recovering) recovery_lookups++;
   size_t offset = ((Lexer *)lexer)->current_position.bytes - prefix;
   uint32_t expected = UINT32_MAX;
   for (size_t i = 0; i < scanner->document.token_count; i++) {
@@ -70,4 +72,5 @@ int main(int argc, char **argv) {
   }
   for (int i = 1; i < argc; i++) parse_file(argv[i]);
   puts("repeated-definition work budget and real-runtime position oracle pass");
+  return 0;
 }
