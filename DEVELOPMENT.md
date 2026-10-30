@@ -395,6 +395,8 @@ The [bounded content cache](docs/performance/recognition-cache.md) survives
 scanner destruction using a process-lifetime entry with exact token-kind
 matching. It preserves whole-file invalidation, uses nonblocking contention
 fallback, and is disabled on targets without the supported atomics path.
+Its [confirmed-rejection extension](docs/performance/rejection-cache.md) reuses
+unfinished lexable buffers while keeping allocation failures out of the cache.
 The [recovery filter](docs/performance/recovery-filter.md) removes impossible
 marker lookups while preserving existing error trees; repeated surviving
 suffixes can still make recovery quadratic.

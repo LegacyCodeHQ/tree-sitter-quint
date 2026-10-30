@@ -114,3 +114,7 @@ whole-source reading, lexing and fresh source indexes. A changed token kind,
 rejected input, oversized result, or competing cache entry can require the full
 recognizer. Identical suffixes during error recovery remain a separate cost,
 even with the preceding [recovery filter](recovery-filter.md).
+
+The [confirmed-rejection follow-up](rejection-cache.md) extends this experiment
+with a separate bounded entry for unfinished but lexable buffers. It reports
+allocation failures independently so they cannot be cached as syntax rejection.

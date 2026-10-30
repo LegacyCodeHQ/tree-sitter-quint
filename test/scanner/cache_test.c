@@ -55,11 +55,17 @@ int main(void) {
 #ifdef Q_RECOGNITION_CACHE_ENABLED
   QDocument doc = {0};
   assert(q_parse_document_cached(&doc, inputs[0], strlen(inputs[0])));
+  QDocument rejected = {0};
+  assert(!q_parse_document_cached(&rejected, inputs[4], strlen(inputs[4])));
+  assert(q_cached_boundaries(&rejected) == 2);
+  // Keeping the rejection must not evict the accepted tree needed after undo.
   assert(q_cached_boundaries(&doc) == 1);
   assert(!atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire));
   // Contention is a miss, never a wait, even when this thread owns the lock.
   assert(q_cached_boundaries(&doc) == 0);
   q_cache_boundaries(&doc);
+  assert(q_cached_boundaries(&rejected) == 0);
+  q_cache_rejection(&rejected);
   QDocument busy = {0};
   assert(q_parse_document_cached(&busy, inputs[0], strlen(inputs[0])));
   q_document_destroy(&busy);
@@ -69,12 +75,15 @@ int main(void) {
   doc.token_count = Q_CACHE_TOKENS + 1;
   assert(q_cached_boundaries(&doc) == 0);
   q_cache_boundaries(&doc);
+  q_cache_rejection(&doc);
   doc.token_count = saved;
   saved = doc.boundary_count; doc.boundary_count = Q_CACHE_BOUNDARIES + 1;
   q_cache_boundaries(&doc);
   doc.boundary_count = saved;
   assert(q_cached_boundaries(&doc) == 1);
+  assert(q_cached_boundaries(&rejected) == 2);
   q_document_destroy(&doc);
+  q_document_destroy(&rejected);
 #endif
   pthread_t threads[4];
   for (size_t i = 0; i < 4; i++) assert(!pthread_create(&threads[i], NULL, exercise, (void *)i));

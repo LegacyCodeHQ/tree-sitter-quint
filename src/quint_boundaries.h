@@ -307,14 +307,16 @@ static bool q_collect(QRecognizer *r, QTrace *root) {
   free(stack);
   return valid;
 }
-static bool q_parse_tokens(QDocument *doc) {
+static bool q_parse_tokens(QDocument *doc, bool *failed) {
   QRecognizer recognizer = {.doc = doc};
   QMemo *root = q_recognize(&recognizer);
   bool valid = false;
   if (root && !recognizer.failed) {
     for (size_t i = 0; i < root->count; i++) {
       if (root->results[i].end == doc->token_count - 1) {
-        valid = q_collect(&recognizer, root->results[i].trace); break;
+        valid = q_collect(&recognizer, root->results[i].trace);
+        if (!valid) recognizer.failed = true;
+        break;
       }
     }
   }
@@ -323,11 +325,12 @@ static bool q_parse_tokens(QDocument *doc) {
     free(recognizer.arena); recognizer.arena = next;
   }
   free(recognizer.buckets); free(recognizer.frames);
+  if (failed) *failed = recognizer.failed;
   return valid;
 }
 static inline bool q_parse_document(QDocument *doc, const char *source, size_t length) {
   doc->token_count = 0; doc->boundary_count = 0;
-  return length <= UINT32_MAX && q_tokenize(doc, source, length) && q_parse_tokens(doc);
+  return length <= UINT32_MAX && q_tokenize(doc, source, length) && q_parse_tokens(doc, NULL);
 }
 
 // A process-lifetime content cache survives scanner destruction without holding
@@ -346,25 +349,32 @@ static struct {
   int16_t kinds[Q_CACHE_TOKENS];
   QBoundary boundaries[Q_CACHE_BOUNDARIES];
   size_t token_count, boundary_count;
+  int16_t rejected_kinds[Q_CACHE_TOKENS];
+  size_t rejected_count;
 } q_recognition_cache;
 
-// Return -1 on allocation failure, 0 on miss/busy, 1 on a complete copy. A busy
+static bool q_same_kinds(const QDocument *doc, const int16_t *kinds) {
+  for (size_t i = 0; i < doc->token_count; i++) if (doc->tokens[i].kind != kinds[i]) return false;
+  return true;
+}
+// Return -1 on allocation failure, 0 on miss/busy, 1 on a complete copy, or 2
+// for a confirmed syntax rejection (never an allocation failure). A busy
 // reader or writer never waits: it performs ordinary recognition instead.
 static int q_cached_boundaries(QDocument *doc) {
   if (doc->token_count > Q_CACHE_TOKENS ||
       atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire)) return 0;
   int result = 0;
-  if (doc->token_count == q_recognition_cache.token_count) {
-    size_t i = 0;
-    while (i < doc->token_count && doc->tokens[i].kind == q_recognition_cache.kinds[i]) i++;
-    if (i == doc->token_count) {
-      size_t count = q_recognition_cache.boundary_count;
-      if (!q_grow((void **)&doc->boundaries, &doc->boundary_capacity, count, sizeof(QBoundary))) result = -1;
-      else {
-        if (count) memcpy(doc->boundaries, q_recognition_cache.boundaries, count * sizeof(QBoundary));
-        doc->boundary_count = count; result = 1;
-      }
+  if (doc->token_count == q_recognition_cache.token_count &&
+      q_same_kinds(doc, q_recognition_cache.kinds)) {
+    size_t count = q_recognition_cache.boundary_count;
+    if (!q_grow((void **)&doc->boundaries, &doc->boundary_capacity, count, sizeof(QBoundary))) result = -1;
+    else {
+      if (count) memcpy(doc->boundaries, q_recognition_cache.boundaries, count * sizeof(QBoundary));
+      doc->boundary_count = count; result = 1;
     }
+  } else if (doc->token_count == q_recognition_cache.rejected_count &&
+             q_same_kinds(doc, q_recognition_cache.rejected_kinds)) {
+    doc->boundary_count = 0; result = 2;
   }
   atomic_flag_clear_explicit(&q_cache_lock, memory_order_release);
   return result;
@@ -379,13 +389,22 @@ static void q_cache_boundaries(const QDocument *doc) {
   q_recognition_cache.boundary_count = doc->boundary_count;
   atomic_flag_clear_explicit(&q_cache_lock, memory_order_release);
 }
+static void q_cache_rejection(const QDocument *doc) {
+  if (doc->token_count > Q_CACHE_TOKENS ||
+      atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire)) return;
+  for (size_t i = 0; i < doc->token_count; i++) q_recognition_cache.rejected_kinds[i] = doc->tokens[i].kind;
+  q_recognition_cache.rejected_count = doc->token_count;
+  atomic_flag_clear_explicit(&q_cache_lock, memory_order_release);
+}
 static bool q_parse_document_cached(QDocument *doc, const char *source, size_t length) {
   doc->token_count = 0; doc->boundary_count = 0;
   if (length > UINT32_MAX || !q_tokenize(doc, source, length)) return false;
   int cached = q_cached_boundaries(doc);
-  if (cached) return cached > 0;
-  bool valid = q_parse_tokens(doc);
+  if (cached) return cached == 1;
+  bool failed;
+  bool valid = q_parse_tokens(doc, &failed);
   if (valid) q_cache_boundaries(doc);
+  else if (!failed) q_cache_rejection(doc);
   return valid;
 }
 #else
