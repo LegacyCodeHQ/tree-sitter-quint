@@ -1,0 +1,58 @@
+========================================
+Local minus starts the body when subtraction would consume it
+========================================
+
+module Minus { pure val seed = 1 pure def result = { val saved = seed
+-seed
+} }
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (name_reference
+              name: (identifier)))
+          body: (unary_expression
+            operand: (name_reference
+              name: (identifier))))))))
+
+========================================
+Local minus continues the initializer when a body remains
+========================================
+
+module Minus { pure val seed = 1 pure def result = { val saved = seed
+-seed
+seed
+} }
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (operator_definition
+      name: (identifier)
+      body: (block_expression
+        expression: (nested_definition_expression
+          definition: (value_definition
+            name: (identifier)
+            value: (binary_expression
+              left: (name_reference
+                name: (identifier))
+              right: (name_reference
+                name: (identifier))))
+          body: (name_reference
+            name: (identifier)))))))

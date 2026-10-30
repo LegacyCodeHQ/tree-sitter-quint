@@ -109,6 +109,11 @@ test("incremental edits across local binding continuations match fresh parsing",
     pairs.push([before, after]);
   }
 
+  // Inserting a trailing body changes the earlier minus from unary to binary.
+  const minus = extra => "module Minus { pure val seed = 1 pure def result = { val saved = seed\n-seed\n"
+    + (extra ? "seed\n" : "") + "} }\n";
+  pairs.push([minus(false), minus(true)]);
+
   for (const [before, after] of pairs.flatMap(([before, after]) => [
     [before, after], [after, before],
   ])) {
