@@ -63,7 +63,7 @@ int main(void) {
   // These failure-injection checks are single-threaded: start each attempt with
   // empty slots to prove that a resource failure cannot become a cached reject.
   for (size_t which = 0; which < 2; which++) {
-    q_recognition_cache.token_count = q_recognition_cache.rejected_count = 0;
+    q_recognition_cache.count = q_recognition_cache.used = 0;
     calls = requested = 0;
     QDocument checked = {0};
     bool expected = which == 0;
@@ -71,10 +71,10 @@ int main(void) {
     size_t failures = calls;
     q_document_destroy(&checked); assert(live == 0);
     for (size_t site = 1; site <= failures; site++) {
-      q_recognition_cache.token_count = q_recognition_cache.rejected_count = 0;
+      q_recognition_cache.count = q_recognition_cache.used = 0;
       calls = requested = 0; fail_at = site; checked = (QDocument){0};
       assert(!q_parse_document_cached(&checked, failure_sources[which], strlen(failure_sources[which])));
-      assert(q_recognition_cache.token_count == 0 && q_recognition_cache.rejected_count == 0);
+      assert(q_recognition_cache.count == 0 && q_recognition_cache.used == 0);
       q_document_destroy(&checked); assert(live == 0);
       fail_at = 0; checked = (QDocument){0};
       assert(q_parse_document_cached(&checked, failure_sources[which], strlen(failure_sources[which])) == expected);

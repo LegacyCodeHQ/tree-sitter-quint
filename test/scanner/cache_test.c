@@ -47,6 +47,88 @@ static void *exercise(void *argument) {
   }
   return NULL;
 }
+
+#ifdef Q_RECOGNITION_CACHE_ENABLED
+static void clear_cache(void) {
+  q_recognition_cache.count = q_recognition_cache.used = 0;
+  q_recognition_cache.clock = 0;
+}
+static QDocument make_document(unsigned definitions) {
+  size_t capacity = (size_t)definitions * 64 + 64;
+  char *source = malloc(capacity); assert(source);
+  size_t length = (size_t)snprintf(source, capacity, "module Capacity {\n");
+  for (unsigned i = 0; i < definitions; i++) length += (size_t)snprintf(source + length,
+    capacity - length, "pure val value%u = %u + 1\n", i, i);
+  length += (size_t)snprintf(source + length, capacity - length, "}\n");
+  assert(length < capacity);
+  QDocument doc = {0}; assert(q_parse_document(&doc, source, length)); free(source);
+  return doc;
+}
+static int checked_hit(const QDocument *oracle) {
+  QDocument probe = {.tokens = oracle->tokens, .token_count = oracle->token_count};
+  int hit = q_cached_boundaries(&probe);
+  if (hit == 1) {
+    assert(probe.boundary_count == oracle->boundary_count);
+    for (size_t i = 0; i < probe.boundary_count; i++) {
+      assert(probe.boundaries[i].start == oracle->boundaries[i].start);
+      assert(probe.boundaries[i].end == oracle->boundaries[i].end);
+      assert(probe.boundaries[i].kind == oracle->boundaries[i].kind);
+    }
+  }
+  free(probe.boundaries);
+  return hit;
+}
+static void capacity_checks(void) {
+  clear_cache();
+  QDocument small[Q_CACHE_ENTRIES + 1];
+  for (size_t i = 0; i < Q_CACHE_ENTRIES; i++) {
+    small[i] = make_document((unsigned)i + 1); q_cache_boundaries(&small[i]);
+  }
+  assert(q_recognition_cache.count == Q_CACHE_ENTRIES);
+  assert(checked_hit(&small[0]) == 1); // Protect the oldest physical entry.
+  small[Q_CACHE_ENTRIES] = make_document(Q_CACHE_ENTRIES + 1);
+  q_cache_boundaries(&small[Q_CACHE_ENTRIES]);
+  assert(checked_hit(&small[1]) == 0);
+  assert(checked_hit(&small[0]) == 1);
+  assert(checked_hit(&small[Q_CACHE_ENTRIES]) == 1);
+  for (size_t i = 0; i <= Q_CACHE_ENTRIES; i++) q_document_destroy(&small[i]);
+
+  clear_cache();
+  QDocument large[20];
+  for (size_t i = 0; i < 20; i++) {
+    large[i] = make_document((unsigned)i + 1000); q_cache_boundaries(&large[i]);
+    assert(q_recognition_cache.used <= Q_CACHE_BYTES);
+    assert(q_recognition_cache.count <= Q_CACHE_ENTRIES);
+  }
+  assert(checked_hit(&large[0]) == 0);
+  assert(checked_hit(&large[19]) == 1);
+  // Every retained payload must still match the uncached oracle after moves.
+  for (size_t entry = 0; entry < q_recognition_cache.count; entry++) {
+    bool found = false;
+    for (size_t i = 0; i < 20; i++) if (large[i].token_count == q_recognition_cache.entries[entry].token_count) {
+      assert(checked_hit(&large[i]) == 1); found = true; break;
+    }
+    assert(found);
+  }
+  for (size_t i = 0; i < 20; i++) q_document_destroy(&large[i]);
+
+  clear_cache();
+  const char *plus = "module Hash { pure val value = 1 + 1 }";
+  const char *minus = "module Hash { pure val value = 1 - 1 }";
+  QDocument a = {0}, b = {0};
+  assert(q_parse_document(&a, plus, strlen(plus)) && q_parse_document(&b, minus, strlen(minus)));
+  assert(a.token_count == b.token_count);
+  q_cache_boundaries(&a); q_cache_boundaries(&a);
+  assert(q_recognition_cache.count == 1);
+  q_recognition_cache.entries[0].hash = q_kind_hash(&b);
+  assert(checked_hit(&b) == 0); // A forced hash collision cannot establish identity.
+  q_recognition_cache.entries[0].hash = q_kind_hash(&a);
+  q_recognition_cache.clock = UINT64_MAX;
+  assert(checked_hit(&a) == 1 && q_recognition_cache.clock < UINT64_MAX);
+  q_document_destroy(&a); q_document_destroy(&b);
+  puts("cache entry/byte capacity, LRU, compaction, collisions and aging checks pass");
+}
+#endif
 int main(void) {
   // Adjacent equal-kind documents must hit while preserving their own offsets.
   compare(inputs[0], strlen(inputs[0]));
@@ -84,6 +166,9 @@ int main(void) {
   assert(q_cached_boundaries(&rejected) == 2);
   q_document_destroy(&doc);
   q_document_destroy(&rejected);
+#endif
+#ifdef Q_RECOGNITION_CACHE_ENABLED
+  capacity_checks();
 #endif
   pthread_t threads[4];
   for (size_t i = 0; i < 4; i++) assert(!pthread_create(&threads[i], NULL, exercise, (void *)i));

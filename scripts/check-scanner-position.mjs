@@ -8,12 +8,12 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const temporary = mkdtempSync(path.join(tmpdir(), "quint-scanner-"));
 try {
-  for (const name of ["position", "recognizer", "scaling", "repeated", "index", "recovery", "reuse", "reuse-disabled", "cache", "cache-disabled"]) {
+  for (const name of ["position", "recognizer", "scaling", "repeated", "index", "recovery", "reuse", "reuse-disabled", "multidoc", "cache", "cache-disabled"]) {
     const executable = path.join(temporary, name);
     const runtime = "node_modules/tree-sitter/vendor/tree-sitter/lib";
     // glibc hides endian helpers and fdopen under strict C11 without this.
     const source = name.replace(/-disabled$/, "");
-    const extra = ["repeated", "recovery", "reuse"].includes(source) ? ["-D_DEFAULT_SOURCE", "-I", `${runtime}/include`, "-I", `${runtime}/src`,
+    const extra = ["repeated", "recovery", "reuse", "multidoc"].includes(source) ? ["-D_DEFAULT_SOURCE", "-I", `${runtime}/include`, "-I", `${runtime}/src`,
       `${runtime}/src/lib.c`, "src/parser.c"] : source === "cache" ? ["-pthread"] : [];
     if (name.endsWith("-disabled")) extra.push("-DQ_DISABLE_RECOGNITION_CACHE");
     const compile = spawnSync(process.env.CC || "cc", ["-std=c11", "-O2", "-I", "src",

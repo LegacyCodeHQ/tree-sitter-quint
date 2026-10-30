@@ -343,19 +343,50 @@ static inline bool q_parse_document(QDocument *doc, const char *source, size_t l
     !defined(_MSC_VER) && !defined(__EMSCRIPTEN__) && !defined(__wasm__)
 #include <stdatomic.h>
 #define Q_RECOGNITION_CACHE_ENABLED 1
-enum { Q_CACHE_TOKENS = 65536, Q_CACHE_BOUNDARIES = 16384 };
+enum { Q_CACHE_TOKENS = 65536, Q_CACHE_BOUNDARIES = 16384,
+       Q_CACHE_ENTRIES = 64, Q_CACHE_BYTES = 512 * 1024 };
+typedef struct {
+  uint64_t hash, age;
+  uint32_t offset, bytes, token_count, boundary_count;
+  bool accepted;
+} QCacheEntry;
 static atomic_flag q_cache_lock = ATOMIC_FLAG_INIT;
 static struct {
-  int16_t kinds[Q_CACHE_TOKENS];
-  QBoundary boundaries[Q_CACHE_BOUNDARIES];
-  size_t token_count, boundary_count;
-  int16_t rejected_kinds[Q_CACHE_TOKENS];
-  size_t rejected_count;
+  unsigned char storage[Q_CACHE_BYTES];
+  QCacheEntry entries[Q_CACHE_ENTRIES];
+  size_t count, used;
+  uint64_t clock;
 } q_recognition_cache;
 
-static bool q_same_kinds(const QDocument *doc, const int16_t *kinds) {
-  for (size_t i = 0; i < doc->token_count; i++) if (doc->tokens[i].kind != kinds[i]) return false;
+static uint64_t q_kind_hash(const QDocument *doc) {
+  uint64_t hash = UINT64_C(14695981039346656037);
+  for (size_t i = 0; i < doc->token_count; i++)
+    hash = (hash ^ (uint16_t)doc->tokens[i].kind) * UINT64_C(1099511628211);
+  return hash;
+}
+static bool q_same_kinds(const QDocument *doc, const unsigned char *kinds) {
+  for (size_t i = 0; i < doc->token_count; i++) {
+    int16_t kind;
+    // Packed entries need not align token or boundary arrays. Never cast them.
+    memcpy(&kind, kinds + i * sizeof(kind), sizeof(kind));
+    if (doc->tokens[i].kind != kind) return false;
+  }
   return true;
+}
+static size_t q_cache_find(const QDocument *doc, uint64_t hash) {
+  for (size_t i = 0; i < q_recognition_cache.count; i++) {
+    QCacheEntry entry = q_recognition_cache.entries[i];
+    if (entry.hash == hash && entry.token_count == doc->token_count &&
+        q_same_kinds(doc, q_recognition_cache.storage + entry.offset)) return i;
+  }
+  return SIZE_MAX;
+}
+static uint64_t q_cache_age(void) {
+  if (q_recognition_cache.clock == UINT64_MAX) {
+    for (size_t i = 0; i < q_recognition_cache.count; i++) q_recognition_cache.entries[i].age /= 2;
+    q_recognition_cache.clock /= 2;
+  }
+  return ++q_recognition_cache.clock;
 }
 // Return -1 on allocation failure, 0 on miss/busy, 1 on a complete copy, or 2
 // for a confirmed syntax rejection (never an allocation failure). A busy
@@ -364,38 +395,66 @@ static int q_cached_boundaries(QDocument *doc) {
   if (doc->token_count > Q_CACHE_TOKENS ||
       atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire)) return 0;
   int result = 0;
-  if (doc->token_count == q_recognition_cache.token_count &&
-      q_same_kinds(doc, q_recognition_cache.kinds)) {
-    size_t count = q_recognition_cache.boundary_count;
-    if (!q_grow((void **)&doc->boundaries, &doc->boundary_capacity, count, sizeof(QBoundary))) result = -1;
+  size_t index = q_cache_find(doc, q_kind_hash(doc));
+  if (index != SIZE_MAX) {
+    QCacheEntry *entry = &q_recognition_cache.entries[index];
+    if (!entry->accepted) { doc->boundary_count = 0; result = 2; }
+    else if (!q_grow((void **)&doc->boundaries, &doc->boundary_capacity,
+                     entry->boundary_count, sizeof(QBoundary))) result = -1;
     else {
-      if (count) memcpy(doc->boundaries, q_recognition_cache.boundaries, count * sizeof(QBoundary));
-      doc->boundary_count = count; result = 1;
+      if (entry->boundary_count) memcpy(doc->boundaries,
+        q_recognition_cache.storage + entry->offset + entry->token_count * sizeof(int16_t),
+        entry->boundary_count * sizeof(QBoundary));
+      doc->boundary_count = entry->boundary_count; result = 1;
     }
-  } else if (doc->token_count == q_recognition_cache.rejected_count &&
-             q_same_kinds(doc, q_recognition_cache.rejected_kinds)) {
-    doc->boundary_count = 0; result = 2;
+    if (result > 0) entry->age = q_cache_age();
   }
   atomic_flag_clear_explicit(&q_cache_lock, memory_order_release);
   return result;
 }
-static void q_cache_boundaries(const QDocument *doc) {
-  if (doc->token_count > Q_CACHE_TOKENS || doc->boundary_count > Q_CACHE_BOUNDARIES ||
-      atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire)) return;
-  for (size_t i = 0; i < doc->token_count; i++) q_recognition_cache.kinds[i] = doc->tokens[i].kind;
-  if (doc->boundary_count) memcpy(q_recognition_cache.boundaries, doc->boundaries,
-    doc->boundary_count * sizeof(QBoundary));
-  q_recognition_cache.token_count = doc->token_count;
-  q_recognition_cache.boundary_count = doc->boundary_count;
+static void q_cache_store(const QDocument *doc, bool accepted) {
+  if (doc->token_count > Q_CACHE_TOKENS || (accepted && doc->boundary_count > Q_CACHE_BOUNDARIES)) return;
+  size_t boundaries = accepted ? doc->boundary_count : 0;
+  size_t bytes = doc->token_count * sizeof(int16_t) + boundaries * sizeof(QBoundary);
+  if (bytes > Q_CACHE_BYTES || atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire)) return;
+  uint64_t hash = q_kind_hash(doc);
+  size_t index = q_cache_find(doc, hash);
+  // A concurrent miss may already have stored this key. Never duplicate it.
+  if (index != SIZE_MAX) q_recognition_cache.entries[index].age = q_cache_age();
+  else {
+    while (q_recognition_cache.count == Q_CACHE_ENTRIES || q_recognition_cache.used + bytes > Q_CACHE_BYTES) {
+      size_t oldest = 0;
+      for (size_t i = 1; i < q_recognition_cache.count; i++)
+        if (q_recognition_cache.entries[i].age < q_recognition_cache.entries[oldest].age) oldest = i;
+      q_recognition_cache.used -= q_recognition_cache.entries[oldest].bytes;
+      memmove(&q_recognition_cache.entries[oldest], &q_recognition_cache.entries[oldest + 1],
+        (q_recognition_cache.count - oldest - 1) * sizeof(QCacheEntry));
+      q_recognition_cache.count--;
+    }
+    // Entries remain in physical-offset order. Compact survivors leftwards;
+    // no move can overwrite a later entry. All readers hold the same flag.
+    size_t offset = 0;
+    for (size_t i = 0; i < q_recognition_cache.count; i++) {
+      QCacheEntry *entry = &q_recognition_cache.entries[i];
+      memmove(q_recognition_cache.storage + offset,
+        q_recognition_cache.storage + entry->offset, entry->bytes);
+      entry->offset = (uint32_t)offset; offset += entry->bytes;
+    }
+    for (size_t i = 0; i < doc->token_count; i++) memcpy(
+      q_recognition_cache.storage + offset + i * sizeof(int16_t), &doc->tokens[i].kind, sizeof(int16_t));
+    if (boundaries) memcpy(q_recognition_cache.storage + offset + doc->token_count * sizeof(int16_t),
+      doc->boundaries, boundaries * sizeof(QBoundary));
+    uint64_t age = q_cache_age();
+    q_recognition_cache.entries[q_recognition_cache.count] = (QCacheEntry){
+      .hash = hash, .age = age, .offset = (uint32_t)offset, .bytes = (uint32_t)bytes,
+      .token_count = (uint32_t)doc->token_count, .boundary_count = (uint32_t)boundaries, .accepted = accepted};
+    q_recognition_cache.count++;
+    q_recognition_cache.used = offset + bytes;
+  }
   atomic_flag_clear_explicit(&q_cache_lock, memory_order_release);
 }
-static void q_cache_rejection(const QDocument *doc) {
-  if (doc->token_count > Q_CACHE_TOKENS ||
-      atomic_flag_test_and_set_explicit(&q_cache_lock, memory_order_acquire)) return;
-  for (size_t i = 0; i < doc->token_count; i++) q_recognition_cache.rejected_kinds[i] = doc->tokens[i].kind;
-  q_recognition_cache.rejected_count = doc->token_count;
-  atomic_flag_clear_explicit(&q_cache_lock, memory_order_release);
-}
+static void q_cache_boundaries(const QDocument *doc) { q_cache_store(doc, true); }
+static void q_cache_rejection(const QDocument *doc) { q_cache_store(doc, false); }
 static bool q_parse_document_cached(QDocument *doc, const char *source, size_t length) {
   doc->token_count = 0; doc->boundary_count = 0;
   if (length > UINT32_MAX || !q_tokenize(doc, source, length)) return false;

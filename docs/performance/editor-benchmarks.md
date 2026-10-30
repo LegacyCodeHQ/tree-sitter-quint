@@ -51,3 +51,6 @@ An initial one-pair same-binding control (`baseline-editor.json`) records a
 These exploratory samples identify an eviction workload; they are not a paired
 optimization speedup claim. The full regular suite passes, including 21 Node/
 query/editor/tooling checks. The production parser is unchanged in this commit.
+
+The [bounded multi-entry follow-up](multidoc-cache.md) addresses this eviction
+workload and records the paired ordinary measurements.
