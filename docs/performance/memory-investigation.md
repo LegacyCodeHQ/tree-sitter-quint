@@ -149,6 +149,9 @@ by this profile: begin/end scans alone account for about 20% of the 4,096-
 definition diagnostic. It can be pursued separately without claiming that it
 solves recovery identity or incremental recognition.
 
+The [boundary/stack indexing follow-up](boundary-stack-index.md) implements that
+optimization and records its compatibility checks and paired measurements.
+
 ## Validation
 
 The memory tests first failed because the worker supplied no validation or

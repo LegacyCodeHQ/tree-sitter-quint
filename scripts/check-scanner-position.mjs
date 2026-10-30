@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const temporary = mkdtempSync(path.join(tmpdir(), "quint-scanner-"));
 try {
-  for (const name of ["position", "recognizer", "scaling", "repeated"]) {
+  for (const name of ["position", "recognizer", "scaling", "repeated", "index"]) {
     const executable = path.join(temporary, name);
     const runtime = "node_modules/tree-sitter/vendor/tree-sitter/lib";
     const extra = name === "repeated" ? ["-I", `${runtime}/include`, "-I", `${runtime}/src`,

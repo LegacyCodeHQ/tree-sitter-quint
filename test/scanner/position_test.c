@@ -123,6 +123,7 @@ int main(void) {
   free(scanner->suffixes); scanner->suffixes = NULL;
   free(scanner->suffix_ranks); scanner->suffix_ranks = NULL;
   free(scanner->positions); scanner->positions = NULL; scanner->position_count = 0;
+  free(scanner->boundary_index); scanner->boundary_index = NULL;
   calls = 0;
   input = at(many, length, 0);
   assert(q_scan_document(scanner, &input.lexer));
@@ -131,16 +132,18 @@ int main(void) {
     free(scanner->suffixes); scanner->suffixes = NULL;
     free(scanner->suffix_ranks); scanner->suffix_ranks = NULL;
     free(scanner->positions); scanner->positions = NULL; scanner->position_count = 0;
+    free(scanner->boundary_index); scanner->boundary_index = NULL;
     calls = 0; fail_at = site;
     input = at(many, length, 0);
     assert(!q_scan_document(scanner, &input.lexer));
     fail_at = 0;
     input = at(many, length, 0);
     assert(q_scan_document(scanner, &input.lexer));
-    assert(scanner->suffixes && scanner->suffix_ranks && scanner->positions);
+    assert(scanner->suffixes && scanner->suffix_ranks && scanner->positions && scanner->boundary_index);
   }
   fprintf(stderr, "position index allocation failures: %zu retry sites pass\n", sites);
   tree_sitter_quint_external_scanner_destroy(scanner);
   assert(live == 0);
   puts("scanner position contract and lookup-work budget pass");
+  return 0;
 }

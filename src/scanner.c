@@ -102,6 +102,8 @@ void tree_sitter_quint_external_scanner_destroy(void *payload) {
   free(scanner->suffix_ranks);
   free(scanner->positions);
   free(scanner->stacks);
+  free(scanner->boundary_index);
+  free(scanner->stack_slots);
   free(scanner);
 }
 

@@ -2,6 +2,10 @@
 #define QUINT_SCANNER_BOUNDARY_STATE_H
 #include "quint_boundaries.h"
 
+#ifndef Q_INDEX_STEP
+#define Q_INDEX_STEP() ((void)0)
+#endif
+
 // Intern persistent stacks: scanner serialization stores a small stable ID,
 // rather than imposing a nesting limit through Tree-sitter's 1024-byte buffer.
 typedef struct { uint32_t parent, start; uint8_t kind; } QDefinitionStack;
@@ -15,6 +19,9 @@ typedef struct {
   size_t length;
   uint64_t fingerprint;
   bool recognized;
+  QBoundary *boundary_index;
+  uint32_t *stack_slots;
+  size_t slot_capacity;
   QDefinitionStack *stacks;
   size_t stack_count, stack_capacity;
   uint32_t stack;
@@ -162,6 +169,62 @@ static bool q_build_positions(QScanner *scanner) {
   scanner->position_count = count * 2;
   return true;
 }
+// Sort a copy: reference traversal order remains untouched.
+static int q_boundary_compare(const void *left, const void *right) {
+  const QBoundary *a = left, *b = right;
+  if (a->start != b->start) return (a->start > b->start) - (a->start < b->start);
+  if (a->kind != b->kind) return (a->kind > b->kind) - (a->kind < b->kind);
+  return (a->end > b->end) - (a->end < b->end);
+}
+static bool q_build_boundary_index(QScanner *scanner) {
+  size_t count = scanner->document.boundary_count;
+  if (count > SIZE_MAX / sizeof(QBoundary)) return false;
+  QBoundary *index = count ? malloc(count * sizeof(QBoundary)) : NULL;
+  if (count && !index) return false;
+  if (count) {
+    memcpy(index, scanner->document.boundaries, count * sizeof(QBoundary));
+    qsort(index, count, sizeof(QBoundary), q_boundary_compare);
+  }
+  free(scanner->boundary_index); scanner->boundary_index = index;
+  return true;
+}
+static bool q_has_boundary(const QScanner *scanner, uint32_t start, uint8_t kind,
+                           uint32_t end, bool exact) {
+  size_t low = 0, high = scanner->document.boundary_count;
+  QBoundary key = {.start = start, .end = exact ? end : 0, .kind = kind};
+  while (low < high) {
+    Q_INDEX_STEP();
+    size_t mid = low + (high - low) / 2;
+    if (q_boundary_compare(&scanner->boundary_index[mid], &key) < 0) low = mid + 1;
+    else high = mid;
+  }
+  if (low == scanner->document.boundary_count) return false;
+  QBoundary b = scanner->boundary_index[low];
+  return b.start == start && b.kind == kind && (!exact || b.end == end);
+}
+static size_t q_stack_hash(uint32_t parent, uint32_t start, uint8_t kind) {
+  uint64_t x = ((uint64_t)parent << 32) | start;
+  x ^= (uint64_t)kind * UINT64_C(0x9e3779b97f4a7c15);
+  x = (x ^ (x >> 30)) * UINT64_C(0xbf58476d1ce4e5b9);
+  x = (x ^ (x >> 27)) * UINT64_C(0x94d049bb133111eb);
+  return (size_t)(x ^ (x >> 31));
+}
+static bool q_reserve_stack_slots(QScanner *scanner) {
+  if (scanner->stack_count < scanner->slot_capacity / 2) return true;
+  size_t capacity = scanner->slot_capacity ? scanner->slot_capacity * 2 : 16;
+  if (capacity < scanner->slot_capacity || capacity > SIZE_MAX / sizeof(uint32_t)) return false;
+  uint32_t *slots = calloc(capacity, sizeof(uint32_t));
+  if (!slots) return false;
+  for (size_t i = 0; i < scanner->stack_count; i++) {
+    QDefinitionStack s = scanner->stacks[i];
+    size_t at = q_stack_hash(s.parent, s.start, s.kind) & (capacity - 1);
+    while (slots[at]) { Q_INDEX_STEP(); at = (at + 1) & (capacity - 1); }
+    slots[at] = (uint32_t)i + 1;
+  }
+  free(scanner->stack_slots); scanner->stack_slots = slots;
+  scanner->slot_capacity = capacity;
+  return true;
+}
 static bool q_scan_document(QScanner *scanner, TSLexer *lexer) {
   char *source = NULL;
   size_t length = 0, capacity = 0;
@@ -182,6 +245,8 @@ static bool q_scan_document(QScanner *scanner, TSLexer *lexer) {
     scanner->fingerprint = fingerprint;
     scanner->recognized = q_parse_document(&scanner->document, source, length);
     scanner->stack_count = 0;
+    if (scanner->stack_slots) memset(scanner->stack_slots, 0, scanner->slot_capacity * sizeof(uint32_t));
+    free(scanner->boundary_index); scanner->boundary_index = NULL;
     free(scanner->suffixes); scanner->suffixes = NULL;
     free(scanner->suffix_ranks); scanner->suffix_ranks = NULL;
     free(scanner->positions); scanner->positions = NULL; scanner->position_count = 0;
@@ -189,6 +254,7 @@ static bool q_scan_document(QScanner *scanner, TSLexer *lexer) {
   // A failed allocation must be retried, never leave an index for old text.
   if (!scanner->suffixes && !q_build_suffixes(scanner)) return false;
   if (scanner->document.boundary_count && !scanner->positions && !q_build_positions(scanner)) return false;
+  if (scanner->document.boundary_count && !scanner->boundary_index && !q_build_boundary_index(scanner)) return false;
   scanner->stack = 0;
   scanner->position = 0;
   scanner->recovering = false;
@@ -216,12 +282,7 @@ static uint32_t q_token_position(QScanner *scanner, TSLexer *lexer, unsigned pre
       uint32_t next = scanner->positions[low];
       if (next < scanner->document.token_count) end = scanner->document.tokens[next].start;
     }
-    if (!scanner->stack) {
-      for (size_t i = 0; i < scanner->document.boundary_count; i++) {
-        QBoundary b = scanner->document.boundaries[i];
-        if (b.start == scanner->position && b.kind == 3) { end = start; break; }
-      }
-    }
+    if (!scanner->stack && q_has_boundary(scanner, scanner->position, 3, 0, false)) end = start;
     if (prefix <= scanner->length - end) end += prefix;
   }
   uint32_t at = q_locate_source(scanner, lexer, start, end);
@@ -238,21 +299,24 @@ static uint32_t q_token_position(QScanner *scanner, TSLexer *lexer, unsigned pre
   return low < doc->token_count ? (uint32_t)low : UINT32_MAX;
 }
 static bool q_begin_definition(QScanner *scanner, uint32_t start, uint8_t kind) {
-  if (scanner->recognized) {
-    bool found = false;
-    for (size_t i = 0; i < scanner->document.boundary_count; i++) {
-      QBoundary b = scanner->document.boundaries[i];
-      if (b.start == start && b.kind == kind) { found = true; break; }
+  if (scanner->recognized && !q_has_boundary(scanner, start, kind, 0, false)) return false;
+  size_t at = scanner->slot_capacity ? q_stack_hash(scanner->stack, start, kind) & (scanner->slot_capacity - 1) : 0;
+  while (scanner->slot_capacity && scanner->stack_slots[at]) {
+    Q_INDEX_STEP();
+    uint32_t id = scanner->stack_slots[at];
+    QDefinitionStack s = scanner->stacks[id - 1];
+    if (s.parent == scanner->stack && s.start == start && s.kind == kind) {
+      scanner->stack = id; scanner->position = start; return true;
     }
-    if (!found) return false;
+    at = (at + 1) & (scanner->slot_capacity - 1);
   }
-  for (size_t i = 0; i < scanner->stack_count; i++) {
-    QDefinitionStack s = scanner->stacks[i];
-    if (s.parent == scanner->stack && s.start == start && s.kind == kind) { scanner->stack = (uint32_t)i + 1; scanner->position = start; return true; }
-  }
+  if (scanner->stack_count >= UINT32_MAX || !q_reserve_stack_slots(scanner)) return false;
+  at = q_stack_hash(scanner->stack, start, kind) & (scanner->slot_capacity - 1);
+  while (scanner->stack_slots[at]) { Q_INDEX_STEP(); at = (at + 1) & (scanner->slot_capacity - 1); }
   if (!q_grow((void **)&scanner->stacks, &scanner->stack_capacity, scanner->stack_count + 1, sizeof(QDefinitionStack))) return false;
   scanner->stacks[scanner->stack_count++] = (QDefinitionStack){scanner->stack, start, kind};
   scanner->stack = (uint32_t)scanner->stack_count;
+  scanner->stack_slots[at] = scanner->stack;
   scanner->position = start;
   return true;
 }
@@ -268,14 +332,7 @@ static bool q_end_definition(QScanner *scanner, uint32_t end, uint8_t kind) {
   if (!scanner->stack || scanner->stack > scanner->stack_count) return !scanner->recognized;
   QDefinitionStack top = scanner->stacks[scanner->stack - 1];
   if (top.kind != kind) return false;
-  if (scanner->recognized) {
-    bool found = false;
-    for (size_t i = 0; i < scanner->document.boundary_count; i++) {
-      QBoundary b = scanner->document.boundaries[i];
-      if (b.start == top.start && b.end == end && b.kind == kind) { found = true; break; }
-    }
-    if (!found) return false;
-  }
+  if (!q_has_boundary(scanner, top.start, kind, end, true)) return false;
   scanner->stack = top.parent;
   scanner->position = end;
   return true;
