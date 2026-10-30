@@ -104,3 +104,8 @@ The next experiment should target one greedy-boundary family and prove both
 its grammar equivalence and its lookahead dependency range. The unchanged
 module counterexample is now a permanent gate for that work. Existing malformed
 recovery lookup and whole-file recognition limitations remain open.
+
+The [local-header follow-up](local-header-lookahead.md) reduces the unguarded
+prototype's corpus differences from 52 to 38, establishes a context-dependent
+lookahead family, and adds an 80-source regression matrix. Its recovery gate
+still rejects the prototype; the production guard remains unchanged.

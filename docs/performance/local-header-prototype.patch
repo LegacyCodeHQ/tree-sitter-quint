@@ -1,0 +1,96 @@
+--- a/grammar.js
++++ b/grammar.js
+@@ -252,7 +252,7 @@
+     seq(parameters($.annotated_parameter), ":", field("return_type", $._type)),
+     seq(parameters($.parameter), optional($._return_type_annotation)),
+   );
+-  return prec.right(PREC.DEFINITION_HEAD, choice(
++  return choice(
+     // A nonempty parameter list makes a val an operator; val() remains a value.
+     seq(
+       optional(field("qualifier", "pure")),
+@@ -272,7 +272,7 @@
+         $._return_type_annotation,
+       )),
+     ),
+-  ));
++  );
+ }
+
+ export default grammar({
+@@ -314,7 +314,7 @@
+       [$.lambda_expression, $.tuple_pattern, $.name_reference],
+       [$.namespace_access_expression, $.qualified_identifier],
+     ];
+-    return [...shared($), ...shared(recoverySymbols($))];
++    return [...shared($), [$.value_definition, $._operator_definition_head], [$._operator_definition_head]];
+   },
+
+   rules: withDefinitionBoundaries({
+--- a/grammar/definition-boundaries.js
++++ b/grammar/definition-boundaries.js
+@@ -11,50 +11,5 @@
+ });
+
+ export function withDefinitionBoundaries(rules) {
+-  const recoveryRules = Object.fromEntries(Object.entries(rules)
+-    .filter(([name]) => name !== "source_file" && !SHARED_LEXICAL_RULES.has(name))
+-    .map(([name, rule]) => [`_recovery_${name}`, $ => recover(rule(recoverySymbols($)), $)]));
+-  function recover(content, $) {
+-    if (!content || typeof content !== "object" || content instanceof RegExp) return content;
+-    if (content.type === "SYMBOL" && content.name.startsWith("_recovery_")) {
+-      const name = content.name.slice(10);
+-      if (!name.startsWith("_")) return alias(content, $[name]);
+-    }
+-    if (Array.isArray(content)) return content.map(value => recover(value, $));
+-    return Object.fromEntries(Object.entries(content).map(([key, value]) => [key,
+-      key === "value" && content.type === "ALIAS" && typeof value === "string" && value.startsWith("_recovery_")
+-        ? value.slice(10) : recover(value, $)]));
+-  }
+-  const guarded = Object.fromEntries(Object.entries(rules).map(([name, rule]) => [name, $ => {
+-    function mark(content) {
+-      if (!content || typeof content !== "object" || content instanceof RegExp) return content;
+-      if (content.type === "ALIAS" && ["value_definition", "operator_definition"].includes(content.value)) {
+-        return seq($._begin_definition, content, $._end_definition);
+-      }
+-      if (content.type === "SYMBOL" && ["nondet_binding", "value_definition", "operator_definition"].includes(content.name)) {
+-        return seq($._begin_definition, content, $._end_definition);
+-      }
+-      if (Array.isArray(content)) return content.map(mark);
+-      return Object.fromEntries(Object.entries(content).map(([key, value]) => [key, mark(value)]));
+-    }
+-    const content = rule($);
+-    if (name === "source_file") return choice(
+-      seq($._reference_boundaries, content),
+-      seq($._recovery_boundaries, recover(rule(recoverySymbols($)), $)),
+-    );
+-    if (name === "module_definition") {
+-      // Only the guarded path has declaration markers.
+-      function declarations(node) {
+-        if (node?.type === "SYMBOL" && node.name === "_declaration") {
+-          return seq($._begin_declaration, node, $._end_declaration);
+-        }
+-        if (!node || typeof node !== "object" || node instanceof RegExp) return node;
+-        if (Array.isArray(node)) return node.map(declarations);
+-        return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, declarations(value)]));
+-      }
+-      return declarations(content);
+-    }
+-    return name === "_declaration" ? content : mark(content);
+-  }]));
+-  return {...guarded, ...recoveryRules};
++  return {...rules, source_file: $ => seq($._reference_boundaries, rules.source_file($))};
+ }
+--- a/src/scanner.c
++++ b/src/scanner.c
+@@ -149,8 +149,8 @@
+   if (valid_symbols[REFERENCE_BOUNDARIES] && valid_symbols[BEGIN_DEFINITION]) scanner->recovering = true;
+   if (!(valid_symbols[REFERENCE_BOUNDARIES] && valid_symbols[BEGIN_DEFINITION])) {
+     if (valid_symbols[REFERENCE_BOUNDARIES] || valid_symbols[RECOVERY_BOUNDARIES]) {
+-      if (!q_scan_document(scanner, lexer)) return false;
+-      lexer->result_symbol = scanner->recognized ? REFERENCE_BOUNDARIES : RECOVERY_BOUNDARIES;
++      lexer->mark_end(lexer);
++      lexer->result_symbol = REFERENCE_BOUNDARIES;
+       if (!valid_symbols[lexer->result_symbol]) return false;
+       return true;
+     }
