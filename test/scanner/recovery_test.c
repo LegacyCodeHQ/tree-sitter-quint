@@ -1,3 +1,5 @@
+static unsigned long long suffix_search_steps;
+#define Q_SUFFIX_SEARCH_STEP(scanner) do { if ((scanner)->recovering) suffix_search_steps++; } while (0)
 #define main repeated_contract_main
 #include "repeated_test.c"
 #undef main
@@ -14,14 +16,15 @@ int main(void) {
         length += (size_t)snprintf(source + length, sizeof(source) - length, "}\n");
         TSParser *parser = ts_parser_new();
         assert(ts_parser_set_language(parser, tree_sitter_quint()));
-        advances = recovery_lookups = 0;
+        advances = recovery_lookups = suffix_search_steps = 0;
         TSTree *tree = ts_parser_parse_string(parser, NULL, source, (uint32_t)length);
         assert(tree && ts_node_has_error(ts_tree_root_node(tree)));
-        fprintf(stderr, "%u definitions, line mode %u, error at %u: %zu recovery lookups, %zu reads\n",
-          size, line, error_at, recovery_lookups, advances);
+        fprintf(stderr, "%u definitions, line mode %u, error at %u: %zu recovery lookups, %zu reads, %llu suffix search probes\n",
+          size, line, error_at, recovery_lookups, advances, suffix_search_steps);
         // This bounds unnecessary position lookups, not the remaining cost of
         // distinguishing identical suffixes. Recovery trees must stay intact.
         assert(recovery_lookups < size * 2 + 16);
+        assert(suffix_search_steps < advances * 2);
         ts_tree_delete(tree); ts_parser_delete(parser);
       }
     }

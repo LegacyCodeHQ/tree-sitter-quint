@@ -5,6 +5,9 @@
 #ifndef Q_INDEX_STEP
 #define Q_INDEX_STEP() ((void)0)
 #endif
+#ifndef Q_SUFFIX_SEARCH_STEP
+#define Q_SUFFIX_SEARCH_STEP(scanner) ((void)0)
+#endif
 
 // Intern persistent stacks: scanner serialization stores a small stable ID,
 // rather than imposing a nesting limit through Tree-sitter's 1024-byte buffer.
@@ -134,14 +137,24 @@ static uint32_t q_locate_source(QScanner *scanner, TSLexer *lexer, size_t start,
     size_t width = lexer->eof(lexer) ? 1 : q_utf8(lexer->lookahead, bytes);
     for (size_t i = 0; i < width; i++) {
       int key = lexer->eof(lexer) ? -1 : (unsigned char)bytes[i];
+      // Every suffix in this interval shares the consumed prefix. If both
+      // lexicographic endpoints have the next byte, every interior suffix does
+      // too: the interval and its position ambiguity cannot change. Keep reading
+      // without repeating two binary searches and the same uniqueness check.
+      if (q_suffix_byte(scanner, low, consumed) == key &&
+          q_suffix_byte(scanner, high - 1, consumed) == key) {
+        consumed++; continue;
+      }
       size_t left = low, right = high;
       while (left < right) {
+        Q_SUFFIX_SEARCH_STEP(scanner);
         size_t mid = left + (right - left) / 2;
         if (q_suffix_byte(scanner, mid, consumed) < key) left = mid + 1;
         else right = mid;
       }
       low = left; right = high;
       while (left < right) {
+        Q_SUFFIX_SEARCH_STEP(scanner);
         size_t mid = left + (right - left) / 2;
         if (q_suffix_byte(scanner, mid, consumed) <= key) left = mid + 1;
         else right = mid;

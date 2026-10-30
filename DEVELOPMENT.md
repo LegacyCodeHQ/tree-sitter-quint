@@ -408,6 +408,8 @@ checks, LRU eviction and nonblocking fallback.
 The [recovery filter](docs/performance/recovery-filter.md) removes impossible
 marker lookups while preserving existing error trees; repeated surviving
 suffixes can still make recovery quadratic.
+The [common-prefix search shortcut](docs/performance/recovery-search.md) avoids
+repeated binary searches without changing that suffix-read dependency.
 
 The [scaling and stress workloads](docs/performance/scaling.md) cover large flat
 and nested inputs, repeated text, comments and incomplete buffers. Use

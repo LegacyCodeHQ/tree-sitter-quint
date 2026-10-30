@@ -111,3 +111,6 @@ Identical surviving header prefixes can still require reading to EOF. The
 count, so this does **not** make recovery lookup linear. It removes most
 irrelevant lookups on the tested malformed workload without changing its
 visible error tree. Whole-file recognition after edits remains a separate cost.
+
+The [common-prefix search follow-up](recovery-search.md) reduces binary-search
+work per consumed character while preserving the same read count and error trees.

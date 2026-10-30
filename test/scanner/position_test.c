@@ -87,10 +87,27 @@ static void check(QScanner *scanner, const char *source, size_t length) {
     }
   }
 }
+static void suffix_windows(QScanner *scanner, const char *source, size_t length) {
+  Input input = at(source, length, 0);
+  assert(q_scan_document(scanner, &input.lexer));
+  for (size_t offset = 0; offset <= length;) {
+    for (size_t start = 0; start <= offset; start++) for (size_t end = offset; end <= length; end++) {
+      input = at(source, length, offset);
+      assert(q_locate_source(scanner, &input.lexer, start, end) == offset);
+    }
+    if (offset == length) break;
+    input = at(source, length, offset);
+    char bytes[4]; offset += q_utf8(input.lexer.lookahead, bytes);
+  }
+}
 int main(void) {
   QScanner *scanner = tree_sitter_quint_external_scanner_create();
   Input uninitialized = at("module", 6, 0);
   assert(q_token_position(scanner, &uninitialized.lexer, 0) == UINT32_MAX);
+  const char prefixes[] = "ababa\0ababxaba";
+  const char unicode_prefixes[] = "\xce\xbb" "a" "\xce\xbb" "b" "\xce\xbb" "a";
+  suffix_windows(scanner, prefixes, sizeof(prefixes) - 1);
+  suffix_windows(scanner, unicode_prefixes, sizeof(unicode_prefixes) - 1);
   const char source[] = "module Position {\n/// repeated \xce\xbb \xf0\x9f\x8c\xb3\n"
     "pure val first = \"same\"\n/* same\0same */\npure val second = \"same\"\n}\n";
   check(scanner, source, sizeof(source) - 1);
