@@ -67,3 +67,8 @@ That is an architectural follow-up, with its own tree-contract and concurrent
 parser/lifetime checks. This round ships allocation reductions, retains
 whole-file recognition, and adds large/adversarial workloads to measure where
 the remaining work grows. It does not claim incremental reference recognition.
+
+The later [guard-locality experiment](guard-locality.md) records a concrete
+cross-module invalidation dependency and the compatibility failures of an
+unguarded grammar prototype. Its suffix-edit regression is a gate for future
+guard changes.

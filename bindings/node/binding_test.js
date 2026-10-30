@@ -170,3 +170,40 @@ test("token-preserving edits and recovery transitions match independent fresh tr
     }
   }
 });
+
+test("a late module error invalidates earlier definition boundaries", async () => {
+  const { default: language } = await import("./index.js");
+  const original = readFileSync(new URL(
+    "../../test/fixtures/structure-indexed-local-body.qnt", import.meta.url), "utf8");
+  const snapshot = node => [node.type, node.isNamed, node.isMissing, node.hasError,
+    node.startIndex, node.endIndex, node.startPosition, node.endPosition,
+    node.children.map((child, i) => [node.fieldNameForChild(i), snapshot(child)])];
+  const point = source => {
+    const lines = source.split("\n");
+    return { row: lines.length - 1, column: lines.at(-1).length };
+  };
+  const parser = new Parser();
+  parser.setLanguage(language);
+  let source = original, tree = parser.parse(original);
+  assert.equal(tree.rootNode.hasError, false);
+  const completeModule = snapshot(tree.rootNode.namedChild(0));
+  for (const after of [original + "\nmodule Broken {", original]) {
+    const adding = after.length > source.length;
+    // Only edit after the first complete module. Reusing that whole module is
+    // nevertheless unsafe when the document switches to the recovery grammar.
+    tree.edit({ startIndex: original.length, oldEndIndex: source.length, newEndIndex: after.length,
+      startPosition: point(original), oldEndPosition: point(source), newEndPosition: point(after) });
+    tree = parser.parse(after, tree);
+    const freshParser = new Parser();
+    freshParser.setLanguage(language);
+    const fresh = freshParser.parse(after);
+    assert.deepEqual(snapshot(tree.rootNode), snapshot(fresh.rootNode));
+    assert.equal(tree.rootNode.hasError, adding);
+    const first = snapshot(tree.rootNode.namedChild(0));
+    if (adding) {
+      assert.equal(tree.rootNode.namedChild(0).hasError, true);
+      assert.notDeepEqual(first, completeModule);
+    } else assert.deepEqual(first, completeModule);
+    source = after;
+  }
+});
