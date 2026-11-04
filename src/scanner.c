@@ -15,7 +15,87 @@ enum TokenType {
   NUL_COMMENT,
   NUL_DOCUMENTATION_COMMENT,
   NUL_HASHBANG,
+  CHAIN_BREAK,
+  OPERATOR_BREAK,
+  ERROR_SENTINEL,
 };
+
+// Helper functions for line-break scanner
+static bool is_ident_char(int32_t c) {
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
+         c == '_';
+}
+
+// Consumes `word` and checks that it is not just the prefix of a longer identifier.
+static bool scan_word(TSLexer *lexer, const char *word) {
+  for (; *word; word++) {
+    if (lexer->lookahead != *word) {
+      return false;
+    }
+    lexer->advance(lexer, false);
+  }
+  return !is_ident_char(lexer->lookahead);
+}
+
+// Whether the next line continues the expression with a binary operator. `and {` / `or {`
+// start a block combinator and a leading `-` is a negation, thus both start a new expression.
+static bool continues_with_binary_operator(TSLexer *lexer) {
+  switch (lexer->lookahead) {
+    case '+':
+    case '*':
+    case '%':
+    case '^':
+    case '<':
+    case '>':
+      return true;
+    case '/':
+      lexer->advance(lexer, false);
+      return lexer->lookahead != '/' && lexer->lookahead != '*';
+    case '=':
+    case '!':
+      lexer->advance(lexer, false);
+      return lexer->lookahead == '=';
+    case 'i':
+      lexer->advance(lexer, false);
+      if (lexer->lookahead == 'f') {
+        return scan_word(lexer, "ff");
+      }
+      return scan_word(lexer, "mplies");
+    case 'l':
+      return scan_word(lexer, "leadsTo");
+    case 'a':
+    case 'o':
+      if (!scan_word(lexer, lexer->lookahead == 'a' ? "and" : "or")) {
+        return false;
+      }
+      while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+        lexer->advance(lexer, false);
+      }
+      return lexer->lookahead != '{';
+    default:
+      return false;
+  }
+}
+
+// Skips whitespace, line breaks and `//` comments.
+static void skip_blank_and_comment_lines(TSLexer *lexer) {
+  for (;;) {
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' ||
+           lexer->lookahead == '\n') {
+      lexer->advance(lexer, false);
+    }
+    if (lexer->lookahead != '/') {
+      return;
+    }
+    lexer->advance(lexer, false);
+    if (lexer->lookahead != '/') {
+      return;
+    }
+    while (lexer->lookahead != '\n' && !lexer->eof(lexer)) {
+      lexer->advance(lexer, false);
+    }
+  }
+}
 
 // Tree-sitter's generated lexer excludes NUL even from negated character
 // classes. Recognize only tokens containing NUL here; the generated lexer
@@ -144,6 +224,53 @@ bool tree_sitter_quint_external_scanner_scan(
   const bool *valid_symbols
 ) {
   QScanner *scanner = payload;
+  
+  // Handle line-break tokens (chain_break, operator_break) if no boundary tokens are expected
+  if (valid_symbols[ERROR_SENTINEL] ||
+      (!valid_symbols[REFERENCE_BOUNDARIES] && !valid_symbols[CHAIN_BREAK] &&
+       !valid_symbols[OPERATOR_BREAK])) {
+    // ERROR_SENTINEL signals to skip line-break processing, or no line-break tokens needed
+    if (valid_symbols[ERROR_SENTINEL]) return false;
+  } else if (valid_symbols[CHAIN_BREAK] || valid_symbols[OPERATOR_BREAK]) {
+    // Process line-break tokens
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
+           lexer->lookahead == '\r') {
+      lexer->advance(lexer, true);
+    }
+    
+    // All tokens are zero-width, the line break itself is an extra.
+    lexer->mark_end(lexer);
+    
+    if (lexer->lookahead == '\r') {
+      lexer->advance(lexer, false);
+    }
+    if (lexer->lookahead != '\n') {
+      // No newline, no line-break token
+      return false;
+    }
+    
+    // A binary operator ending the line.
+    if (valid_symbols[OPERATOR_BREAK]) {
+      lexer->result_symbol = OPERATOR_BREAK;
+      return true;
+    }
+    
+    lexer->advance(lexer, false);
+    skip_blank_and_comment_lines(lexer);
+    
+    // A line starting with `.` continues the expression as a method chain, but `...` is a spread.
+    if (lexer->lookahead == '.') {
+      lexer->advance(lexer, false);
+      if (lexer->lookahead == '.' || !valid_symbols[CHAIN_BREAK]) {
+        return false;
+      }
+      lexer->result_symbol = CHAIN_BREAK;
+      return true;
+    }
+    
+    return false;
+  }
+  
   // Recovery exposes every external token at once. Boundary markers must not
   // suppress Tree-sitter's normal error recovery in that mode.
   if (valid_symbols[REFERENCE_BOUNDARIES] && valid_symbols[BEGIN_DEFINITION]) scanner->recovering = true;

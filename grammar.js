@@ -129,47 +129,56 @@ function binaryExpression($, expression) {
     prec.left(PREC.IMPLICATION, seq(
       field("left", expression),
       field("operator", "implies"),
+      optional($.operator_break),
       field("right", expression),
     )),
     prec.left(PREC.LEADS_TO, seq(
       field("left", expression),
       field("operator", "leadsTo"),
+      optional($.operator_break),
       field("right", expression),
     )),
     prec.left(PREC.EQUIVALENCE, seq(
       field("left", expression),
       field("operator", "iff"),
+      optional($.operator_break),
       field("right", expression),
     )),
     prec.left(PREC.DISJUNCTION, seq(
       field("left", expression),
       field("operator", "or"),
+      optional($.operator_break),
       field("right", expression),
     )),
     prec.left(PREC.CONJUNCTION, seq(
       field("left", expression),
       field("operator", "and"),
+      optional($.operator_break),
       field("right", expression),
     )),
     // ANTLR's relations alternative gives equality and ordering equal precedence.
     prec.left(PREC.RELATION, seq(
       field("left", expression),
       field("operator", choice("==", "!=", "<", "<=", ">", ">=")),
+      optional($.operator_break),
       field("right", expression),
     )),
     prec.left(PREC.ADDITIVE, seq(
       field("left", expression),
       field("operator", choice("+", "-")),
+      optional($.operator_break),
       field("right", expression),
     )),
     prec.left(PREC.MULTIPLICATIVE, seq(
       field("left", expression),
       field("operator", choice("*", alias($._division, "/"), "%")),
+      optional($.operator_break),
       field("right", expression),
     )),
     prec.right(PREC.POWER, seq(
       field("left", expression),
       field("operator", "^"),
+      optional($.operator_break),
       field("right", expression),
     )),
   );
@@ -195,6 +204,7 @@ function callExpression($, expression) {
 function ufcsCallExpression($, expression) {
   return prec.left(PREC.POSTFIX + 1, seq(
     field("receiver", expression),
+    optional($.chain_break),
     ".",
     field("method", choice(
       $.identifier,
@@ -222,6 +232,7 @@ function indexExpression($, expression) {
 function fieldAccessExpression($, expression) {
   return prec.left(PREC.POSTFIX, seq(
     field("object", expression),
+    optional($.chain_break),
     ".",
     field("field", choice(
       $.identifier,
@@ -235,6 +246,7 @@ function pairExpression($, expression) {
   return prec.left(PREC.PAIR, seq(
     field("left", expression),
     "->",
+    optional($.operator_break),
     field("right", expression),
   ));
 }
@@ -299,6 +311,9 @@ export default grammar({
     $._nul_comment,
     $._nul_documentation_comment,
     $._nul_hashbang,
+    $.chain_break,
+    $.operator_break,
+    $._error_sentinel,
   ],
 
   extras: $ => [
