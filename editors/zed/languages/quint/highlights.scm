@@ -243,6 +243,9 @@
 (record_type_field
   name: (identifier) @property)
 
+(record_row
+  name: (identifier) @type)
+
 (field_access_expression
   field: [
     (identifier)
