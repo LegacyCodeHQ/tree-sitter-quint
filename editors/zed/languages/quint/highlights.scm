@@ -137,6 +137,12 @@
     (qualified_identifier)
   ] @variable.parameter)
 
+(nondet_binding
+  name: [
+    (identifier)
+    (qualified_identifier)
+  ] @variable)
+
 (documentation_comment) @comment.doc
 (comment) @comment
 
