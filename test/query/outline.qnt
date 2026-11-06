@@ -8,4 +8,5 @@ module Outline {
   action increment(amount: int): bool = count' = count + amount
   import Counter(Max = LIMIT) as C
   import Counter as Total
+  export Counter as Shown
 }

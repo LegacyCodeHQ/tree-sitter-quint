@@ -29,3 +29,7 @@
 (module_import_declaration
   module: (_) @context
   alias: (_) @name) @item
+
+(module_export_declaration
+  module: (_) @context
+  alias: (_) @name) @item
