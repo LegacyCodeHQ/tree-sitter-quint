@@ -11,6 +11,8 @@ module Indents {
       value
     val link = value ->
       value
+    val shown = pair
+      .first
     match Some({ pair: pair, values: values }) {
       | Some(record) => all {
           record.values.length() > 0,

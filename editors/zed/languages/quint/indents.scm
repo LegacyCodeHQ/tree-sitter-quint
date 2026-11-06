@@ -12,6 +12,7 @@
   (index_expression)
   (binary_expression)
   (pair_expression)
+  (field_access_expression)
   (parenthesized_expression)
   (list_literal)
   (tuple_literal)
