@@ -178,6 +178,16 @@
     (qualified_identifier)
   ] @type)
 
+(named_import_declaration
+  module: [
+    (identifier)
+    (qualified_identifier)
+  ] @type
+  name: [
+    (identifier)
+    (qualified_identifier)
+  ] @variable)
+
 (anonymous_instance_declaration
   module: [
     (identifier)
