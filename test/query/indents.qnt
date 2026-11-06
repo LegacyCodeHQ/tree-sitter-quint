@@ -9,6 +9,8 @@ module Indents {
     ]
     val total = value +
       value
+    val link = value ->
+      value
     match Some({ pair: pair, values: values }) {
       | Some(record) => all {
           record.values.length() > 0,
