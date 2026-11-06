@@ -129,7 +129,8 @@ function treeSitterTokens(source, parser) {
       return;
     }
 
-    if (node.isMissing || node.type === "comment" || node.type === "_newline") {
+    // Line-break markers are zero-width and have no counterpart in Quint's lexer.
+    if (node.isMissing || ["comment", "_newline", "chain_break", "operator_break"].includes(node.type)) {
       return;
     }
 
