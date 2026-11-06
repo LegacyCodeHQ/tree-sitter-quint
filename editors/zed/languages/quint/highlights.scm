@@ -106,6 +106,12 @@
   name: (identifier) @constructor)
 
 (primitive_type) @type.builtin
+
+[
+  "List"
+  "Map"
+  "Set"
+] @type.builtin
 (integer_literal) @number
 (boolean_literal) @boolean
 (string_literal) @string
