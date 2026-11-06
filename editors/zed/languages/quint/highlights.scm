@@ -119,6 +119,12 @@
 (record_literal_field
   name: (identifier) @property)
 
+(field_access_expression
+  field: [
+    (identifier)
+    (qualified_identifier)
+  ] @property)
+
 (documentation_comment) @comment.doc
 (comment) @comment
 
