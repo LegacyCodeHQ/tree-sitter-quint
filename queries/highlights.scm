@@ -111,6 +111,12 @@
     (qualified_identifier)
   ] @type)
 
+(type_application
+  constructor: [
+    (identifier)
+    (qualified_identifier)
+  ] @type)
+
 (sum_type_variant
   name: (identifier) @constructor)
 
