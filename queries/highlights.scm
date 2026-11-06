@@ -127,6 +127,18 @@
 (name_reference
   name: (identifier) @variable)
 
+(tuple_pattern
+  element: (hole) @variable.special)
+
+(match_arm
+  variant: (hole) @variable.special)
+
+(match_arm
+  parameter: (hole) @variable.special)
+
+(assumption_declaration
+  name: (hole) @variable.special)
+
 (namespace_access_expression
   namespace: (identifier) @module
   member: (identifier) @variable)
