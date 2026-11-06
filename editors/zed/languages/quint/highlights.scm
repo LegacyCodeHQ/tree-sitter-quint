@@ -326,6 +326,11 @@
   function: (name_reference
     name: (identifier) @function))
 
+(namespace_access_expression
+  member: (identifier) @type
+  .
+  member: (identifier))
+
 (call_expression
   function: (namespace_access_expression
-    member: (identifier) @function))
+    member: (identifier) @function .))
