@@ -7,8 +7,8 @@
 A [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar for the
 [Quint specification language](https://quint-lang.org/).
 
-Package versions track Quint compiler releases directly. Version `0.32.0`
-supports Quint `0.32.0`.
+Package versions track Quint compiler releases directly. Version `0.33.0`
+supports Quint `0.33.0`.
 
 ## Installation
 

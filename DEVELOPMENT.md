@@ -19,10 +19,9 @@ bun run test
 ```
 
 The separate locked 0.33.0 package provides the reference ANTLR lexer and
-phase-one parser. Keep `QUINT_CLI` set to it while working on 0.33 compatibility;
-the root dependency and release metadata remain on the previous release until
-release preparation. Both CI and the release gate install and select this
-reference explicitly.
+phase-one parser. Keep `QUINT_CLI` set to it; it matches the root dependency
+and release metadata, which also target 0.33.0. Both CI and the release gate
+install and select this reference explicitly.
 
 The detailed red/green workflow for grammar changes is documented in
 [AGENTS.md](AGENTS.md).
@@ -101,11 +100,12 @@ bun run check:generated
 
 The grammar has also been checked against the exact upstream `v0.33.0` release
 (`d7ef819575c1ebcad7ba11018ce6c64377cfbe3c`). Its ANTLR grammar and generated
-parser are unchanged from `v0.32.0`. Validation includes the release's 77 example
+parser are unchanged from `v0.32.0`; the later `v0.33.1` patch release changes
+no grammar, parsing or generated-parser files. Validation includes the release's 77 example
 files with both `quint parse` and `quint typecheck`, and differential acceptance
 and source-spanned tree checks on generated expressions and local definitions.
-The pinned development compiler and package versions still target 0.32.0;
-use `QUINT_CLI` to repeat the checks with a 0.33.0 installation.
+The pinned development compiler and package versions target 0.33.0; use
+`QUINT_CLI` to repeat the checks with another installation.
 
 The grammar represents ANTLR diagnostics with named nodes. In particular,
 `invalid_identifier` preserves QNT008 for reserved words in expressions,
@@ -196,8 +196,8 @@ Before releasing, npm must designate `.github/workflows/release.yml` in
 
 ## Reproducing the Quint 0.33 audit
 
-Install the reference separately so the released package's version contract can
-remain unchanged until its next release:
+Install the reference separately; it is the same compiler version the package
+targets:
 
 ```sh
 bun ci
@@ -208,8 +208,7 @@ QUINT_CLI="$PWD/test/reference-quint033/node_modules/@informalsystems/quint/dist
 ```
 
 The private reference package pins Quint **0.33.0** with its own frozen lockfile.
-The audit refuses another compiler version, including the root package's current
-0.32 reference. All CI workflows use the 0.33 reference. Routine CI runs the
+The audit refuses another compiler version. All CI workflows use the 0.33 reference. Routine CI runs the
 ordinary suite and quick audit; scheduled, manual and release runs retain both
 exhaustive matrices.
 No global Quint installation is required.
@@ -268,6 +267,17 @@ The generated lexer excludes NUL from its character classes, so the external
 scanner recognizes NUL-containing strings, comments, and hashbangs. Ordinary
 tokens retain their existing generated-lexer behavior and tree node shapes.
 Incremental checks cover transitions between ordinary and NUL-containing tokens.
+
+The scanner also emits two zero-width named nodes for formatters, `operator_break`
+and `chain_break`. They have no text and no counterpart in Quint's lexer, so
+`scripts/check-tokenization-parity.mjs` ignores them. `operator_break` follows a
+binary operator or `->` when the line ends after it, or after a trailing comment,
+and sits between the operator and the right operand. `chain_break` precedes a `.`
+that starts a line, after any blank lines or comments, and sits before the field
+or method of a `field_access_expression` or `ufcs_call_expression`; a line starting
+with `..` produces none. A line comment consumes its own line break, so the scanner
+treats a scan that starts at column zero as following one. Neither node appears
+during error recovery. `test/corpus/line_breaks.txt` covers each placement.
 
 The structure checker converts ANTLR code-point offsets to UTF-16 offsets before
 comparing with Node Tree-sitter spans. Emoji in strings, comments, or earlier
