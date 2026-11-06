@@ -4,7 +4,7 @@ const SHARED_LEXICAL_RULES = new Set([
   "identifier", "integer_literal", "boolean_literal", "string_literal", "hole",
   "comment", "documentation_comment", "hashbang", "reserved_operator",
   "type_variable", "primitive_type", "invalid_identifier",
-  "_division", "_nul_string_literal", "_nul_comment", "_nul_documentation_comment", "_nul_hashbang",
+  "chain_break", "operator_break", "_division", "_nul_string_literal", "_nul_comment", "_nul_documentation_comment", "_nul_hashbang",
 ]);
 export const recoverySymbols = $ => new Proxy($, {
   get: (symbols, name) => symbols[SHARED_LEXICAL_RULES.has(name) ? name : `_recovery_${name}`],

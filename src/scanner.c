@@ -225,52 +225,38 @@ bool tree_sitter_quint_external_scanner_scan(
 ) {
   QScanner *scanner = payload;
   
-  // Handle line-break tokens (chain_break, operator_break) if no boundary tokens are expected
-  if (valid_symbols[ERROR_SENTINEL] ||
-      (!valid_symbols[REFERENCE_BOUNDARIES] && !valid_symbols[CHAIN_BREAK] &&
-       !valid_symbols[OPERATOR_BREAK])) {
-    // ERROR_SENTINEL signals to skip line-break processing, or no line-break tokens needed
-    if (valid_symbols[ERROR_SENTINEL]) return false;
-  } else if (valid_symbols[CHAIN_BREAK] || valid_symbols[OPERATOR_BREAK]) {
-    // Process line-break tokens
+  // Line-break tokens are zero-width and only apply at a line break; anywhere
+  // else the other external tokens must still be scanned.
+  // Every external token is valid during error recovery; leave it to the scanners below.
+  if (!valid_symbols[ERROR_SENTINEL] && (valid_symbols[CHAIN_BREAK] || valid_symbols[OPERATOR_BREAK])) {
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
            lexer->lookahead == '\r') {
       lexer->advance(lexer, true);
     }
-    
-    // All tokens are zero-width, the line break itself is an extra.
-    lexer->mark_end(lexer);
-    
-    if (lexer->lookahead == '\r') {
+    const bool boundary_valid =
+        valid_symbols[REFERENCE_BOUNDARIES] || valid_symbols[RECOVERY_BOUNDARIES] ||
+        valid_symbols[BEGIN_DEFINITION] || valid_symbols[END_DEFINITION] ||
+        valid_symbols[BEGIN_DECLARATION] || valid_symbols[END_DECLARATION];
+    if (lexer->lookahead == '\n' && !boundary_valid) {
+      lexer->mark_end(lexer);
+      // A binary operator ending the line.
+      if (valid_symbols[OPERATOR_BREAK]) {
+        lexer->result_symbol = OPERATOR_BREAK;
+        return true;
+      }
       lexer->advance(lexer, false);
-    }
-    if (lexer->lookahead != '\n') {
-      // No newline, no line-break token
+      skip_blank_and_comment_lines(lexer);
+      // A line starting with `.` continues the expression as a method chain, but `...` is a spread.
+      if (lexer->lookahead == '.') {
+        lexer->advance(lexer, false);
+        if (lexer->lookahead == '.') return false;
+        lexer->result_symbol = CHAIN_BREAK;
+        return true;
+      }
       return false;
     }
-    
-    // A binary operator ending the line.
-    if (valid_symbols[OPERATOR_BREAK]) {
-      lexer->result_symbol = OPERATOR_BREAK;
-      return true;
-    }
-    
-    lexer->advance(lexer, false);
-    skip_blank_and_comment_lines(lexer);
-    
-    // A line starting with `.` continues the expression as a method chain, but `...` is a spread.
-    if (lexer->lookahead == '.') {
-      lexer->advance(lexer, false);
-      if (lexer->lookahead == '.' || !valid_symbols[CHAIN_BREAK]) {
-        return false;
-      }
-      lexer->result_symbol = CHAIN_BREAK;
-      return true;
-    }
-    
-    return false;
   }
-  
+
   // Recovery exposes every external token at once. Boundary markers must not
   // suppress Tree-sitter's normal error recovery in that mode.
   if (valid_symbols[REFERENCE_BOUNDARIES] && valid_symbols[BEGIN_DEFINITION]) scanner->recovering = true;
