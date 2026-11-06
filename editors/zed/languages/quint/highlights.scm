@@ -198,7 +198,10 @@
   field: (identifier) @variable)
 
 (tuple_pattern
-  element: (identifier) @variable)
+  element: [
+    (identifier)
+    (qualified_identifier)
+  ] @variable)
 
 (lambda_expression
   parameter: [
