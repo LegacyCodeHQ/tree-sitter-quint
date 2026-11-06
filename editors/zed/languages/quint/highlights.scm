@@ -50,7 +50,10 @@
   ] @variable)
 
 (value_definition
-  name: (identifier) @constant)
+  name: [
+    (identifier)
+    (qualified_identifier)
+  ] @constant)
 
 (operator_definition
   name: [
