@@ -10,6 +10,7 @@
   (call_expression)
   (ufcs_call_expression)
   (index_expression)
+  (binary_expression)
   (parenthesized_expression)
   (list_literal)
   (tuple_literal)

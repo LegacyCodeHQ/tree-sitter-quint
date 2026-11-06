@@ -7,6 +7,8 @@ module Indents {
     val picked = values[
       value
     ]
+    val total = value +
+      value
     match Some({ pair: pair, values: values }) {
       | Some(record) => all {
           record.values.length() > 0,
