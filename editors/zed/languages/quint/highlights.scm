@@ -43,6 +43,12 @@
     (qualified_identifier)
   ] @constant)
 
+(assumption_declaration
+  name: [
+    (identifier)
+    (qualified_identifier)
+  ] @constant)
+
 (variable_declaration
   name: [
     (identifier)
