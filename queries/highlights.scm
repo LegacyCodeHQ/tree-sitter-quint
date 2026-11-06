@@ -240,6 +240,9 @@
 (record_literal_field
   name: (identifier) @property)
 
+(record_type_field
+  name: (identifier) @property)
+
 (field_access_expression
   field: [
     (identifier)
