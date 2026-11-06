@@ -116,6 +116,9 @@
   ] @variable
   "'" @operator)
 
+(record_literal_field
+  name: (identifier) @property)
+
 (documentation_comment) @comment.doc
 (comment) @comment
 
