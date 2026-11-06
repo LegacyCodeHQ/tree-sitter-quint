@@ -35,6 +35,15 @@ test("Zed extension registers Quint and pins the grammar", () => {
     config,
     /^block_comment = \{ start = "\/\*", prefix = "\* ", end = "\*\/", tab_size = 1 \}$/m,
   );
+  assert.match(config, /^autoclose_before = ";:\.,=}\]\)"$/m);
+  assert.match(
+    config,
+    /\{ start = '"', end = '"', close = true, newline = false, not_in = \["string"\] \}/,
+  );
+  assert.match(
+    config,
+    /\{ start = "\/\*", end = " \*\/", close = true, newline = false, not_in = \["string", "comment"\] \}/,
+  );
   assert.match(config, /^tab_size = 2$/m);
   assert.match(config, /^hard_tabs = false$/m);
 });
