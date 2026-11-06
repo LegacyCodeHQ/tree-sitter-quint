@@ -131,6 +131,24 @@
   namespace: (identifier) @module
   member: (identifier) @variable)
 
+(module_import_declaration
+  module: [
+    (identifier)
+    (qualified_identifier)
+  ] @module)
+
+(instance_declaration
+  module: [
+    (identifier)
+    (qualified_identifier)
+  ] @module)
+
+(anonymous_instance_declaration
+  module: [
+    (identifier)
+    (qualified_identifier)
+  ] @module)
+
 (primed_identifier
   name: [
     (identifier)
