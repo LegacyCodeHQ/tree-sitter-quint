@@ -1,7 +1,8 @@
 name = "Quint"
 grammar = "quint"
 path_suffixes = ["qnt", "quint"]
-line_comments = ["// "]
+line_comments = ["// ", "/// "]
+block_comment = { start = "/*", prefix = "* ", end = "*/", tab_size = 1 }
 tab_size = 2
 hard_tabs = false
 

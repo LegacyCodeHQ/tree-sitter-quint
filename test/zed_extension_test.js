@@ -30,7 +30,11 @@ test("Zed extension registers Quint and pins the grammar", () => {
   assert.match(config, /^name = "Quint"$/m);
   assert.match(config, /^grammar = "quint"$/m);
   assert.match(config, /^path_suffixes = \["qnt", "quint"\]$/m);
-  assert.match(config, /^line_comments = \["\/\/ "\]$/m);
+  assert.match(config, /^line_comments = \["\/\/ ", "\/\/\/ "\]$/m);
+  assert.match(
+    config,
+    /^block_comment = \{ start = "\/\*", prefix = "\* ", end = "\*\/", tab_size = 1 \}$/m,
+  );
   assert.match(config, /^tab_size = 2$/m);
   assert.match(config, /^hard_tabs = false$/m);
 });
