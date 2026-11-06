@@ -172,6 +172,12 @@
     (qualified_identifier)
   ] @module)
 
+(wildcard_import_declaration
+  module: [
+    (identifier)
+    (qualified_identifier)
+  ] @module)
+
 (anonymous_instance_declaration
   module: [
     (identifier)
