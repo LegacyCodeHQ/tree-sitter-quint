@@ -128,7 +128,8 @@
   name: (identifier) @variable)
 
 (namespace_access_expression
-  namespace: (identifier) @type)
+  namespace: (identifier) @type
+  member: (identifier) @variable)
 
 (primed_identifier
   name: [
