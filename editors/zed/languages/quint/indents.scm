@@ -1,38 +1,14 @@
+; A bracketed node indents its contents until its closing bracket. The closing bracket is captured
+; as @end for its own node: Zed reads only the previous row when indenting, so capturing every
+; closing bracket as @outdent would outdent the line after any inline `(1, 2)` or `{ x: 1 }`.
+(_ "{" "}" @end) @indent
+(_ "[" "]" @end) @indent
+(_ "(" ")" @end) @indent
+
+; Nodes without brackets indent their continuation lines.
 [
-  (module_definition)
-  (block_expression)
-  (all_expression)
-  (and_block_expression)
-  (any_expression)
-  (or_block_expression)
-  (match_expression)
   (match_arm)
-  (call_expression)
-  (ufcs_call_expression)
-  (index_expression)
   (binary_expression)
   (pair_expression)
   (field_access_expression)
-  (parenthesized_expression)
-  (list_literal)
-  (tuple_literal)
-  (record_literal)
-  (record_pattern)
-  (tuple_pattern)
-  (list_type)
-  (tuple_type)
-  (record_type)
-  (set_type)
-  (type_application)
-  (operator_type)
-  (function_type)
-  (parenthesized_type)
-  (instance_declaration)
-  (anonymous_instance_declaration)
 ] @indent
-
-[
-  ")"
-  "]"
-  "}"
-] @outdent

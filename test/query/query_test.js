@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 import Parser from "tree-sitter";
 import Quint from "../../bindings/node/index.js";
+import { indentAfterEnter } from "./zed_indent.js";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -88,7 +89,8 @@ test("indent query captures structural containers and closing delimiters", () =>
   ]) {
     assert.ok(indentedTypes.has(nodeType), `missing @indent for ${nodeType}`);
   }
-  assert.ok(captures.some(({ name }) => name === "outdent"));
+  assert.ok(captures.some(({ name }) => name === "end"));
+  assert.ok(!captures.some(({ name }) => name === "outdent"));
 });
 
 test("outline query exposes Quint modules and declarations", () => {
@@ -128,4 +130,15 @@ test("outline query exposes Quint modules and declarations", () => {
   ]) {
     assert.ok(itemTypes.has(nodeType), `missing @item for ${nodeType}`);
   }
+});
+
+test("Enter keeps the indentation after a line ending in an inline closing bracket", () => {
+  const source = readFileSync(join(projectRoot, "test/query/enter.qnt"), "utf8");
+  // Lines 2 to 5 end in `)`, `}`, `]` and `)` of one-line expressions inside the module.
+  for (const line of [2, 3, 4, 5]) {
+    assert.equal(indentAfterEnter(source, line), 2, `Enter after line ${line}`);
+  }
+  assert.equal(indentAfterEnter(source, 6), 4, "Enter after an opening brace indents");
+  assert.equal(indentAfterEnter(source, 7), 4, "Enter inside a block keeps its indentation");
+  assert.equal(indentAfterEnter(source, 8), 2, "Enter after a closing brace returns to its line");
 });
