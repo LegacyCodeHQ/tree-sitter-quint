@@ -131,6 +131,12 @@
 (tuple_pattern
   element: (identifier) @variable)
 
+(lambda_expression
+  parameter: [
+    (identifier)
+    (qualified_identifier)
+  ] @variable.parameter)
+
 (documentation_comment) @comment.documentation
 (comment) @comment
 
