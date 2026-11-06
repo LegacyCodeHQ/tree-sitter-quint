@@ -105,6 +105,9 @@
 (sum_type_variant
   name: (identifier) @constructor)
 
+(match_arm
+  variant: (identifier) @constructor)
+
 (primitive_type) @type.builtin
 
 [
