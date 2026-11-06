@@ -199,3 +199,172 @@ module M {
         object: (name_reference
           name: (identifier))
         field: (identifier)))))
+
+========================================
+Line comment before a chained call
+========================================
+
+module M {
+  val a = [1, 2]
+    // note
+    .length()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (ufcs_call_expression
+        receiver: (list_literal
+          element: (integer_literal)
+          element: (integer_literal))
+        (comment)
+        (chain_break)
+        method: (identifier)))))
+
+========================================
+Blank line before a chained call
+========================================
+
+module M {
+  val a = [1, 2]
+
+    .length()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (ufcs_call_expression
+        receiver: (list_literal
+          element: (integer_literal)
+          element: (integer_literal))
+        (chain_break)
+        method: (identifier)))))
+
+========================================
+Trailing comment before a chained call
+========================================
+
+module M {
+  val a = [1, 2] // note
+    .length()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (ufcs_call_expression
+        receiver: (list_literal
+          element: (integer_literal)
+          element: (integer_literal))
+        (comment)
+        (chain_break)
+        method: (identifier)))))
+
+========================================
+Block comment before a chained call
+========================================
+
+module M {
+  val a = [1, 2]
+    /* note */
+    .length()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (ufcs_call_expression
+        receiver: (list_literal
+          element: (integer_literal)
+          element: (integer_literal))
+        (comment)
+        (chain_break)
+        method: (identifier)))))
+
+========================================
+Comment and blank line before a chained call
+========================================
+
+module M {
+  val a = [1, 2]
+    // note
+
+    .length()
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (ufcs_call_expression
+        receiver: (list_literal
+          element: (integer_literal)
+          element: (integer_literal))
+        (comment)
+        (chain_break)
+        method: (identifier)))))
+
+========================================
+Trailing comment after an operator
+========================================
+
+module M {
+  val a = 1 + // note
+    2
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        (comment)
+        (operator_break)
+        right: (integer_literal)))))
+
+========================================
+Comment line after an operator
+========================================
+
+module M {
+  val a = 1 +
+    // note
+    2
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        (operator_break)
+        (comment)
+        right: (integer_literal)))))
