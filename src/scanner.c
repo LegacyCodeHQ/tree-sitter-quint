@@ -20,81 +20,36 @@ enum TokenType {
   ERROR_SENTINEL,
 };
 
-// Helper functions for line-break scanner
-static bool is_ident_char(int32_t c) {
-  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
-         c == '_';
+static void skip_space(TSLexer *lexer, bool *newline) {
+  while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
+         lexer->lookahead == '\r' || lexer->lookahead == '\n') {
+    if (lexer->lookahead == '\n') *newline = true;
+    lexer->advance(lexer, true);
+  }
 }
 
-// Consumes `word` and checks that it is not just the prefix of a longer identifier.
-static bool scan_word(TSLexer *lexer, const char *word) {
-  for (; *word; word++) {
-    if (lexer->lookahead != *word) {
-      return false;
-    }
+// A line starting with `.` continues the expression as a method chain, but `..` is a spread.
+// The token is zero-width and sits before the dot.
+static bool scan_chain_break(TSLexer *lexer, const bool *valid_symbols, bool newline) {
+  if (!newline || !valid_symbols[CHAIN_BREAK] || lexer->lookahead != '.') return false;
+  lexer->mark_end(lexer);
+  lexer->advance(lexer, false);
+  if (lexer->lookahead == '.') return false;
+  lexer->result_symbol = CHAIN_BREAK;
+  return true;
+}
+
+// Same, after the boundary lookup, which marked the token end before the dot and may have
+// consumed it: `column` is where the lookup started.
+static bool finish_chain_break(TSLexer *lexer, const bool *valid_symbols, bool newline,
+                               bool dot, uint32_t column) {
+  if (!dot || !newline || !valid_symbols[CHAIN_BREAK]) return false;
+  if (lexer->get_column(lexer) == column) {
     lexer->advance(lexer, false);
   }
-  return !is_ident_char(lexer->lookahead);
-}
-
-// Whether the next line continues the expression with a binary operator. `and {` / `or {`
-// start a block combinator and a leading `-` is a negation, thus both start a new expression.
-static bool continues_with_binary_operator(TSLexer *lexer) {
-  switch (lexer->lookahead) {
-    case '+':
-    case '*':
-    case '%':
-    case '^':
-    case '<':
-    case '>':
-      return true;
-    case '/':
-      lexer->advance(lexer, false);
-      return lexer->lookahead != '/' && lexer->lookahead != '*';
-    case '=':
-    case '!':
-      lexer->advance(lexer, false);
-      return lexer->lookahead == '=';
-    case 'i':
-      lexer->advance(lexer, false);
-      if (lexer->lookahead == 'f') {
-        return scan_word(lexer, "ff");
-      }
-      return scan_word(lexer, "mplies");
-    case 'l':
-      return scan_word(lexer, "leadsTo");
-    case 'a':
-    case 'o':
-      if (!scan_word(lexer, lexer->lookahead == 'a' ? "and" : "or")) {
-        return false;
-      }
-      while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
-        lexer->advance(lexer, false);
-      }
-      return lexer->lookahead != '{';
-    default:
-      return false;
-  }
-}
-
-// Skips whitespace, line breaks and `//` comments.
-static void skip_blank_and_comment_lines(TSLexer *lexer) {
-  for (;;) {
-    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' ||
-           lexer->lookahead == '\n') {
-      lexer->advance(lexer, false);
-    }
-    if (lexer->lookahead != '/') {
-      return;
-    }
-    lexer->advance(lexer, false);
-    if (lexer->lookahead != '/') {
-      return;
-    }
-    while (lexer->lookahead != '\n' && !lexer->eof(lexer)) {
-      lexer->advance(lexer, false);
-    }
-  }
+  if (lexer->lookahead == '.') return false;
+  lexer->result_symbol = CHAIN_BREAK;
+  return true;
 }
 
 // Tree-sitter's generated lexer excludes NUL even from negated character
@@ -225,35 +180,20 @@ bool tree_sitter_quint_external_scanner_scan(
 ) {
   QScanner *scanner = payload;
   
-  // Line-break tokens are zero-width and only apply at a line break; anywhere
-  // else the other external tokens must still be scanned.
   // Every external token is valid during error recovery; leave it to the scanners below.
-  if (!valid_symbols[ERROR_SENTINEL] && (valid_symbols[CHAIN_BREAK] || valid_symbols[OPERATOR_BREAK])) {
+  const bool line_breaks = !valid_symbols[ERROR_SENTINEL];
+  bool newline = false;
+
+  // A binary operator ending the line. The token is zero-width and consumes nothing.
+  if (line_breaks && valid_symbols[OPERATOR_BREAK]) {
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
            lexer->lookahead == '\r') {
       lexer->advance(lexer, true);
     }
-    const bool boundary_valid =
-        valid_symbols[REFERENCE_BOUNDARIES] || valid_symbols[RECOVERY_BOUNDARIES] ||
-        valid_symbols[BEGIN_DEFINITION] || valid_symbols[END_DEFINITION] ||
-        valid_symbols[BEGIN_DECLARATION] || valid_symbols[END_DECLARATION];
-    if (lexer->lookahead == '\n' && !boundary_valid) {
+    if (lexer->lookahead == '\n') {
       lexer->mark_end(lexer);
-      // A binary operator ending the line.
-      if (valid_symbols[OPERATOR_BREAK]) {
-        lexer->result_symbol = OPERATOR_BREAK;
-        return true;
-      }
-      lexer->advance(lexer, false);
-      skip_blank_and_comment_lines(lexer);
-      // A line starting with `.` continues the expression as a method chain, but `...` is a spread.
-      if (lexer->lookahead == '.') {
-        lexer->advance(lexer, false);
-        if (lexer->lookahead == '.') return false;
-        lexer->result_symbol = CHAIN_BREAK;
-        return true;
-      }
-      return false;
+      lexer->result_symbol = OPERATOR_BREAK;
+      return true;
     }
   }
 
@@ -267,8 +207,7 @@ bool tree_sitter_quint_external_scanner_scan(
       if (!valid_symbols[lexer->result_symbol]) return false;
       return true;
     }
-    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
-           lexer->lookahead == '\r' || lexer->lookahead == '\n') lexer->advance(lexer, true);
+    skip_space(lexer, &newline);
     unsigned doc_prefix = 0;
     if (lexer->lookahead == '/') {
       lexer->mark_end(lexer);
@@ -277,14 +216,17 @@ bool tree_sitter_quint_external_scanner_scan(
     }
     if (valid_symbols[END_DEFINITION] || valid_symbols[END_DECLARATION] ||
         valid_symbols[BEGIN_DEFINITION] || valid_symbols[BEGIN_DECLARATION]) {
-      while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
-             lexer->lookahead == '\r' || lexer->lookahead == '\n') lexer->advance(lexer, true);
+      skip_space(lexer, &newline);
       bool comment = lexer->lookahead == '/';
       if (scanner->recognized && scanner->recovering &&
           !q_end_may_match(scanner, lexer, doc_prefix,
                           valid_symbols[END_DEFINITION], valid_symbols[END_DECLARATION]) &&
           (comment || !q_begin_may_match(scanner, lexer,
-                          valid_symbols[BEGIN_DEFINITION], valid_symbols[BEGIN_DECLARATION]))) return false;
+                          valid_symbols[BEGIN_DEFINITION], valid_symbols[BEGIN_DECLARATION]))) {
+        return scan_chain_break(lexer, valid_symbols, line_breaks && newline);
+      }
+      const bool dot = !doc_prefix && lexer->lookahead == '.';
+      const uint32_t column = lexer->get_column(lexer);
       uint32_t position = q_token_position(scanner, lexer, doc_prefix);
       if (valid_symbols[END_DEFINITION] && q_end_definition(scanner, position, 4)) {
         lexer->result_symbol = END_DEFINITION; return true;
@@ -298,13 +240,11 @@ bool tree_sitter_quint_external_scanner_scan(
       if (!comment && valid_symbols[BEGIN_DEFINITION] && q_begin_definition(scanner, position, 4)) {
         lexer->result_symbol = BEGIN_DEFINITION; return true;
       }
-      return false;
+      return finish_chain_break(lexer, valid_symbols, line_breaks && newline, dot, column);
     }
   }
 
-  while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
-         lexer->lookahead == '\r' || lexer->lookahead == '\n') {
-    lexer->advance(lexer, true);
-  }
+  skip_space(lexer, &newline);
+  if (scan_chain_break(lexer, valid_symbols, line_breaks && newline)) return true;
   return scan_nul_token(lexer, valid_symbols, NULL);
 }

@@ -1038,6 +1038,7 @@ module ThirdPassIntegration {
                   argument: (integer_literal)
                   argument: (integer_literal))
                 (comment)
+                (chain_break)
                 method: (identifier)
                 argument: (integer_literal))
               index: (integer_literal)))

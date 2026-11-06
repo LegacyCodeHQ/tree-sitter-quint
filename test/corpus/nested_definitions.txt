@@ -459,6 +459,7 @@ module MultilineContinuations {
                 argument: (integer_literal)
                 argument: (integer_literal))
               (comment)
+              (chain_break)
               method: (identifier)
               argument: (integer_literal)))
           body: (name_reference
@@ -477,6 +478,7 @@ module MultilineContinuations {
                   name: (identifier))
                 argument: (integer_literal)
                 argument: (integer_literal))
+              (chain_break)
               method: (identifier)
               argument: (integer_literal)))
           body: (name_reference
