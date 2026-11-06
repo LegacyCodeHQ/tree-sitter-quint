@@ -108,6 +108,7 @@ test("outline query exposes Quint modules and declarations", () => {
     "initial",
     "increment",
     "C",
+    "Total",
   ]);
   for (const nodeType of [
     "module_definition",

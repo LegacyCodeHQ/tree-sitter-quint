@@ -7,4 +7,5 @@ module Outline {
   pure val initial = 0
   action increment(amount: int): bool = count' = count + amount
   import Counter(Max = LIMIT) as C
+  import Counter as Total
 }

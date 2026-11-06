@@ -25,3 +25,7 @@
 (instance_declaration
   module: (_) @context
   alias: (_) @name) @item
+
+(module_import_declaration
+  module: (_) @context
+  alias: (_) @name) @item
