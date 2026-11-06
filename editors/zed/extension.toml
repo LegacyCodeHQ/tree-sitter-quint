@@ -1,6 +1,6 @@
 id = "quint-language-support"
 name = "Quint Language Support"
-version = "0.1.2"
+version = "0.1.1"
 schema_version = 1
 authors = ["Legacy Code Headquarters (OPC) Private Limited"]
 description = "Language support for Quint, including syntax highlighting, indentation, bracket matching, and symbol outlines."
