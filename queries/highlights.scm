@@ -156,7 +156,9 @@
   module: [
     (identifier)
     (qualified_identifier)
-  ] @module
+  ] @module)
+
+(module_import_declaration
   alias: [
     (identifier)
     (qualified_identifier)
