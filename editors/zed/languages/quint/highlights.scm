@@ -108,6 +108,9 @@
 (match_arm
   variant: (identifier) @constructor)
 
+(match_arm
+  parameter: (identifier) @variable.parameter)
+
 (primitive_type) @type.builtin
 
 [
