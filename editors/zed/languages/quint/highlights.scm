@@ -157,6 +157,12 @@
     (qualified_identifier)
   ] @type)
 
+(instance_override
+  name: [
+    (identifier)
+    (qualified_identifier)
+  ] @variable)
+
 (primed_identifier
   name: [
     (identifier)
