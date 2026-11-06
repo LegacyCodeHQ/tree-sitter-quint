@@ -199,6 +199,7 @@
 
 (documentation_comment) @comment.documentation
 (comment) @comment
+(hashbang) @comment
 
 [
   "("
