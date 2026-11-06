@@ -135,10 +135,18 @@
   module: [
     (identifier)
     (qualified_identifier)
+  ] @module
+  alias: [
+    (identifier)
+    (qualified_identifier)
   ] @module)
 
 (instance_declaration
   module: [
+    (identifier)
+    (qualified_identifier)
+  ] @module
+  alias: [
     (identifier)
     (qualified_identifier)
   ] @module)
