@@ -128,6 +128,9 @@
 (record_pattern
   field: (identifier) @variable)
 
+(tuple_pattern
+  element: (identifier) @variable)
+
 (documentation_comment) @comment.documentation
 (comment) @comment
 
