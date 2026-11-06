@@ -4,6 +4,8 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
+import Parser from "tree-sitter";
+import Quint from "../bindings/node/index.js";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const zedRoot = join(projectRoot, "editors/zed");
@@ -94,4 +96,29 @@ test("Zed queries compile and highlight diagnostics against the pinned grammar",
     cwd: projectRoot,
     stdio: "pipe", encoding: "utf8",
   });
+});
+
+test("Zed overrides name the strings and comments its bracket pairs are disabled in", () => {
+  const overrides = join(zedLanguageRoot, "overrides.scm");
+  const parser = new Parser();
+  parser.setLanguage(Quint);
+  const tree = parser.parse(read("test/query/overrides.qnt"));
+  assert.equal(tree.rootNode.hasError, false);
+  const query = new Parser.Query(Quint, readFileSync(overrides));
+  const found = query.captures(tree.rootNode).map(({ name, node }) => `${name} ${node.text.trimEnd()}`);
+  assert.deepEqual(found, [
+    "comment /// A documentation comment",
+    "comment // A line comment",
+    'string "a string"',
+    "comment /* A block comment */",
+  ]);
+
+  // Zed refuses a language whose configuration disables a pair in a scope the overrides do not define.
+  const config = read("editors/zed/languages/quint/config.toml");
+  const disabled = [...config.matchAll(/not_in = \[(.*?)\]/g)].flatMap(([, list]) =>
+    [...list.matchAll(/"([^"]+)"/g)].map(([, scope]) => scope),
+  );
+  const defined = new Set([...read("editors/zed/languages/quint/overrides.scm").matchAll(/@(\w+)/g)].map(([, name]) => name));
+  assert.ok(disabled.length > 0);
+  for (const scope of disabled) assert.ok(defined.has(scope), `scope ${scope} is not defined`);
 });
