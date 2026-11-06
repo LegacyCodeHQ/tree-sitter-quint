@@ -249,3 +249,8 @@
   "->"
   "..."
 ] @operator
+
+; Later patterns win over earlier ones that capture the same node.
+(call_expression
+  function: (name_reference
+    name: (identifier) @function))
