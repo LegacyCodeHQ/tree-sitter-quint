@@ -188,6 +188,12 @@
     (qualified_identifier)
   ] @variable)
 
+(wildcard_export_declaration
+  module: [
+    (identifier)
+    (qualified_identifier)
+  ] @module)
+
 (anonymous_instance_declaration
   module: [
     (identifier)
