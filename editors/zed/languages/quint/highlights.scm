@@ -254,3 +254,7 @@
 (call_expression
   function: (name_reference
     name: (identifier) @function))
+
+(call_expression
+  function: (namespace_access_expression
+    member: (identifier) @function))
