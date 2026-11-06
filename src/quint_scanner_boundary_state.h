@@ -170,6 +170,37 @@ static uint32_t q_locate_source(QScanner *scanner, TSLexer *lexer, size_t start,
   return UINT32_MAX;
 }
 
+// Zed's Wasm runtime has no qsort, so sort in place with a heap sort. The comparators below are
+// total orders, so the unstable order does not matter.
+static void q_swap_bytes(unsigned char *left, unsigned char *right, size_t size) {
+  while (size--) {
+    unsigned char byte = *left;
+    *left++ = *right;
+    *right++ = byte;
+  }
+}
+static void q_sift_down(unsigned char *base, size_t size, size_t root, size_t count,
+                        int (*compare)(const void *, const void *)) {
+  for (;;) {
+    size_t child = 2 * root + 1;
+    if (child >= count) return;
+    if (child + 1 < count && compare(base + child * size, base + (child + 1) * size) < 0) child++;
+    if (compare(base + root * size, base + child * size) >= 0) return;
+    q_swap_bytes(base + root * size, base + child * size, size);
+    root = child;
+  }
+}
+static void q_sort(void *items, size_t count, size_t size,
+                   int (*compare)(const void *, const void *)) {
+  unsigned char *base = items;
+  if (count < 2) return;
+  for (size_t i = count / 2; i-- > 0;) q_sift_down(base, size, i, count, compare);
+  for (size_t end = count - 1; end > 0; end--) {
+    q_swap_bytes(base, base + end * size, size);
+    q_sift_down(base, size, 0, end, compare);
+  }
+}
+
 static int q_position_compare(const void *left, const void *right) {
   uint32_t a = *(const uint32_t *)left, b = *(const uint32_t *)right;
   return (a > b) - (a < b);
@@ -183,7 +214,7 @@ static bool q_build_positions(QScanner *scanner) {
     positions[2*i] = scanner->document.boundaries[i].start;
     positions[2*i+1] = scanner->document.boundaries[i].end;
   }
-  if (count) qsort(positions, count * 2, sizeof(uint32_t), q_position_compare);
+  if (count) q_sort(positions, count * 2, sizeof(uint32_t), q_position_compare);
   free(scanner->positions); scanner->positions = positions;
   scanner->position_count = count * 2;
   return true;
@@ -202,7 +233,7 @@ static bool q_build_boundary_index(QScanner *scanner) {
   if (count && !index) return false;
   if (count) {
     memcpy(index, scanner->document.boundaries, count * sizeof(QBoundary));
-    qsort(index, count, sizeof(QBoundary), q_boundary_compare);
+    q_sort(index, count, sizeof(QBoundary), q_boundary_compare);
   }
   free(scanner->boundary_index); scanner->boundary_index = index;
   return true;

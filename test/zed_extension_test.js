@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -67,6 +67,26 @@ test("Zed highlighting is the documented adaptation of the reusable query", () =
     .replaceAll("@module", "@type")
     .replaceAll("@comment.documentation", "@comment.doc");
   assert.equal(read("editors/zed/languages/quint/highlights.scm"), expected);
+});
+
+test("grammar sources avoid libc functions that Zed's Wasm runtime does not provide", () => {
+  // Zed compiles the grammar to WebAssembly. Tree-sitter's Wasm runtime only provides a small
+  // libc subset (calloc, free, malloc, memchr, memcmp, memcpy, memmove, memset, realloc, strcmp,
+  // strlen, strncat, strncmp, strncpy and the isw*/tow* functions); an unresolved import makes the
+  // language fail to load. Common functions outside that subset are rejected here.
+  const unsupported = [
+    "qsort", "qsort_r", "bsearch", "strtol", "strtoul", "strtoll", "strtoull", "strtod", "atoi",
+    "atol", "strstr", "strchr", "strrchr", "strdup", "strcpy", "strcat", "rand", "srand", "getenv",
+    "exit", "abort", "printf", "fprintf", "sprintf", "snprintf", "puts", "fopen", "time", "clock",
+  ];
+  const pattern = new RegExp(`\\b(${unsupported.join("|")})\\s*\\(`);
+  const files = readdirSync(join(projectRoot, "src")).filter((name) => /\.[ch]$/.test(name));
+  assert.ok(files.includes("scanner.c"));
+  for (const name of files) {
+    const source = read(`src/${name}`).replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
+    const match = source.match(pattern);
+    assert.equal(match, null, `src/${name} calls ${match?.[1]}, which Zed's Wasm runtime lacks`);
+  }
 });
 
 test("Zed queries compile and highlight diagnostics against the pinned grammar", () => {
