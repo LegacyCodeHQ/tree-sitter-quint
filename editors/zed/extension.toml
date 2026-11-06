@@ -1,6 +1,6 @@
 id = "quint-language-support"
 name = "Quint Language Support"
-version = "0.1.1"
+version = "0.1.2"
 schema_version = 1
 authors = ["Legacy Code Headquarters (OPC) Private Limited"]
 description = "Language support for Quint, including syntax highlighting, indentation, bracket matching, and symbol outlines."
@@ -8,4 +8,4 @@ repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
 
 [grammars.quint]
 repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
-commit = "a9e32ef5101427912e26c51fc74da80be1411ad9"
+commit = "d38449427b00266924577e3d0a0ed99a5d60f89d"
