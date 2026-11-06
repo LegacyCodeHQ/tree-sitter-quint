@@ -178,6 +178,7 @@ module DivisionComments {
       value: (binary_expression
         left: (integer_literal)
         (comment)
+        (operator_break)
         right: (integer_literal)))
     (value_definition
       name: (identifier)

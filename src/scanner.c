@@ -182,7 +182,9 @@ bool tree_sitter_quint_external_scanner_scan(
   
   // Every external token is valid during error recovery; leave it to the scanners below.
   const bool line_breaks = !valid_symbols[ERROR_SENTINEL];
-  bool newline = false;
+  // A line comment consumes its own line break, so a scan that starts a line follows one.
+  bool newline = line_breaks && (valid_symbols[CHAIN_BREAK] || valid_symbols[OPERATOR_BREAK]) &&
+                 lexer->get_column(lexer) == 0;
 
   // A binary operator ending the line. The token is zero-width and consumes nothing.
   if (line_breaks && valid_symbols[OPERATOR_BREAK]) {
@@ -190,7 +192,7 @@ bool tree_sitter_quint_external_scanner_scan(
            lexer->lookahead == '\r') {
       lexer->advance(lexer, true);
     }
-    if (lexer->lookahead == '\n') {
+    if (lexer->lookahead == '\n' || newline) {
       lexer->mark_end(lexer);
       lexer->result_symbol = OPERATOR_BREAK;
       return true;
