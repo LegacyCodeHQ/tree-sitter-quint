@@ -127,6 +127,9 @@
 (name_reference
   name: (identifier) @variable)
 
+(namespace_access_expression
+  namespace: (identifier) @type)
+
 (primed_identifier
   name: [
     (identifier)
