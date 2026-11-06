@@ -8,4 +8,4 @@ repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
 
 [grammars.quint]
 repository = "https://github.com/LegacyCodeHQ/tree-sitter-quint"
-commit = "6603aa40985abe9c955ff9dd8b2e5370eb373d74"
+commit = "7a2e2cd7aa486e952259a8462e73f0f3f5c67f48"
