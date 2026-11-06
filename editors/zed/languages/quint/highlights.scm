@@ -204,6 +204,18 @@
     (qualified_identifier)
   ] @variable)
 
+(module_export_declaration
+  module: [
+    (identifier)
+    (qualified_identifier)
+  ] @type)
+
+(module_export_declaration
+  alias: [
+    (identifier)
+    (qualified_identifier)
+  ] @type)
+
 (anonymous_instance_declaration
   module: [
     (identifier)
