@@ -125,6 +125,9 @@
     (qualified_identifier)
   ] @property)
 
+(record_pattern
+  field: (identifier) @variable)
+
 (documentation_comment) @comment.doc
 (comment) @comment
 
