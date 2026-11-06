@@ -1,0 +1,201 @@
+========================================
+Arithmetic operator ending a line
+========================================
+
+module M {
+  val a = 1 +
+    2
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        (operator_break)
+        right: (integer_literal)))))
+
+========================================
+Operator starting a line has no break
+========================================
+
+module M {
+  val a = 1
+    + 2
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        right: (integer_literal)))))
+
+========================================
+Boolean operators ending lines
+========================================
+
+module M {
+  val a = true and
+    false or
+    true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression
+          left: (boolean_literal)
+          (operator_break)
+          right: (boolean_literal))
+        (operator_break)
+        right: (boolean_literal)))))
+
+========================================
+Comparison and equivalence operators ending lines
+========================================
+
+module M {
+  val a = 1 ==
+    1 iff
+    true
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (binary_expression
+          left: (integer_literal)
+          (operator_break)
+          right: (integer_literal))
+        (operator_break)
+        right: (boolean_literal)))))
+
+========================================
+Pair arrow ending a line
+========================================
+
+module M {
+  val a = 1 ->
+    2
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (pair_expression
+        left: (integer_literal)
+        (operator_break)
+        right: (integer_literal)))))
+
+========================================
+Field access starting a line
+========================================
+
+module M {
+  val r = { x: 1 }
+  val a = r
+    .x
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (field_access_expression
+        object: (name_reference
+          name: (identifier))
+        (chain_break)
+        field: (identifier)))))
+
+========================================
+Method chain with one call per line
+========================================
+
+module M {
+  val a = [1, 2]
+    .length()
+    .iadd(1)
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (ufcs_call_expression
+        receiver: (ufcs_call_expression
+          receiver: (list_literal
+            element: (integer_literal)
+            element: (integer_literal))
+          (chain_break)
+          method: (identifier))
+        (chain_break)
+        method: (identifier)
+        argument: (integer_literal)))))
+
+========================================
+Same-line operators and field access have no breaks
+========================================
+
+module M {
+  val a = 1 + 2
+  val r = { x: 1 }
+  val b = r.x
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (binary_expression
+        left: (integer_literal)
+        right: (integer_literal)))
+    (value_definition
+      name: (identifier)
+      value: (record_literal
+        (record_literal_field
+          name: (identifier)
+          value: (integer_literal))))
+    (value_definition
+      name: (identifier)
+      value: (field_access_expression
+        object: (name_reference
+          name: (identifier))
+        field: (identifier)))))
