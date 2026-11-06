@@ -109,6 +109,13 @@
 (name_reference
   name: (identifier) @variable)
 
+(primed_identifier
+  name: [
+    (identifier)
+    (qualified_identifier)
+  ] @variable
+  "'" @operator)
+
 (documentation_comment) @comment.doc
 (comment) @comment
 
