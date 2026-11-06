@@ -96,6 +96,12 @@
 
 (type_variable) @type
 
+(named_type
+  name: [
+    (identifier)
+    (qualified_identifier)
+  ] @type)
+
 (sum_type_variant
   name: (identifier) @constructor)
 
