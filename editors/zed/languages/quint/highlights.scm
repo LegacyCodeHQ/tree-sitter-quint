@@ -271,6 +271,7 @@
   parameter: [
     (identifier)
     (qualified_identifier)
+    (hole)
   ] @variable.parameter)
 
 (nondet_binding
