@@ -53,9 +53,9 @@ and 36 local-body operator-pair samples. It checks acceptance, source-spanned
 structures and tokens against Quint 0.34.0. It does not run the exhaustive
 alternative/token coverage pass or claim exhaustive matrix coverage.
 
-The full 54,907-program audit runs in the **Exhaustive Quint 0.34 audit** workflow:
-weekly on Mondays at 02:00 UTC, on demand through **Run workflow**, and before
-publishing a release that changes parser inputs. Boundary and deep matrices run
+The full 54,907-program audit runs on demand through **Run workflow** in the
+**Exhaustive Quint 0.34 audit** workflow and automatically before publishing a
+release that changes parser inputs. Boundary and deep matrices run
 as independent parallel jobs. They remain available locally with
 `bun run test:audit` and `bun run test:audit:deep`; use those commands or a manual
 workflow run for an exhaustive parser/scanner change check. Known failures
@@ -218,8 +218,8 @@ bun run test
 
 The private reference package pins Quint **0.34.0** with its own frozen lockfile.
 The audit requires this exact compiler version. All CI workflows use the 0.34
-reference. Routine CI runs the ordinary suite and quick audit. Scheduled,
-on-demand, and parser-sensitive release runs use both exhaustive matrices.
+reference. Routine CI runs the ordinary suite and quick audit. On-demand
+and parser-sensitive release runs use both exhaustive matrices.
 No global Quint installation is required.
 
 The generators `scripts/quint-033-cases.mjs`,

@@ -3,8 +3,6 @@ name: Exhaustive Quint 0.34 audit
 on:
   workflow_dispatch:
   workflow_call:
-  schedule:
-    - cron: '0 2 * * 1'
 
 permissions:
   contents: read
