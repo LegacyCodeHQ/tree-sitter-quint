@@ -9,14 +9,39 @@ permissions:
   contents: read
 
 jobs:
-  audit-quint034:
+  release-scope:
     if: github.repository == 'LegacyCodeHQ/tree-sitter-quint'
+    runs-on: ubuntu-latest
+    outputs:
+      exhaustive: ${{ steps.scope.outputs.exhaustive }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Compare parser inputs with the previous stable release
+        id: scope
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --paginate "repos/$GITHUB_REPOSITORY/releases" \
+            --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name' \
+            > "$RUNNER_TEMP/published-stable-tags"
+          node scripts/release-audit-scope.mjs "$RUNNER_TEMP/published-stable-tags" >> "$GITHUB_OUTPUT"
+
+  exhaustive-audit:
+    needs: release-scope
+    if: needs.release-scope.outputs.exhaustive == 'true'
     uses: ./.github/workflows/quint-audit.yml
 
   publish-npm:
     name: Publish npm package
-    if: github.repository == 'LegacyCodeHQ/tree-sitter-quint'
-    needs: audit-quint034
+    needs: [release-scope, exhaustive-audit]
+    if: >-
+      ${{ !cancelled() && github.repository == 'LegacyCodeHQ/tree-sitter-quint' &&
+          needs.release-scope.result == 'success' &&
+          ((needs.release-scope.outputs.exhaustive == 'false' && needs.exhaustive-audit.result == 'skipped') ||
+           (needs.release-scope.outputs.exhaustive == 'true' && needs.exhaustive-audit.result == 'success')) }}
     runs-on: ubuntu-latest
     env:
       QUINT_CLI: ${{ github.workspace }}/test/reference-quint034/node_modules/@informalsystems/quint/dist/src/cli.js
@@ -50,6 +75,21 @@ jobs:
       - name: Verify release version
         run: node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
 
+      - name: Check representative Quint compatibility cases
+        id: audit
+        env:
+          QUINT_AUDIT_ARTIFACTS: ${{ runner.temp }}/quint-034-audit
+        run: bun run test:audit:quick
+
+      - name: Preserve failed audit sources and logs
+        if: failure() && steps.audit.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: quint-034-release-quick-failure
+          path: ${{ runner.temp }}/quint-034-audit
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Select npm distribution tag
         id: npm-dist-tag
         shell: bash
@@ -61,8 +101,7 @@ jobs:
           fi
 
       - name: Publish to npm
-        # Exhaustive audits are gated by audit-quint034. npm's prepublishOnly
-        # runs the ordinary tests, generated-file check, and package check.
+        # npm runs check:release through prepublishOnly before publication.
         run: npm publish --access public --provenance --tag "${{ steps.npm-dist-tag.outputs.tag }}"
 
       - name: Create GitHub release

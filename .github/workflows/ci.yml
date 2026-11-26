@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: ['**']
   pull_request:
 
 permissions:
@@ -35,14 +36,8 @@ jobs:
       - name: Install locked Quint 0.34 reference
         run: bun ci --cwd test/reference-quint034
 
-      - name: Run tests
-        run: bun run test
-
-      - name: Verify generated parser is current
-        run: bun run check:generated
-
-      - name: Verify npm package
-        run: bun run test:package
+      - name: Run release checks
+        run: bun run check:release
 
       - name: Check representative Quint 0.34 compatibility cases
         id: audit

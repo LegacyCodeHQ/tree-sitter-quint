@@ -46,7 +46,7 @@ bun run test:syntax
 bun run test:structure
 ```
 
-Routine push/PR CI runs this suite, generated-file and package checks, and
+Branch pushes and pull requests run `bun run check:release` and
 `bun run test:audit:quick`. The quick differential audit uses 348 programs:
 eight samples from each of the 31 boundary families, 64 seeded deep expressions,
 and 36 local-body operator-pair samples. It checks acceptance, source-spanned
@@ -54,8 +54,8 @@ structures and tokens against Quint 0.34.0. It does not run the exhaustive
 alternative/token coverage pass or claim exhaustive matrix coverage.
 
 The full 54,907-program audit runs in the **Exhaustive Quint 0.34 audit** workflow:
-weekly on Mondays at 02:00 UTC, manually through **Run workflow**, and as a
-required dependency of tag-release publishing. Boundary and deep matrices run
+weekly on Mondays at 02:00 UTC, on demand through **Run workflow**, and before
+publishing a release that changes parser inputs. Boundary and deep matrices run
 as independent parallel jobs. They remain available locally with
 `bun run test:audit` and `bun run test:audit:deep`; use those commands or a manual
 workflow run for an exhaustive parser/scanner change check. Known failures
@@ -185,10 +185,19 @@ git tag -a vX.Y.Z -m "Release X.Y.Z"
 git push origin vX.Y.Z
 ```
 
-The tag workflow runs the complete release gate, publishes the npm package with
-provenance, and creates a GitHub Release with generated notes. Prereleases use
-npm's `next` tag and are marked as GitHub prereleases; stable releases use
-`latest`.
+Every tag release runs the quick audit, then runs `check:release` through npm's
+`prepublishOnly` hook before publishing with provenance. The tag workflow
+also requires the boundary and deep audits when there is no earlier published
+stable release in its history or when parser inputs changed since that release.
+A tag from an unsuccessful publish does not count as a baseline. The comparison
+covers grammar and scanner sources, reference tables, pinned dependencies and
+lockfiles, and grammar configuration. Generated `parser.c` is checked for
+freshness by `check:release`; a change to its package-version metadata alone
+uses the quick gate.
+
+After publication the workflow creates a GitHub Release with generated notes.
+Prereleases use npm's `next` tag and are marked as GitHub prereleases. Stable
+releases use `latest`.
 
 Before releasing, npm must designate `.github/workflows/release.yml` in
 `LegacyCodeHQ/tree-sitter-quint` as a GitHub Actions trusted publisher with
@@ -209,9 +218,8 @@ bun run test
 
 The private reference package pins Quint **0.34.0** with its own frozen lockfile.
 The audit requires this exact compiler version. All CI workflows use the 0.34
-reference. Routine CI runs the
-ordinary suite and quick audit; scheduled, manual and release runs retain both
-exhaustive matrices.
+reference. Routine CI runs the ordinary suite and quick audit. Scheduled,
+on-demand, and parser-sensitive release runs use both exhaustive matrices.
 No global Quint installation is required.
 
 The generators `scripts/quint-033-cases.mjs`,
