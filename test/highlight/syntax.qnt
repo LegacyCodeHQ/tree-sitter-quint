@@ -38,6 +38,15 @@ module Highlights {
   //  ^^^^ constant
   //         ^^^^ boolean
 
+  invariant invariant = flag
+  // <- keyword
+  //        ^^^^^^^^^ function
+
+  observation observation = invariant
+  // <- keyword
+  //          ^^^^^^^^^^^ function
+  //                        ^^^^^^^^^ variable
+
   val pair = (1, 2)
   //          ^ number
   //             ^ number

@@ -7,9 +7,9 @@ import { benchmarkInputs } from "./parser-benchmark-cases.mjs";
 import { editorSources, editorTurns } from "./editor-benchmark-cases.mjs";
 
 const cli = realpathSync(process.env.QUINT_CLI ?? new URL(
-  "../test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js", import.meta.url));
+  "../test/reference-quint034/node_modules/@informalsystems/quint/dist/src/cli.js", import.meta.url));
 const require = createRequire(cli);
-assert.equal(JSON.parse(readFileSync(path.join(path.dirname(cli), "../../package.json"))).version, "0.33.0");
+assert.equal(JSON.parse(readFileSync(path.join(path.dirname(cli), "../../package.json"))).version, "0.34.0");
 const { CharStreams, CommonTokenStream } = require("antlr4ts");
 const { QuintLexer } = require(path.join(path.dirname(cli), "generated/QuintLexer.js"));
 const { QuintParser } = require(path.join(path.dirname(cli), "generated/QuintParser.js"));
@@ -32,5 +32,5 @@ for (const input of [...inputs, ...editorInputs]) {
   parser.modules();
   assert.equal(errors.length === 0, input.referenceAccepted, input.name);
 }
-console.log(`${inputs.length} benchmark inputs agree with Quint 0.33.0; sha256 ${fingerprint}`);
-console.log(`${editorInputs.length} distinct editor inputs agree with Quint 0.33.0`);
+console.log(`${inputs.length} benchmark inputs agree with Quint 0.34.0; sha256 ${fingerprint}`);
+console.log(`${editorInputs.length} distinct editor inputs agree with Quint 0.34.0`);

@@ -6,8 +6,8 @@ import { generateCases } from "./quint-033-cases.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const cli = realpathSync(process.env.QUINT_CLI ?? join(root,
-  "test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js"));
-assert.equal(JSON.parse(readFileSync(join(dirname(cli), "../../package.json"), "utf8")).version, "0.33.0");
+  "test/reference-quint034/node_modules/@informalsystems/quint/dist/src/cli.js"));
+assert.equal(JSON.parse(readFileSync(join(dirname(cli), "../../package.json"), "utf8")).version, "0.34.0");
 const require = createRequire(cli);
 const { CharStreams, CommonTokenStream } = require("antlr4ts");
 const generated = require(join(dirname(cli), "generated/QuintParser.js"));

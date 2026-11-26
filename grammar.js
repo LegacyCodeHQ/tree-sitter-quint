@@ -64,6 +64,7 @@ const RESERVED_IDENTIFIERS = [
 
 const IDENTIFIER_TAIL_CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+const PROPERTY_QUALIFIERS = ["invariant", "observation"];
 
 function identifierPatternWithout(reservedWords, includeUppercase = true) {
   const root = { terminal: false, children: new Map() };
@@ -111,11 +112,10 @@ function identifierPatternWithout(reservedWords, includeUppercase = true) {
   return new RegExp(`(?:${alternatives.join("|")})`);
 }
 
-const IDENTIFIER_PATTERN = identifierPatternWithout(RESERVED_IDENTIFIERS);
+const IDENTIFIER_PATTERN = identifierPatternWithout([...RESERVED_IDENTIFIERS, ...PROPERTY_QUALIFIERS]);
 // Type variables correspond to ANTLR's LOW_ID, excluding every keyword token.
-// `as` and `from` remain available as named types through `identifier`.
 const TYPE_VARIABLE_PATTERN = identifierPatternWithout(
-  [...RESERVED_IDENTIFIERS, "as", "from"],
+  [...RESERVED_IDENTIFIERS, "as", "from", ...PROPERTY_QUALIFIERS],
   false,
 );
 const identifierOrHole = $ => choice(
@@ -252,7 +252,7 @@ function pairExpression($, expression) {
 }
 
 // Share parameter lists and return annotations across definition qualifiers.
-function operatorDefinitionHead($) {
+function operatorDefinitionHead($, property = false) {
   const parameters = parameter => seq(
     "(",
     field("parameter", parameter),
@@ -264,6 +264,18 @@ function operatorDefinitionHead($) {
     seq(parameters($.annotated_parameter), ":", field("return_type", $._type)),
     seq(parameters($.parameter), optional($._return_type_annotation)),
   );
+  const operatorTail = optional(choice(
+    nonemptyTail,
+    seq("(", ")", optional($._return_type_annotation)),
+    $._return_type_annotation,
+  ));
+  if (property) {
+    return prec.right(PREC.DEFINITION_HEAD, seq(
+      field("qualifier", choice(...PROPERTY_QUALIFIERS)),
+      field("name", $._normal_call_name),
+      operatorTail,
+    ));
+  }
   return prec.right(PREC.DEFINITION_HEAD, choice(
     // A nonempty parameter list makes a val an operator; val() remains a value.
     seq(
@@ -278,11 +290,7 @@ function operatorDefinitionHead($) {
         field("qualifier", choice("action", "nondet", "temporal", "run")),
       ),
       field("name", $._normal_call_name),
-      optional(choice(
-        nonemptyTail,
-        seq("(", ")", optional($._return_type_annotation)),
-        $._return_type_annotation,
-      )),
+      operatorTail,
     ),
   ));
 }
@@ -359,6 +367,7 @@ export default grammar({
       $.value_definition,
       $.operator_definition,
       alias($._operator_header_declaration, $.operator_definition),
+      alias($._property_definition, $.operator_definition),
       $.assumption_declaration,
       $.instance_declaration,
       $.anonymous_instance_declaration,
@@ -420,6 +429,12 @@ export default grammar({
 
     _operator_header_declaration: $ => seq(
       $._operator_definition_head,
+      optional(";"),
+    ),
+
+    _property_definition: $ => seq(
+      operatorDefinitionHead($, true),
+      optional(seq("=", field("body", $._expression))),
       optional(";"),
     ),
 
@@ -1054,6 +1069,6 @@ export default grammar({
 
     hole: _ => "_",
 
-    identifier: _ => IDENTIFIER_PATTERN,
+    identifier: _ => token(choice(IDENTIFIER_PATTERN, ...PROPERTY_QUALIFIERS)),
   }),
 });

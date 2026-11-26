@@ -12,9 +12,9 @@ import { generateQuickCases } from './quint-033-quick-cases.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const cli = realpathSync(process.env.QUINT_CLI ?? join(root,
-  'test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js'));
+  'test/reference-quint034/node_modules/@informalsystems/quint/dist/src/cli.js'));
 const version = JSON.parse(readFileSync(join(dirname(cli), '../../package.json'), 'utf8')).version;
-assert.equal(version, '0.33.0', `Audit requires exactly Quint 0.33.0; found ${version}`);
+assert.equal(version, '0.34.0', `Audit requires exactly Quint 0.34.0; found ${version}`);
 const require = createRequire(cli);
 const { parsePhase1fromText } = require(join(dirname(cli), 'parsing/quintParserFrontend.js'));
 const { newIdGenerator } = require(join(dirname(cli), 'idGenerator.js'));
@@ -33,10 +33,10 @@ assert.equal(digest, expected.sha256,
   'Audit matrix changed: review coverage and update its fingerprint deliberately');
 const parent = resolve(process.env.QUINT_AUDIT_ARTIFACTS ?? tmpdir());
 mkdirSync(parent, { recursive: true });
-const scratch = mkdtempSync(join(parent, `quint-033-${matrix}-`));
+const scratch = mkdtempSync(join(parent, `quint-034-${matrix}-`));
 const parserDigest = () => {
   const hash = createHash('sha256');
-  for (const file of ['src/parser.c', 'src/scanner.c', 'src/quint_033_atn.h',
+  for (const file of ['src/parser.c', 'src/scanner.c', 'src/quint_034_atn.h',
     'src/quint_boundaries.h', 'src/quint_scanner_boundary_state.h', 'src/node-types.json',
     'build/Release/tree_sitter_quint_binding.node']) {
     hash.update(file).update('\0').update(readFileSync(join(root, file)));
@@ -51,7 +51,7 @@ mkdirSync(rejected);
 let acceptedCount = 0;
 let succeeded = false;
 try {
-  console.log(`Classifying ${cases.length} Quint 0.33.0 ${matrix} cases`);
+  console.log(`Classifying ${cases.length} Quint 0.34.0 ${matrix} cases`);
   for (const entry of cases) {
     const debug = console.debug;
     let valid;

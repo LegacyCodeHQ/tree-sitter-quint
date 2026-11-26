@@ -7,8 +7,7 @@ dependencies:
 
 ```sh
 bun install
-bun ci --cwd test/reference-quint033
-export QUINT_CLI="$PWD/test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js"
+bun ci --cwd test/reference-quint034
 ```
 
 Generate the parser and run the complete test suite:
@@ -18,10 +17,10 @@ bun run generate
 bun run test
 ```
 
-The separate locked 0.33.0 package provides the reference ANTLR lexer and
-phase-one parser. Keep `QUINT_CLI` set to it; it matches the root dependency
-and release metadata, which also target 0.33.0. Both CI and the release gate
-install and select this reference explicitly.
+The separate locked 0.34.0 package provides the reference ANTLR lexer and
+phase-one parser for local development, CI, and the release gate. Set `QUINT_CLI`
+when comparing against a different installation. The root dependency and release
+metadata are set during release preparation.
 
 The detailed red/green workflow for grammar changes is documented in
 [AGENTS.md](AGENTS.md).
@@ -51,10 +50,10 @@ Routine push/PR CI runs this suite, generated-file and package checks, and
 `bun run test:audit:quick`. The quick differential audit uses 348 programs:
 eight samples from each of the 31 boundary families, 64 seeded deep expressions,
 and 36 local-body operator-pair samples. It checks acceptance, source-spanned
-structures and tokens against Quint 0.33.0. It does not run the exhaustive
+structures and tokens against Quint 0.34.0. It does not run the exhaustive
 alternative/token coverage pass or claim exhaustive matrix coverage.
 
-The full 54,907-program audit runs in the **Exhaustive Quint 0.33 audit** workflow:
+The full 54,907-program audit runs in the **Exhaustive Quint 0.34 audit** workflow:
 weekly on Mondays at 02:00 UTC, manually through **Run workflow**, and as a
 required dependency of tag-release publishing. Boundary and deep matrices run
 as independent parallel jobs. They remain available locally with
@@ -104,8 +103,8 @@ parser are unchanged from `v0.32.0`; the later `v0.33.1` patch release changes
 no grammar, parsing or generated-parser files. Validation includes the release's 77 example
 files with both `quint parse` and `quint typecheck`, and differential acceptance
 and source-spanned tree checks on generated expressions and local definitions.
-The pinned development compiler and package versions target 0.33.0; use
-`QUINT_CLI` to repeat the checks with another installation.
+Set `QUINT_CLI` to a 0.33.0 installation to repeat the historical parity
+comparisons.
 
 The grammar represents ANTLR diagnostics with named nodes. In particular,
 `invalid_identifier` preserves QNT008 for reserved words in expressions,
@@ -194,21 +193,22 @@ Before releasing, npm must designate `.github/workflows/release.yml` in
 `LegacyCodeHQ/tree-sitter-quint` as a GitHub Actions trusted publisher with
 `npm publish` permission.
 
-## Reproducing the Quint 0.33 audit
+## Reproducing the Quint 0.34 audit
 
 Install the reference separately; it is the same compiler version the package
 targets:
 
 ```sh
 bun ci
-bun ci --cwd test/reference-quint033
+bun ci --cwd test/reference-quint034
 bun run test:audit
 bun run test:audit:deep
-QUINT_CLI="$PWD/test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js" bun run test
+bun run test
 ```
 
-The private reference package pins Quint **0.33.0** with its own frozen lockfile.
-The audit refuses another compiler version. All CI workflows use the 0.33 reference. Routine CI runs the
+The private reference package pins Quint **0.34.0** with its own frozen lockfile.
+The audit requires this exact compiler version. All CI workflows use the 0.34
+reference. Routine CI runs the
 ordinary suite and quick audit; scheduled, manual and release runs retain both
 exhaustive matrices.
 No global Quint installation is required.
@@ -297,10 +297,10 @@ fields and spreads.
 
 ## ANTLR production coverage
 
-`bun run test:coverage` uses the locked 0.33 compiler, the generated audit
+`bun run test:coverage` uses the locked 0.34 compiler, the generated audit
 matrices, and `test/fixtures` to require a witness for every file-reachable ANTLR
 parser alternative and emitted lexer token class. It currently covers **103/103
-alternatives and 68/68 token classes**. Only the three REPL-only entry rules
+alternatives and 70/70 token classes**. Only the three REPL-only entry rules
 (`declarationOrExpr`, `operator`, `literal`) and lexer-skipped whitespace/comments
 are excluded. Ordinary alternatives require a witness without parser diagnostics;
 the four explicit diagnostic alternatives require rejection witnesses instead.
@@ -323,7 +323,7 @@ of live parse versions.
 
 The external scanner records canonical declaration and local-definition
 boundaries before Tree-sitter selects its expression productions. Its C11
-recognizer interprets tables generated from the exact 0.33.0 ANTLR ATN. It keeps
+recognizer interprets tables generated from the exact 0.34.0 ANTLR ATN. It keeps
 the first ordered derivation for each possible end position and chooses the
 first complete parse. It constructs no replacement public syntax tree and
 performs no typechecking. The grammar still produces the existing named nodes,
@@ -338,7 +338,7 @@ node scripts/generate-reference-atn.mjs --check
 ```
 
 `check:generated` verifies these tables as well as Tree-sitter's generated files.
-The reference generator rejects any version other than 0.33.0. The scanner
+The reference generator rejects any version other than 0.34.0. The scanner
 headers are shipped in the npm, Cargo, and Python source packages; no ANTLR
 runtime is required by consumers.
 

@@ -15,7 +15,7 @@
       "locals": "queries/locals.scm",
       "class-name": "TreeSitterQuint",
       "external-files": [
-        "src/quint_033_atn.h",
+        "src/quint_034_atn.h",
         "src/quint_boundaries.h",
         "src/quint_scanner_boundary_state.h"
       ]

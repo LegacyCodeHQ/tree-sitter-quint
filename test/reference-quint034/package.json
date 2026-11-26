@@ -1,0 +1,7 @@
+{
+  "name": "quint-034-reference",
+  "private": true,
+  "dependencies": {
+    "@informalsystems/quint": "0.34.0"
+  }
+}

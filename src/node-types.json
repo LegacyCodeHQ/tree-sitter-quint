@@ -1934,7 +1934,15 @@
             "named": false
           },
           {
+            "type": "invariant",
+            "named": false
+          },
+          {
             "type": "nondet",
+            "named": false
+          },
+          {
+            "type": "observation",
             "named": false
           },
           {
@@ -3167,6 +3175,10 @@
     "named": true
   },
   {
+    "type": "invariant",
+    "named": false
+  },
+  {
     "type": "leadsTo",
     "named": false
   },
@@ -3180,6 +3192,10 @@
   },
   {
     "type": "nondet",
+    "named": false
+  },
+  {
+    "type": "observation",
     "named": false
   },
   {

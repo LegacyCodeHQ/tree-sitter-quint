@@ -1,0 +1,55 @@
+=======================================
+Property declaration headers and bodies
+=======================================
+
+module Properties {
+  val ready = true
+  invariant safe: bool = ready
+  observation seen() = safe;
+  invariant header: bool
+  observation predicate(flag: bool): bool = flag
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition name: (identifier) value: (boolean_literal))
+    (operator_definition name: (identifier) return_type: (primitive_type) body: (name_reference name: (identifier)))
+    (operator_definition name: (identifier) body: (name_reference name: (identifier)))
+    (operator_definition name: (identifier) return_type: (primitive_type))
+    (operator_definition name: (identifier)
+      parameter: (annotated_parameter name: (identifier) type: (primitive_type))
+      return_type: (primitive_type)
+      body: (name_reference name: (identifier)))))
+
+=======================================
+Property keywords as identifiers
+=======================================
+
+module invariant {
+  def observation(invariant) = invariant
+  val observationReady = observation(true)
+}
+module Use {
+  import invariant as observation
+  invariant invariant = observation::observation(true)
+  observation seen = invariant
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (operator_definition name: (identifier)
+      parameter: (parameter name: (identifier))
+      body: (name_reference name: (identifier)))
+    (value_definition name: (identifier) value: (call_expression function: (name_reference name: (identifier)) argument: (boolean_literal))))
+  (module_definition
+    name: (identifier)
+    (module_import_declaration module: (identifier) alias: (identifier))
+    (operator_definition name: (identifier)
+      body: (call_expression function: (namespace_access_expression namespace: (identifier) member: (identifier)) argument: (boolean_literal)))
+    (operator_definition name: (identifier) body: (name_reference name: (identifier)))))

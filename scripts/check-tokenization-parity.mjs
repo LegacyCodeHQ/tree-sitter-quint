@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import process from "node:process";
@@ -47,21 +46,9 @@ function quintFiles(inputPaths) {
 }
 
 function resolveQuintCli() {
-  if (process.env.QUINT_CLI) {
-    return realpathSync(process.env.QUINT_CLI);
-  }
-
-  const localQuint = fileURLToPath(new URL("../node_modules/.bin/quint", import.meta.url));
-  if (existsSync(localQuint)) {
-    return realpathSync(localQuint);
-  }
-
-  try {
-    const executable = execFileSync("which", ["quint"], { encoding: "utf8" }).trim();
-    return realpathSync(executable);
-  } catch {
-    throw new Error("Cannot find Quint. Install it or set QUINT_CLI to its executable.");
-  }
+  return realpathSync(process.env.QUINT_CLI ?? fileURLToPath(new URL(
+    "../test/reference-quint034/node_modules/@informalsystems/quint/dist/src/cli.js", import.meta.url,
+  )));
 }
 
 function loadReferenceLexer() {
@@ -117,8 +104,11 @@ function referenceTokens(source, reference) {
   return tokens;
 }
 
-function treeSitterTokens(source, parser) {
+function treeSitterTokens(source, parser, reference) {
   const tree = parser.parse(source);
+  const contextualKeywords = ["Set", "List", "from", "as"];
+  if (reference.QuintLexer.INVARIANT !== undefined) contextualKeywords.push("invariant");
+  if (reference.QuintLexer.OBSERVATION !== undefined) contextualKeywords.push("observation");
 
   const tokens = [];
   function visit(node) {
@@ -138,7 +128,7 @@ function treeSitterTokens(source, parser) {
       ? "boolean"
       : node.text === "Map"
         ? "identifier"
-      : ["Set", "List", "from", "as"].includes(node.text)
+      : contextualKeywords.includes(node.text)
         ? node.text
       : ({
       string_literal: "string",
@@ -167,7 +157,7 @@ for (const filePath of quintFiles(inputs)) {
   try {
     const source = readFileSync(filePath, "utf8");
     const expected = referenceTokens(source, reference);
-    const actual = treeSitterTokens(source, parser);
+    const actual = treeSitterTokens(source, parser, reference);
     try {
       assert.deepEqual(actual, expected);
     } catch {

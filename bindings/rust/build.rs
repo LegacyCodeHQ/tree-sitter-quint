@@ -25,7 +25,7 @@ fn main() {
         println!("cargo:rerun-if-changed={}", scanner_path.to_str().unwrap());
     }
 
-    for header in ["quint_033_atn.h", "quint_boundaries.h", "quint_scanner_boundary_state.h"] {
+    for header in ["quint_034_atn.h", "quint_boundaries.h", "quint_scanner_boundary_state.h"] {
         println!("cargo:rerun-if-changed={}", src_dir.join(header).display());
     }
 

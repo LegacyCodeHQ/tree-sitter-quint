@@ -18,9 +18,9 @@ const baseline = baselinePath ? require(path.resolve(baselinePath)) : undefined;
 const baselineSha256 = baselinePath ? createHash("sha256").update(readFileSync(baselinePath)).digest("hex") : undefined;
 const validOnly = args.includes("--valid-only");
 const cli = realpathSync(process.env.QUINT_CLI ?? path.join(root,
-  "test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js"));
+  "test/reference-quint034/node_modules/@informalsystems/quint/dist/src/cli.js"));
 const reference = createRequire(cli);
-assert.equal(JSON.parse(readFileSync(path.join(path.dirname(cli), "../../package.json"))).version, "0.33.0");
+assert.equal(JSON.parse(readFileSync(path.join(path.dirname(cli), "../../package.json"))).version, "0.34.0");
 const { CharStreams, CommonTokenStream } = reference("antlr4ts");
 const { QuintLexer } = reference(path.join(path.dirname(cli), "generated/QuintLexer.js"));
 const { QuintParser } = reference(path.join(path.dirname(cli), "generated/QuintParser.js"));
@@ -92,7 +92,7 @@ function oracle(entry) {
 }
 
 const records = [];
-const report = { reference: "0.33.0", fingerprint, binding: { path: bindingPath, sha256: hash(readFileSync(bindingPath)) },
+const report = { reference: "0.34.0", fingerprint, binding: { path: bindingPath, sha256: hash(readFileSync(bindingPath)) },
   coverage: validOnly ? "valid-only" : "valid-and-recovery",
   baseline: baselinePath ? { path: path.resolve(baselinePath), sha256: baselineSha256 } : null, records };
 try {
@@ -131,7 +131,7 @@ try {
   report.passed = true;
   assert.equal(hash(readFileSync(bindingPath)), report.binding.sha256, "Binding changed during the check");
   if (baselinePath) assert.equal(hash(readFileSync(baselinePath)), baselineSha256, "Baseline changed during the check");
-  console.log(`${cases.length} local-header cases match Quint 0.33.0; ${report.coverage}; sha256 ${fingerprint}`);
+  console.log(`${cases.length} local-header cases match Quint 0.34.0; ${report.coverage}; sha256 ${fingerprint}`);
 } catch (error) {
   report.passed = false;
   report.failure = error.stack;

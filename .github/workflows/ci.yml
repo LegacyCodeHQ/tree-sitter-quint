@@ -11,7 +11,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      QUINT_CLI: ${{ github.workspace }}/test/reference-quint033/node_modules/@informalsystems/quint/dist/src/cli.js
+      QUINT_CLI: ${{ github.workspace }}/test/reference-quint034/node_modules/@informalsystems/quint/dist/src/cli.js
 
     steps:
       - name: Check out repository
@@ -32,8 +32,8 @@ jobs:
       - name: Install dependencies
         run: bun ci
 
-      - name: Install locked Quint 0.33 reference
-        run: bun ci --cwd test/reference-quint033
+      - name: Install locked Quint 0.34 reference
+        run: bun ci --cwd test/reference-quint034
 
       - name: Run tests
         run: bun run test
@@ -44,17 +44,17 @@ jobs:
       - name: Verify npm package
         run: bun run test:package
 
-      - name: Check representative Quint 0.33 compatibility cases
+      - name: Check representative Quint 0.34 compatibility cases
         id: audit
         env:
-          QUINT_AUDIT_ARTIFACTS: ${{ runner.temp }}/quint-033-audit
+          QUINT_AUDIT_ARTIFACTS: ${{ runner.temp }}/quint-034-audit
         run: bun run test:audit:quick
 
       - name: Preserve failed audit sources and logs
         if: failure() && steps.audit.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: quint-033-quick-failure
-          path: ${{ runner.temp }}/quint-033-audit
+          name: quint-034-quick-failure
+          path: ${{ runner.temp }}/quint-034-audit
           if-no-files-found: ignore
           retention-days: 7

@@ -6,7 +6,7 @@
 // expression productions without a bounded GLR stack dropping the greedy path.
 // All grammar states and token sets come from the pinned reference tables.
 
-#include "quint_033_atn.h"
+#include "quint_034_atn.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -52,7 +52,7 @@ static bool q_tokenize(QDocument *doc, const char *source, size_t length) {
     if (c == '"') {
       for (i++; i < length && source[i] != '"'; i++) {}
       if (i == length) return false;
-      i++; kind = 36;
+      i++; kind = Q_TOKEN_STRING;
     } else if ((c == '/' && i + 1 < length && source[i + 1] == '/') ||
                (c == '#' && i + 1 < length && source[i + 1] == '!')) {
       bool hashbang = c == '#';
@@ -61,13 +61,13 @@ static bool q_tokenize(QDocument *doc, const char *source, size_t length) {
       if (i == length) return false;
       i++;
       if (!hashbang && !doccomment) continue;
-      kind = hashbang ? 67 : 68;
+      kind = hashbang ? Q_TOKEN_HASHBANG_LINE : Q_TOKEN_DOCCOMMENT;
     } else if (c == '/' && i + 1 < length && source[i + 1] == '*') {
       for (i += 2; i + 1 < length && !(source[i] == '*' && source[i + 1] == '/'); i++) {}
       if (i + 1 >= length) return false;
       i += 2; continue;
     } else if (q_digit(c)) {
-      kind = 38; i++;
+      kind = Q_TOKEN_INT; i++;
       bool hex = c == '0' && i + 1 < length && source[i] == 'x' && q_hex((unsigned char)source[i + 1]);
       if (hex) i += 2;
       if (c != '0' || hex) {
@@ -83,14 +83,14 @@ static bool q_tokenize(QDocument *doc, const char *source, size_t length) {
       }
     } else if (q_letter(c) || (c == '_' && i + 1 < length && q_ident((unsigned char)source[i + 1]))) {
       for (i++; i < length && q_ident((unsigned char)source[i]); i++) {}
-      kind = c >= 'A' && c <= 'Z' ? 66 : 65;
+      kind = c >= 'A' && c <= 'Z' ? Q_TOKEN_CAP_ID : Q_TOKEN_LOW_ID;
       for (size_t j = 0; j < sizeof(q_literals) / sizeof(q_literals[0]); j++) {
         if (strlen(q_literals[j].text) == i - start && !memcmp(source + start, q_literals[j].text, i - start)) {
           kind = q_literals[j].kind; break;
         }
       }
       if ((i - start == 4 && !memcmp(source + start, "true", 4)) ||
-          (i - start == 5 && !memcmp(source + start, "false", 5))) kind = 37;
+          (i - start == 5 && !memcmp(source + start, "false", 5))) kind = Q_TOKEN_BOOL;
     } else {
       size_t longest = 0;
       for (size_t j = 0; j < sizeof(q_literals) / sizeof(q_literals[0]); j++) {
@@ -221,7 +221,7 @@ static bool q_push(QRecognizer *r, QMemo *m) {
   return true;
 }
 static bool q_matches(const QTransition *t, int token) {
-  if (token < -1 || token > 71) return false;
+  if (token < -1 || token > Q_MAX_TOKEN_TYPE) return false;
   unsigned bit = (unsigned)(token + 1);
   return bit < 64 ? ((t->low >> bit) & 1) : ((t->high >> (bit - 64)) & 1);
 }

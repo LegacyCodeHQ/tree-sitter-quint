@@ -23,6 +23,11 @@
   "var"
 ] @keyword
 
+; Match the qualifier field so this query also compiles against older parsers.
+(operator_definition
+  qualifier: _ @keyword
+  (#any-of? @keyword "invariant" "observation"))
+
 [
   "and"
   "iff"
