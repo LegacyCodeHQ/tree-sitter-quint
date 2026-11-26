@@ -91,6 +91,12 @@ try {
     const valid = parser.parse(readFileSync(join(fixtures, "structure-greedy-reserved-semicolon.qnt"), "utf8"));
     assert.equal(valid.rootNode.hasError, false);
     assert.equal(valid.rootNode.descendantsOfType("invalid_identifier").length, 0);
+
+    const properties = parser.parse(readFileSync(join(fixtures, "integration-quint-034.qnt"), "utf8"));
+    assert.equal(properties.rootNode.hasError, false);
+    assert.deepEqual(queries.get("highlights.scm").captures(properties.rootNode)
+      .filter(({ name, node }) => name === "keyword" && ["invariant", "observation"].includes(node.text))
+      .map(({ node }) => node.text), ["invariant", "observation", "invariant", "observation"]);
   `, join(scratch, "bindings/node/index.js"), join(projectRoot, "editors/zed/languages/quint"), join(projectRoot, "test/fixtures")]);
   console.log(`Zed queries and diagnostic smoke tests passed against pinned grammar ${commit}`);
 } finally {
