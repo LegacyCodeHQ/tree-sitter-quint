@@ -357,7 +357,7 @@ export default grammar({
       "module",
       field("name", choice($.identifier, $.qualified_identifier)),
       "{",
-      repeat(seq(repeat($.documentation_comment), $._declaration)),
+      repeat(choice($.documentation_comment, $._declaration)),
       "}",
     ),
 

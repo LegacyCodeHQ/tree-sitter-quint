@@ -93,19 +93,6 @@ val x = 1 }
 (source_file)
 
 ========================================
-Reject dangling documentation before a module closes
-:error
-========================================
-
-module InvalidDocumentation { pure val x = 1
-/// misplaced
-}
-
----
-
-(source_file)
-
-========================================
 Reject four-slash documentation inside expressions
 :error
 ========================================
@@ -186,3 +173,32 @@ module DivisionComments {
         left: (integer_literal)
         (comment)
         right: (integer_literal)))))
+
+========================================
+Trailing documentation comments in modules
+========================================
+
+module Comments {
+  /// Attached to answer.
+  val answer = 42
+  /// Trailing documentation.
+  /// A second trailing line.
+}
+module Empty {
+  /// Documentation with no declaration.
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (documentation_comment)
+    (value_definition
+      name: (identifier)
+      value: (integer_literal))
+    (documentation_comment)
+    (documentation_comment))
+  (module_definition
+    name: (identifier)
+    (documentation_comment)))

@@ -205,14 +205,11 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SEQ",
+            "type": "CHOICE",
             "members": [
               {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "documentation_comment"
-                }
+                "type": "SYMBOL",
+                "name": "documentation_comment"
               },
               {
                 "type": "SEQ",
@@ -5635,14 +5632,11 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SEQ",
+            "type": "CHOICE",
             "members": [
               {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "documentation_comment"
-                }
+                "type": "SYMBOL",
+                "name": "documentation_comment"
               },
               {
                 "type": "SYMBOL",
