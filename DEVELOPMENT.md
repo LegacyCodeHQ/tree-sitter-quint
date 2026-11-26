@@ -20,7 +20,7 @@ bun run test
 The separate locked 0.34.0 package provides the reference ANTLR lexer and
 phase-one parser for local development, CI, and the release gate. Set `QUINT_CLI`
 when comparing against a different installation. The root dependency and release
-metadata are set during release preparation.
+metadata also target Quint 0.34.0.
 
 The detailed red/green workflow for grammar changes is documented in
 [AGENTS.md](AGENTS.md).
