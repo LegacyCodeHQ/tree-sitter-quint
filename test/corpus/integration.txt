@@ -1212,3 +1212,88 @@ module FourthAudit {
             right: (tuple_literal
               element: (boolean_literal)
               element: (boolean_literal))))))))
+
+========================================
+Quint properties and trailing module documentation
+========================================
+
+module Checks {
+  val invariant = true
+
+  /// A property can refer to a value named invariant.
+  invariant safe: bool = invariant
+  observation reached = safe
+
+  /// This comment has no following declaration.
+}
+
+module Counting {
+  import Checks.*
+  var count: int
+
+  action init = count' = 0
+  action step = count' = count + 1
+
+  invariant nonnegative = count >= 0
+  observation seenTwo = reached and count == 2
+
+  /// End of the counting module.
+}
+
+---
+
+(source_file
+  (module_definition
+    name: (identifier)
+    (value_definition
+      name: (identifier)
+      value: (boolean_literal))
+    (documentation_comment)
+    (operator_definition
+      name: (identifier)
+      return_type: (primitive_type)
+      body: (name_reference
+        name: (identifier)))
+    (operator_definition
+      name: (identifier)
+      body: (name_reference
+        name: (identifier)))
+    (documentation_comment))
+  (module_definition
+    name: (identifier)
+    (wildcard_import_declaration
+      module: (identifier))
+    (variable_declaration
+      name: (identifier)
+      type: (primitive_type))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (identifier))
+        value: (integer_literal)))
+    (operator_definition
+      name: (identifier)
+      body: (assignment_expression
+        target: (primed_identifier
+          name: (identifier))
+        value: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (operator_definition
+      name: (identifier)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (integer_literal)))
+    (operator_definition
+      name: (identifier)
+      body: (binary_expression
+        left: (name_reference
+          name: (identifier))
+        right: (binary_expression
+          left: (name_reference
+            name: (identifier))
+          right: (integer_literal))))
+    (documentation_comment)))
